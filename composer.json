@@ -1,0 +1,26 @@
+{
+    "name": "dennis-pansegrau/pimcore-content-migration-bundle",
+    "description": "A Pimcore bundle that generates Doctrine-like migrations for Documents, Assets, and Data Objects — allowing developers to export Pimcore content structures as executable migration scripts to fully rebuild environments from scratch.",
+    "type": "pimcore-bundle",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "DennisPansegrau\\PimcoreContentMigrationBundle\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dennis Pansegrau",
+            "email": "dennis@pansegrau.biz"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "extra": {
+        "pimcore": {
+            "bundles": [
+                "DennisPansegrau\\PimcoreContentMigrationBundle\\PimcoreContentMigrationBundle"
+            ]
+        }
+    }
+}
