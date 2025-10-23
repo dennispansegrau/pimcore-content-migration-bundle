@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    DennisPansegrau\PimcoreContentMigrationBundle\Command\:
+        resource: '../src/Command/*'
+        tags: ['console.command']

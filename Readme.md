@@ -17,5 +17,13 @@ It allows developers to export Pimcore content structures as **executable migrat
 ## 🧩 Example (CLI)
 
 ```bash
-bin/console pimcore:migrations:diff
-bin/console pimcore:migrations:migrate
+bin/console content:migration:create
+```
+
+## Setup
+If you do not use doctrine migrations in your project yet, please add following to your config/config.yaml:
+```
+doctrine_migrations:
+    migrations_paths:
+        'App\Migrations': '%kernel.project_dir%/migrations'
+```
