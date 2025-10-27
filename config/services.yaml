@@ -10,3 +10,7 @@ services:
     DennisPansegrau\PimcoreContentMigrationBundle\Command\:
         resource: '../src/Command/*'
         tags: ['console.command']
+
+    DennisPansegrau\PimcoreContentMigrationBundle\Generator\CodeGenerator:
+        arguments:
+            $templates: '%pimcore_content_migration.templates%'

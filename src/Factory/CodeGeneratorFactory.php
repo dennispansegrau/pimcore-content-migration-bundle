@@ -8,14 +8,21 @@ use DennisPansegrau\PimcoreContentMigrationBundle\Generator\DocumentCodeGenerato
 use DennisPansegrau\PimcoreContentMigrationBundle\Generator\ObjectCodeGenerator;
 use DennisPansegrau\PimcoreContentMigrationBundle\MigrationType;
 
-class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
+readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
 {
+    public function __construct(
+        private DocumentCodeGenerator $documentCodeGenerator,
+        private AssetCodeGenerator $assetCodeGenerator,
+        private ObjectCodeGenerator $objectCodeGenerator,
+    ) {
+    }
+
     public function getCodeGenerator(string $type): CodeGeneratorInterface
     {
         return match ($type) {
-            MigrationType::DOCUMENT->value => new DocumentCodeGenerator(),
-            MigrationType::ASSET->value => new AssetCodeGenerator(),
-            MigrationType::OBJECT->value => new ObjectCodeGenerator(),
+            MigrationType::DOCUMENT->value => $this->documentCodeGenerator,
+            MigrationType::ASSET->value => $this->assetCodeGenerator,
+            MigrationType::OBJECT->value => $this->objectCodeGenerator,
             default => throw new \RuntimeException(\sprintf('Unsupported type "%s".', $type)),
         };
     }

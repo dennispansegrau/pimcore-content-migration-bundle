@@ -4,13 +4,20 @@ namespace DennisPansegrau\PimcoreContentMigrationBundle\Generator;
 
 use Pimcore\Model\Document;
 
-class DocumentCodeGenerator implements CodeGeneratorInterface
+readonly class DocumentCodeGenerator implements CodeGeneratorInterface
 {
+    public function __construct(
+        private CodeGenerator $codeGenerator,
+    ) {
+    }
+
     /**
      * @implements CodeGeneratorInterface<Document>
      */
     public function generateCode(object $object): string
     {
-        return '// Hallo Welt';
+        return $this->codeGenerator->generate('document_template', [
+            'object' => $object,
+        ]);
     }
 }

@@ -1,0 +1,5 @@
+pimcore_content_migration:
+    templates:
+        document_template: '@PimcoreContentMigration/code_templates/document.twig'
+        asset_template: '@PimcoreContentMigration/code_templates/asset.twig'
+        object_template: '@PimcoreContentMigration/code_templates/object.twig'
