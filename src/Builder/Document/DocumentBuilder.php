@@ -1,13 +1,19 @@
 <?php
 
-namespace PimcoreContentMigration\Builder;
+namespace PimcoreContentMigration\Builder\Document;
 
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\DuplicateFullPathException;
 
 class DocumentBuilder
 {
-    private Document $document;
+    private ?Document $document = null;
+
+    //TODO: navigation name, titel, target, other properties
+    //TODO: editables
+    //TODO: title, description, prettyurl, target groups, controller, predefineddocumenttype, template, enable server side rendering, lifetime,contentmaindocument
+    //TODO: schedules, notes/events, tags, segment tagging
+
 
     private function __construct()
     {

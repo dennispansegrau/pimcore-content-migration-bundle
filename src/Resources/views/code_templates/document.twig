@@ -1,3 +1,3 @@
-\PimcoreContentMigration\Builder\DocumentBuilder::openOrCreateDocument('{{ document.getFullPath() }}')
-            ->setPublished({{ document.getPublished() }})
+{{ builder_path }}::openOrCreateDocument('{{ document.getFullPath() }}')
+            ->setPublished({{ document.getPublished() ? 'true' : 'false' }})
             ->save();
