@@ -3,6 +3,8 @@
 namespace DennisPansegrau\PimcoreContentMigrationBundle\Command;
 
 use DennisPansegrau\PimcoreContentMigrationBundle\Factory\CodeGeneratorFactoryInterface;
+use DennisPansegrau\PimcoreContentMigrationBundle\Generator\GenerateMigrationFileException;
+use DennisPansegrau\PimcoreContentMigrationBundle\Generator\MigrationGenerator;
 use DennisPansegrau\PimcoreContentMigrationBundle\Loader\ObjectLoaderInterface;
 use DennisPansegrau\PimcoreContentMigrationBundle\MigrationType;
 use Pimcore\Console\AbstractCommand;
@@ -23,6 +25,7 @@ class CreateMigrationCommand extends AbstractCommand
     public function __construct(
         private readonly CodeGeneratorFactoryInterface $codeGeneratorFactory,
         private readonly ObjectLoaderInterface $objectLoader,
+        private readonly MigrationGenerator $migrationGenerator,
     ) {
         parent::__construct();
     }
@@ -58,27 +61,13 @@ class CreateMigrationCommand extends AbstractCommand
         $generator = $this->codeGeneratorFactory->getCodeGenerator($type);
         $generatedCode = $generator->generateCode($object);
 
-        $command = is_string($namespace) ?
-            ['bin/console', 'doctrine:migrations:generate', '--namespace=' . $namespace] :
-            ['bin/console', 'doctrine:migrations:generate'];
-        $process = new Process($command);
-        $process->mustRun();
-
-        if ($process->getExitCode() !== self::SUCCESS) {
-            $this->output->writeln($process->getOutput());
+        try {
+            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($generatedCode, $namespace);
+            $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
+        } catch (GenerateMigrationFileException $e) {
+            $this->output->writeln($e->getMessage());
             return self::FAILURE;
         }
-
-        if (preg_match('/"([^"]+Version[0-9]+\.php)"/', $process->getOutput(), $matches)) {
-            $migrationFilePath = $matches[1];
-            $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
-        } else {
-            throw new \RuntimeException('Could not find generated migration path in output.');
-        }
-
-        $content = file_get_contents($migrationFilePath);
-        $content = str_replace('// this up() migration is auto-generated, please modify it to your needs', $generatedCode, $content);
-        file_put_contents($migrationFilePath, $content);
 
         return self::SUCCESS;
     }
