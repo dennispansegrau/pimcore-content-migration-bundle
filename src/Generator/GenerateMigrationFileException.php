@@ -1,6 +1,6 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Generator;
+namespace PimcoreContentMigration\Generator;
 
 class GenerateMigrationFileException extends \RuntimeException
 {

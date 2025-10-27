@@ -1,6 +1,6 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Generator;
+namespace PimcoreContentMigration\Generator;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Process\Process;

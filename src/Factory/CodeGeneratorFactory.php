@@ -1,12 +1,12 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Factory;
+namespace PimcoreContentMigration\Factory;
 
-use DennisPansegrau\PimcoreContentMigrationBundle\Generator\AssetCodeGenerator;
-use DennisPansegrau\PimcoreContentMigrationBundle\Generator\CodeGeneratorInterface;
-use DennisPansegrau\PimcoreContentMigrationBundle\Generator\DocumentCodeGenerator;
-use DennisPansegrau\PimcoreContentMigrationBundle\Generator\ObjectCodeGenerator;
-use DennisPansegrau\PimcoreContentMigrationBundle\MigrationType;
+use PimcoreContentMigration\Generator\AssetCodeGenerator;
+use PimcoreContentMigration\Generator\CodeGeneratorInterface;
+use PimcoreContentMigration\Generator\DocumentCodeGenerator;
+use PimcoreContentMigration\Generator\ObjectCodeGenerator;
+use PimcoreContentMigration\MigrationType;
 
 readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
 {

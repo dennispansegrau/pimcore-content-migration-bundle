@@ -1,8 +1,8 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Factory;
+namespace PimcoreContentMigration\Factory;
 
-use DennisPansegrau\PimcoreContentMigrationBundle\Generator\CodeGeneratorInterface;
+use PimcoreContentMigration\Generator\CodeGeneratorInterface;
 
 interface CodeGeneratorFactoryInterface
 {

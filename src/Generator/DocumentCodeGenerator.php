@@ -1,6 +1,6 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Generator;
+namespace PimcoreContentMigration\Generator;
 
 use Pimcore\Model\Document;
 
@@ -16,8 +16,12 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
      */
     public function generateCode(object $object): string
     {
+        if (!$object instanceof Document) {
+            throw new \InvalidArgumentException();
+        }
+
         return $this->codeGenerator->generate('document_template', [
-            'object' => $object,
+            'document' => $object,
         ]);
     }
 }

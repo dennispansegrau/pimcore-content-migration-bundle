@@ -1,6 +1,6 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle;
+namespace PimcoreContentMigration;
 
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 

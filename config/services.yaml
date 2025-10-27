@@ -4,13 +4,17 @@ services:
         autoconfigure: true
         public: false
 
-    DennisPansegrau\PimcoreContentMigrationBundle\:
+    PimcoreContentMigration\:
         resource: '../src/*'
 
-    DennisPansegrau\PimcoreContentMigrationBundle\Command\:
+    PimcoreContentMigration\Command\:
         resource: '../src/Command/*'
         tags: ['console.command']
 
-    DennisPansegrau\PimcoreContentMigrationBundle\Generator\CodeGenerator:
+    PimcoreContentMigration\Generator\CodeGenerator:
         arguments:
             $templates: '%pimcore_content_migration.templates%'
+
+    PimcoreContentMigration\Builder\:
+        resource: '../src/Builder/*'
+        public: true

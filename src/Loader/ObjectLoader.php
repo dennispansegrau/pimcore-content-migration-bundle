@@ -1,8 +1,8 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Loader;
+namespace PimcoreContentMigration\Loader;
 
-use DennisPansegrau\PimcoreContentMigrationBundle\MigrationType;
+use PimcoreContentMigration\MigrationType;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;

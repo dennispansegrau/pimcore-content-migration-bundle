@@ -1,12 +1,12 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Command;
+namespace PimcoreContentMigration\Command;
 
-use DennisPansegrau\PimcoreContentMigrationBundle\Factory\CodeGeneratorFactoryInterface;
-use DennisPansegrau\PimcoreContentMigrationBundle\Generator\GenerateMigrationFileException;
-use DennisPansegrau\PimcoreContentMigrationBundle\Generator\MigrationGenerator;
-use DennisPansegrau\PimcoreContentMigrationBundle\Loader\ObjectLoaderInterface;
-use DennisPansegrau\PimcoreContentMigrationBundle\MigrationType;
+use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
+use PimcoreContentMigration\Generator\GenerateMigrationFileException;
+use PimcoreContentMigration\Generator\MigrationGenerator;
+use PimcoreContentMigration\Loader\ObjectLoaderInterface;
+use PimcoreContentMigration\MigrationType;
 use Pimcore\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

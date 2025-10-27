@@ -1,6 +1,6 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle;
+namespace PimcoreContentMigration;
 
 enum MigrationType: string
 {

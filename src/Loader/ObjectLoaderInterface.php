@@ -1,6 +1,6 @@
 <?php
 
-namespace DennisPansegrau\PimcoreContentMigrationBundle\Loader;
+namespace PimcoreContentMigration\Loader;
 
 use Pimcore\Model\Element\AbstractElement;
 
