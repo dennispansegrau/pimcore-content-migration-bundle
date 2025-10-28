@@ -1,3 +1,29 @@
-{{ builder_path }}::openOrCreateDocument('{{ document.getFullPath() }}')
+{% if type == 'email' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\EmailBuilder' %}
+{% elseif type == 'folder' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\FolderBuilder' %}
+{% elseif type == 'hardlink' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\HardLinkBuilder' %}
+{% elseif type == 'link' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\LinkBuilder' %}
+{% elseif type == 'page' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\PageBuilder' %}
+{% elseif type == 'snippet' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\SnippetBuilder' %}
+{% elseif type == 'document' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\DocumentBuilder' %}
+{% elseif type == 'printpage' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\PrintPageBuilder' %}
+{% elseif type == 'printcontainer' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\PrintContainerBuilder' %}
+{% elseif type == 'newsletter' %}
+    {% SET builder = '\PimcoreContentMigration\Builder\Document\NewsletterBuilder' %}
+{% else %}
+    // TODO: Insert a builder
+    // No Builder found for type {{ type }}. Please create an own builder.
+    // You can extend the \PimcoreContentMigration\Builder\Document\DocumentBuilder.
+    {% SET builder = '[YOUR-BUILDER]' %}
+{% endif %}
+{{ builder }}::openOrCreateDocument('{{ document.getFullPath() }}')
             ->setPublished({{ document.getPublished() ? 'true' : 'false' }})
             ->save();
