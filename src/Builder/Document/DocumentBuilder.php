@@ -15,14 +15,14 @@ class DocumentBuilder
     //TODO: schedules, notes/events, tags, segment tagging
 
 
-    private function __construct()
+    protected function __construct()
     {
     }
 
     /**
      * @throws \Exception
      */
-    public static function openOrCreateDocument(string $path): self
+    public static function createOrUpdate(string $path): self
     {
         $builder = new self();
         $builder->document = Document::getByPath($path);

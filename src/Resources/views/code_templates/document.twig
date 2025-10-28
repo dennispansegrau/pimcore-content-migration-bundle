@@ -26,6 +26,24 @@
     {% set builder = '[YOUR-BUILDER]' %}
 {% endif %}
 
-        {{ builder }}::openOrCreateDocument('{{ document.getFullPath() }}')
+        {{ builder }}::createOrUpdate('{{ document.getFullPath() }}')
+{# BUILDER SPECIFIC SETTER #}
+{% if type == 'email' %}
+            ->setSubject('{{ document.getSubject() }}')
+            ->setTo('{{ document.getTo() }}')
+            ->setFrom('{{ document.getFrom() }}')
+            ->setReplyTo('{{ document.getReplyTo() }}')
+            ->setCc('{{ document.getCc() }}')
+            ->setBcc('{{ document.getBcc() }}')
+{% elseif type == 'folder' %}
+{% elseif type == 'hardlink' %}
+{% elseif type == 'link' %}
+{% elseif type == 'page' %}
+{% elseif type == 'snippet' %}
+{% elseif type == 'printpage' %}
+{% elseif type == 'printcontainer' %}
+{% elseif type == 'newsletter' %}
+{% endif %}
+{# DOCUMENT BUILDER SETTER #}
             ->setPublished({{ document.getPublished() ? 'true' : 'false' }})
             ->save();
