@@ -1,29 +1,31 @@
 {% if type == 'email' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\EmailBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\EmailBuilder' %}
 {% elseif type == 'folder' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\FolderBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\FolderBuilder' %}
 {% elseif type == 'hardlink' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\HardLinkBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\HardLinkBuilder' %}
 {% elseif type == 'link' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\LinkBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\LinkBuilder' %}
 {% elseif type == 'page' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\PageBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PageBuilder' %}
 {% elseif type == 'snippet' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\SnippetBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\SnippetBuilder' %}
 {% elseif type == 'document' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\DocumentBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\DocumentBuilder' %}
 {% elseif type == 'printpage' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\PrintPageBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintPageBuilder' %}
 {% elseif type == 'printcontainer' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\PrintContainerBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintContainerBuilder' %}
 {% elseif type == 'newsletter' %}
-    {% SET builder = '\PimcoreContentMigration\Builder\Document\NewsletterBuilder' %}
+    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\NewsletterBuilder' %}
 {% else %}
-    // TODO: Insert a builder
-    // No Builder found for type {{ type }}. Please create an own builder.
-    // You can extend the \PimcoreContentMigration\Builder\Document\DocumentBuilder.
-    {% SET builder = '[YOUR-BUILDER]' %}
+
+        // TODO: Insert a builder
+        // No Builder found for type {{ type }}. Please create an own builder.
+        // You can extend the \PimcoreContentMigration\Builder\Document\DocumentBuilder.
+    {% set builder = '[YOUR-BUILDER]' %}
 {% endif %}
-{{ builder }}::openOrCreateDocument('{{ document.getFullPath() }}')
+
+        {{ builder }}::openOrCreateDocument('{{ document.getFullPath() }}')
             ->setPublished({{ document.getPublished() ? 'true' : 'false' }})
             ->save();
