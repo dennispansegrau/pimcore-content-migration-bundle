@@ -2,28 +2,13 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-use Pimcore\Model\Document;
 use Pimcore\Model\Document\Email;
 
 class EmailBuilder extends PageSnippetBuilder
 {
-    /**
-     * @throws \Exception
-     */
-    public static function createOrUpdate(string $path): self
+    protected static function getDocumentClass(): string
     {
-        $builder = new self();
-        $builder->document = Email::getByPath($path);
-        if (!$builder->document instanceof Email) {
-            $builder->document = new Email();
-            $key = basename($path);
-            $builder->document->setKey($key);
-            $parentPath = dirname($path);
-            $parent = Document::getByPath($parentPath);
-            $builder->document->setParentId($parent->getId());
-            $builder->document->save(); // must be already saved for some actions
-        }
-        return $builder;
+        return Email::class;
     }
 
     public function setSubject(string $subject): self

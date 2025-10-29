@@ -13,15 +13,22 @@ class DocumentBuilder
     {
     }
 
+    protected static function getDocumentClass(): string
+    {
+        return Document::class;
+    }
+
     /**
      * @throws \Exception
      */
     public static function createOrUpdate(string $path): self
     {
-        $builder = new self();
-        $builder->document = Document::getByPath($path);
-        if (!$builder->document instanceof Document) {
-            $builder->document = new Document();
+        $builder = new static();
+        $documentClass = static::getDocumentClass();
+
+        $builder->document = $documentClass::getByPath($path);
+        if (!$builder->document instanceof $documentClass) {
+            $builder->document = new $documentClass();
             $key = basename($path);
             $builder->document->setKey($key);
             $parentPath = dirname($path);
