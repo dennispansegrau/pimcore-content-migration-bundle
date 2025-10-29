@@ -7,13 +7,7 @@ use Pimcore\Model\Element\DuplicateFullPathException;
 
 class DocumentBuilder
 {
-    private ?Document $document = null;
-
-    //TODO: navigation name, titel, target, other properties
-    //TODO: editables
-    //TODO: title, description, prettyurl, target groups, controller, predefineddocumenttype, template, enable server side rendering, lifetime,contentmaindocument
-    //TODO: schedules, notes/events, tags, segment tagging
-
+    protected ?Document $document = null;
 
     protected function __construct()
     {
@@ -32,14 +26,15 @@ class DocumentBuilder
             $builder->document->setKey($key);
             $parentPath = dirname($path);
             $parent = Document::getByPath($parentPath);
-            $builder->document->setParentId($parent);
+            $builder->document->setParentId($parent->getId());
+            $builder->document->save(); // must be already saved for some actions
         }
         return $builder;
     }
 
-    public function setPublished(bool $isPublished): self
+    public function setPublished(bool $published): self
     {
-        $this->document->setPublished($isPublished);
+        $this->document->setPublished($published);
         return $this;
     }
 
@@ -50,5 +45,37 @@ class DocumentBuilder
     {
         $this->document->save($parameters);
         return $this;
+    }
+
+    public function setIndex(int $index): self
+    {
+        $this->document->setIndex($index);
+        return $this;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->document->setType($type);
+        return $this;
+    }
+
+    public function setProperty(
+        string $name,
+        string $type,
+        mixed $data,
+        bool $inherited = false,
+        bool $inheritable = false
+    ): self
+    {
+        $this->document->setProperty($name, $type, $data, $inherited, $inheritable);
+        return $this;
+    }
+
+    public function getDocument(): Document
+    {
+        if (null === $this->document) {
+            throw new \LogicException("Document object has not been set");
+        }
+        return $this->document;
     }
 }

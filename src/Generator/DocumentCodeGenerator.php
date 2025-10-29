@@ -16,11 +16,11 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
      */
     public function generateCode(object $object): string
     {
-        if (!$object instanceof Document) {
+        if (!$object instanceof Document\Email) {
             throw new \InvalidArgumentException();
         }
 
-//        dd($object);
+//        dd($object->setEditables());
 
         return $this->codeGenerator->generate('document_template', [
             'document' => $object,

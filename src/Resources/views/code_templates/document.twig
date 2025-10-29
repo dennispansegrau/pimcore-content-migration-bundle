@@ -1,3 +1,4 @@
+{% autoescape false %}
 {% if type == 'email' %}
     {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\EmailBuilder' %}
 {% elseif type == 'folder' %}
@@ -45,5 +46,16 @@
 {% elseif type == 'newsletter' %}
 {% endif %}
 {# DOCUMENT BUILDER SETTER #}
+            ->setIndex({{ document.getIndex() }})
+            ->setType('{{ document.getType() }}')
+            ->setController({% if document.getController() %}'{{ document.getController() }}'{% else %}null{% endif %})
+            ->setTemplate({% if document.getTemplate() %}'{{ document.getTemplate() }}'{% else %}null{% endif %})
+{% for property in document.getProperties %}
+            ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
+{% endfor %}
+{% for editable in document.getEditables() %}
+            ->setRawEditable('{{ editable.name }}', '{{ editable.type }}', '{{ editable.data|json_encode(constant('JSON_PRETTY_PRINT')) }}')
+{% endfor %}
             ->setPublished({{ document.getPublished() ? 'true' : 'false' }})
             ->save();
+{% endautoescape %}

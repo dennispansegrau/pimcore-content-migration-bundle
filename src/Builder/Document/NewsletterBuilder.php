@@ -2,7 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-class NewsletterBuilder extends DocumentBuilder
+class NewsletterBuilder extends EmailBuilder
 {
     // TODO
 }

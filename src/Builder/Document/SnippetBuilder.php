@@ -2,7 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-class SnippetBuilder extends DocumentBuilder
+class SnippetBuilder extends PageSnippetBuilder
 {
     // TODO
 }
