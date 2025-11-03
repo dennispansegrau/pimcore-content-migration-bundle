@@ -3,6 +3,7 @@
 namespace PimcoreContentMigration\Command;
 
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
+use PimcoreContentMigration\Factory\SettingsFactoryInterface;
 use PimcoreContentMigration\Generator\GenerateMigrationFileException;
 use PimcoreContentMigration\Generator\MigrationGenerator;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
@@ -12,17 +13,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
 class CreateMigrationCommand extends AbstractCommand
 {
-    private const CONTENT_TYPES = [
-        MigrationType::DOCUMENT->value,
-        MigrationType::ASSET->value,
-        MigrationType::OBJECT->value,
-    ];
 
     public function __construct(
+        private readonly SettingsFactoryInterface $settingsFactory,
         private readonly CodeGeneratorFactoryInterface $codeGeneratorFactory,
         private readonly ObjectLoaderInterface $objectLoader,
         private readonly MigrationGenerator $migrationGenerator,
@@ -48,21 +44,36 @@ class CreateMigrationCommand extends AbstractCommand
                 InputOption::VALUE_REQUIRED,
                 'The namespace to use for the migration (must be in the list of configured namespaces)',
             )
+            ->addOption(
+                'with-children',
+                null,
+                InputOption::VALUE_NONE,
+                'Include all child elements in the migration (e.g. sub-documents or child objects).',
+            )
+            ->addOption(
+                'no-dependencies',
+                null,
+                InputOption::VALUE_NONE,
+                'Do not include related dependencies (e.g. linked assets or objects) in the migration.',
+            )
+            ->addOption(
+                'inline-wysiwyg',
+                null,
+                InputOption::VALUE_NONE,
+                'Inline WYSIWYG field content directly into the migration file instead of saving it as a separate HTML file.',
+            )
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $type = $this->getInputType($input);
-        $id = $this->getInputId($input);
-        $namespace = $input->getOption('namespace');
-
-        $object = $this->objectLoader->loadObject($type, $id);
-        $generator = $this->codeGeneratorFactory->getCodeGenerator($type);
+        $settings = $this->settingsFactory->createSettings($input);
+        $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
+        $generator = $this->codeGeneratorFactory->getCodeGenerator($settings->getType());
         $generatedCode = $generator->generateCode($object);
 
         try {
-            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($generatedCode, $namespace);
+            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($generatedCode, $settings->getNamespace());
             $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
         } catch (GenerateMigrationFileException $e) {
             $this->output->writeln($e->getMessage());
@@ -70,28 +81,5 @@ class CreateMigrationCommand extends AbstractCommand
         }
 
         return self::SUCCESS;
-    }
-
-    private function getInputType(InputInterface $input): string
-    {
-        $type = $input->getArgument('type');
-        if (!in_array($type, self::CONTENT_TYPES, true)) {
-            throw new \InvalidArgumentException(sprintf('type "%s" is not a valid content type use "%s", "%s" or "%s".',
-                $type,
-                MigrationType::DOCUMENT->value,
-                MigrationType::ASSET->value,
-                MigrationType::OBJECT->value
-            ));
-        }
-        return $type;
-    }
-
-    private function getInputId(InputInterface $input): int
-    {
-        $id = $input->getArgument('id');
-        if (!is_numeric($id)) {
-            throw new \InvalidArgumentException(sprintf('Argument "id" must be an integer, "%s" given.', gettype($id)));
-        }
-        return (int) $id;
     }
 }

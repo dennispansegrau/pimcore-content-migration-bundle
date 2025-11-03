@@ -3,8 +3,9 @@
 namespace PimcoreContentMigration\Factory;
 
 use PimcoreContentMigration\Generator\CodeGeneratorInterface;
+use PimcoreContentMigration\MigrationType;
 
 interface CodeGeneratorFactoryInterface
 {
-    public function getCodeGenerator(string $type): CodeGeneratorInterface;
+    public function getCodeGenerator(MigrationType $type): CodeGeneratorInterface;
 }

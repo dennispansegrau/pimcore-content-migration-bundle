@@ -11,20 +11,20 @@ use Pimcore\Model\Exception\NotFoundException;
 
 class ObjectLoader implements ObjectLoaderInterface
 {
-    public function loadObject(string $type, int $id): AbstractElement
+    public function loadObject(MigrationType $type, int $id): AbstractElement
     {
         $object = null;
-        if ($type === MigrationType::DOCUMENT->value) {
+        if ($type === MigrationType::DOCUMENT) {
             $object = Document::getById($id);
         }
-        if ($type === MigrationType::ASSET->value) {
+        if ($type === MigrationType::ASSET) {
             $object = Asset::getById($id);
         }
-        if ($type === MigrationType::OBJECT->value) {
+        if ($type === MigrationType::OBJECT) {
             $object = DataObject::getById($id);
         }
         if ($object === null) {
-            throw new NotFoundException("Object of type {$type} with id {$id} not found");
+            throw new NotFoundException("Object of type {$type->value} with id {$id} not found");
         }
         return $object;
     }

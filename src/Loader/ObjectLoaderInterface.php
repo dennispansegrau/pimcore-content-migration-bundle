@@ -3,8 +3,9 @@
 namespace PimcoreContentMigration\Loader;
 
 use Pimcore\Model\Element\AbstractElement;
+use PimcoreContentMigration\MigrationType;
 
 interface ObjectLoaderInterface
 {
-    public function loadObject(string $type, int $id): AbstractElement;
+    public function loadObject(MigrationType $type, int $id): AbstractElement;
 }

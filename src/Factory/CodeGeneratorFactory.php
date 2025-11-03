@@ -17,13 +17,13 @@ readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
     ) {
     }
 
-    public function getCodeGenerator(string $type): CodeGeneratorInterface
+    public function getCodeGenerator(MigrationType $type): CodeGeneratorInterface
     {
         return match ($type) {
-            MigrationType::DOCUMENT->value => $this->documentCodeGenerator,
-            MigrationType::ASSET->value => $this->assetCodeGenerator,
-            MigrationType::OBJECT->value => $this->objectCodeGenerator,
-            default => throw new \RuntimeException(\sprintf('Unsupported type "%s".', $type)),
+            MigrationType::DOCUMENT => $this->documentCodeGenerator,
+            MigrationType::ASSET => $this->assetCodeGenerator,
+            MigrationType::OBJECT => $this->objectCodeGenerator,
+            default => throw new \RuntimeException(\sprintf('Unsupported type "%s".', $type->value)),
         };
     }
 }
