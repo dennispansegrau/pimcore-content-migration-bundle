@@ -17,7 +17,7 @@ final class SettingsFactory implements SettingsFactoryInterface
         $noDependencies = $input->getOption('no-dependencies');
         $inlineWysiwyg = $input->getOption('inline-wysiwyg');
 
-        return new Settings($type, $id, $namespace, $withChildren, $noDependencies, $inlineWysiwyg);
+        return new Settings($type, $id, $namespace, $inlineWysiwyg, !$noDependencies, $withChildren);
     }
 
     private function getInputType(InputInterface $input): MigrationType
