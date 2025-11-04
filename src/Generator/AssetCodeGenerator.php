@@ -9,7 +9,7 @@ class AssetCodeGenerator implements CodeGeneratorInterface
     /**
      * @implements CodeGeneratorInterface<Asset>
      */
-    public function generateCode(object $object): string
+    public function generateCode(object $object, Settings $settings): string
     {
         return '// Hallo Welt';
     }

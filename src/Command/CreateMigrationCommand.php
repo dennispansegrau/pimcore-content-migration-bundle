@@ -67,13 +67,24 @@ class CreateMigrationCommand extends AbstractCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        \Pimcore\Model\DataObject\Concrete::setHideUnpublished(false);
+
         $settings = $this->settingsFactory->createSettings($input);
         $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
+
+        if ($settings->withDependencies() && $object->getDependencies()->getRequiresTotalCount() > 0) {
+            // TODO: generate code for each dependency
+        }
+
         $generator = $this->codeGeneratorFactory->getCodeGenerator($settings->getType());
-        $generatedCode = $generator->generateCode($object);
+        $mainCode = $generator->generateCode($object, $settings);
+
+        if ($settings->withChildren() && $object->getChildAmount() > 0) {
+            // TODO: generate code for each children with all their dependencies
+        }
 
         try {
-            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($generatedCode, $settings->getNamespace());
+            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($mainCode, $settings->getNamespace());
             $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
         } catch (GenerateMigrationFileException $e) {
             $this->output->writeln($e->getMessage());

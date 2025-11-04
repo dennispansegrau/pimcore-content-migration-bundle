@@ -9,6 +9,7 @@ interface CodeGeneratorInterface
 {
     /**
      * @param T $object
+     * @param Settings $settings
      */
-    public function generateCode(object $object): string;
+    public function generateCode(object $object, Settings $settings): string;
 }

@@ -14,7 +14,7 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
     /**
      * @implements CodeGeneratorInterface<Document>
      */
-    public function generateCode(object $object): string
+    public function generateCode(object $object, Settings $settings): string
     {
         if (!$object instanceof Document\Email) {
             throw new \InvalidArgumentException();
@@ -22,9 +22,14 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
 
 //        dd($object->setEditables());
 
+        if (!$settings->inlineWysiwyg()) {
+            // TODO: extract all wysiwg content and replace by link
+        }
+
         return $this->codeGenerator->generate('document_template', [
             'document' => $object,
             'type' => $object->getType(),
+            'settings' => $settings,
         ]);
     }
 }
