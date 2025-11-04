@@ -18,3 +18,10 @@ services:
     PimcoreContentMigration\Builder\:
         resource: '../src/Builder/*'
         public: true
+
+    PimcoreContentMigration\Writer\HtmlWriter:
+        arguments:
+            $dependencyFactory: '@doctrine.migrations.dependency_factory'
+
+    PimcoreContentMigration\Twig\Extension\InstanceOfTwigTest:
+        tags: [ 'twig.extension' ]

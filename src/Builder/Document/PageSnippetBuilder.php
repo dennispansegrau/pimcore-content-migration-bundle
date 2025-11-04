@@ -22,4 +22,14 @@ abstract class PageSnippetBuilder extends DocumentBuilder
         $this->document->setRawEditable($name, $type, $decodedData);
         return $this;
     }
+
+    public function loadWysiwygFromPath(string $name, string $path): self
+    {
+        $data = file_get_contents($path);
+        if ($data === false) {
+            throw new \RuntimeException("Could not read file: $path");
+        }
+        $this->document->setRawEditable($name, 'wysiwyg', $data);
+        return $this;
+    }
 }
