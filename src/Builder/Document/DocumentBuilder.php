@@ -21,7 +21,7 @@ class DocumentBuilder
     /**
      * @throws \Exception
      */
-    public static function createOrUpdate(string $path): self
+    public static function createOrUpdate(string $path): static
     {
         $builder = new static();
         $documentClass = static::getDocumentClass();
