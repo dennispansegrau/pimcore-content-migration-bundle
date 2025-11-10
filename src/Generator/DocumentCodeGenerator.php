@@ -22,8 +22,6 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
             throw new \InvalidArgumentException();
         }
 
-//        dd($object->setEditables());
-
         return $this->codeGenerator->generate('document_template', [
             'document' => $object,
             'type' => $object->getType(),

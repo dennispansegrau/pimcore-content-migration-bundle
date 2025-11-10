@@ -39,7 +39,7 @@ class DocumentBuilder
         return $builder;
     }
 
-    public function setPublished(bool $published): self
+    public function setPublished(bool $published): static
     {
         $this->document->setPublished($published);
         return $this;
@@ -48,19 +48,19 @@ class DocumentBuilder
     /**
      * @throws DuplicateFullPathException
      */
-    public function save(array $parameters = []): self
+    public function save(array $parameters = []): static
     {
         $this->document->save($parameters);
         return $this;
     }
 
-    public function setIndex(int $index): self
+    public function setIndex(int $index): static
     {
         $this->document->setIndex($index);
         return $this;
     }
 
-    public function setType(string $type): self
+    public function setType(string $type): static
     {
         $this->document->setType($type);
         return $this;
@@ -72,7 +72,7 @@ class DocumentBuilder
         mixed $data,
         bool $inherited = false,
         bool $inheritable = false
-    ): self
+    ): static
     {
         $this->document->setProperty($name, $type, $data, $inherited, $inheritable);
         return $this;

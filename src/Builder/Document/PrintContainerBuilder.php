@@ -2,7 +2,12 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-class PrintContainerBuilder extends DocumentBuilder
+use Pimcore\Bundle\WebToPrintBundle\Model\Document\Printcontainer;
+
+class PrintContainerBuilder extends PrintAbstractBuilder
 {
-    // TODO
+    protected static function getDocumentClass(): string
+    {
+        return Printcontainer::class;
+    }
 }

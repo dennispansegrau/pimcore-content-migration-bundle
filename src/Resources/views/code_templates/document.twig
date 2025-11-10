@@ -22,8 +22,8 @@
 {% else %}
 
         // TODO: Insert a builder
-        // No Builder found for type {{ type }}. Please create an own builder.
-        // You can extend the \PimcoreContentMigration\Builder\Document\DocumentBuilder.
+        // No Builder found for type {{ type }}. Please create your own builder.
+        // You can extend the \PimcoreContentMigration\Builder\Document\DocumentBuilder or any other builder.
     {% set builder = '[YOUR-BUILDER]' %}
 {% endif %}
 
@@ -38,12 +38,26 @@
             ->setBcc('{{ document.getBcc() }}')
 {% elseif type == 'folder' %}
 {% elseif type == 'hardlink' %}
+    ->setSourceId('{{ document.getSourceId() }}')
+    ->setPropertiesFromSource('{{ document.getPropertiesFromSource() ? 'true' : 'false' }}')
+    ->setChildrenFromSource('{{ document.getChildrenFromSource() ? 'true' : 'false' }}')
 {% elseif type == 'link' %}
+    ->setDirect('{{ document.getDirect() }}')
+    ->setLinktype('{{ document.getLinktype() }}')
 {% elseif type == 'page' %}
+    ->setDescription('{{ document.getDescription() }}')
+    ->setTitle('{{ document.getTitle() }}')
+    ->setPrettyUrl('{{ document.getPrettyUrl() }}')
 {% elseif type == 'snippet' %}
 {% elseif type == 'printpage' %}
 {% elseif type == 'printcontainer' %}
 {% elseif type == 'newsletter' %}
+    ->setPlaintext('{{ document.getPlaintext() }}')
+    ->setEnableTrackingParameters('{{ document.getEnableTrackingParameters() ? 'true' : 'false' }}')
+    ->setTrackingParameterSource('{{ document.getTrackingParameterSource() }}')
+    ->setTrackingParameterMedium('{{ document.getTrackingParameterMedium() }}')
+    ->setTrackingParameterName('{{ document.getTrackingParameterName() }}')
+    ->setSendingMode('{{ document.getSendingMode() }}')
 {% endif %}
 {# DOCUMENT BUILDER SETTER #}
             ->setIndex({{ document.getIndex() }})

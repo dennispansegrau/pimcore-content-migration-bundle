@@ -2,7 +2,12 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use Pimcore\Model\Document\Folder;
+
 class FolderBuilder extends DocumentBuilder
 {
-    // TODO
+    protected static function getDocumentClass(): string
+    {
+        return Folder::class;
+    }
 }
