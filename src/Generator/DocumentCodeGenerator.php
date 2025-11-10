@@ -24,9 +24,22 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
 
 //        dd($object->setEditables());
 
+        return $this->codeGenerator->generate('document_template', [
+            'document' => $object,
+            'type' => $object->getType(),
+            'settings' => $settings,
+            'editables' => $this->getEditables($object, $settings),
+        ]);
+    }
+
+    private function getEditables(Document $object, Settings $settings): array
+    {
+        if (!$object instanceof Document\PageSnippet) {
+            return [];
+        }
+
         $editables = $object->getEditables();
         if (!$settings->inlineWysiwyg()) {
-            // TODO: extract all wysiwg content and replace by link
             foreach ($editables as $key => &$editable) {
                 if (!$editable instanceof Document\Editable\Wysiwyg) {
                     continue;
@@ -35,11 +48,6 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
             }
         }
 
-        return $this->codeGenerator->generate('document_template', [
-            'document' => $object,
-            'type' => $object->getType(),
-            'settings' => $settings,
-            'editables' => $editables,
-        ]);
+        return $editables;
     }
 }
