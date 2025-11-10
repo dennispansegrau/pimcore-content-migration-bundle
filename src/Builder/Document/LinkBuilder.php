@@ -11,13 +11,13 @@ class LinkBuilder extends DocumentBuilder
         return Link::class;
     }
 
-    public function setDirect(string $direct): self
+    public function setDirect(string $direct): static
     {
         $this->document->setDirect($direct);
         return $this;
     }
 
-    public function setLinktype(string $linktype): self
+    public function setLinktype(string $linktype): static
     {
         $this->document->setLinktype($linktype);
         return $this;

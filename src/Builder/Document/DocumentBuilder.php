@@ -26,7 +26,7 @@ class DocumentBuilder
         $builder = new static();
         $documentClass = static::getDocumentClass();
 
-        $builder->document = $documentClass::getByPath($path);
+        $builder->document = ((object)$documentClass)::getByPath($path);
         if (!$builder->document instanceof $documentClass) {
             $builder->document = new $documentClass();
             $key = basename($path);

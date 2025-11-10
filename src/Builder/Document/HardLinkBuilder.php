@@ -12,19 +12,19 @@ class HardLinkBuilder extends DocumentBuilder
         return Hardlink::class;
     }
 
-    public function setSourceId(?int $sourceId): self
+    public function setSourceId(?int $sourceId): static
     {
         $this->document->setSourceId($sourceId);
         return $this;
     }
 
-    public function setPropertiesFromSource(bool $propertiesFromSource): self
+    public function setPropertiesFromSource(bool $propertiesFromSource): static
     {
         $this->document->setPropertiesFromSource($propertiesFromSource);
         return $this;
     }
 
-    public function setChildrenFromSource(bool $childrenFromSource): self
+    public function setChildrenFromSource(bool $childrenFromSource): static
     {
         $this->document->setChildrenFromSource($childrenFromSource);
         return $this;

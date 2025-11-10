@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
 use Pimcore\Model\Document;
 use PimcoreContentMigration\Writer\HtmlWriter;
 
@@ -27,6 +28,8 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
             'type' => $object->getType(),
             'settings' => $settings,
             'editables' => $this->getEditables($object, $settings),
+            'isPageSnippet' => $object instanceof Document\PageSnippet,
+            'isPrintAbstract' => $object instanceof PrintAbstract,
         ]);
     }
 
