@@ -57,7 +57,7 @@
     {% if editable is instanceof('PimcoreContentMigration\\Writer\\RelativePath') %}
         ->loadWysiwygFromPath('{{ editable.getName() }}', __DIR__ . '{{ editable.getRelativePath() }}')
     {% else %}
-        ->setRawEditable('{{ editable.name }}', '{{ editable.type }}', '{{ editable.data|json_encode(constant('JSON_PRETTY_PRINT')) }}')
+        ->setRawEditableFromJson('{{ editable.name }}', '{{ editable.type }}', '{{ editable.data|json_encode(constant('JSON_PRETTY_PRINT')) }}')
     {% endif %}
 {% endfor %}
         ->setPublished({{ document.getPublished() ? 'true' : 'false' }})

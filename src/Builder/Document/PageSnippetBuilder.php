@@ -16,7 +16,13 @@ abstract class PageSnippetBuilder extends DocumentBuilder
         return $this;
     }
 
-    public function setRawEditable(string $name, string $type, string $json): self
+    public function setRawEditable(string $name, string $type, mixed $data): self
+    {
+        $this->document->setRawEditable($name, $type, $data);
+        return $this;
+    }
+
+    public function setRawEditableFromJson(string $name, string $type, string $json): self
     {
         $decodedData = json_decode($json, true);
         $this->document->setRawEditable($name, $type, $decodedData);
