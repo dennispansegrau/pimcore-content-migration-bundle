@@ -70,11 +70,12 @@ class CreateMigrationCommand extends AbstractCommand
 
         $settings = $this->settingsFactory->createSettings($input);
         $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
-        $generator = $this->codeGeneratorFactory->getCodeGenerator($settings->getType());
-        $methodCode = $generator->generateCode($object, $settings);
 
         try {
-            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($object, $methodCode, $settings);
+            $code = $this->codeGeneratorFactory
+                ->getCodeGenerator($settings->getType())
+                ->generateCode($object, $settings);
+            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($object, $code, $settings);
             $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
         } catch (\Exception $e) {
             $this->output->writeln($e->getMessage());
