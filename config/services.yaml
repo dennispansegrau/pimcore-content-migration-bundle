@@ -19,7 +19,7 @@ services:
         resource: '../src/Builder/*'
         public: true
 
-    PimcoreContentMigration\Writer\HtmlWriter:
+    PimcoreContentMigration\Writer\NamespaceResolver:
         arguments:
             $dependencyFactory: '@doctrine.migrations.dependency_factory'
 

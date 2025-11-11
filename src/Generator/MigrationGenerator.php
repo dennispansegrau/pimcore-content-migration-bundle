@@ -2,33 +2,35 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Process\Process;
+use PimcoreContentMigration\Writer\NamespaceResolver;
 
-class MigrationGenerator
+readonly class MigrationGenerator
 {
-    public function generateMigrationFile(string $code, ?string $namespace): string
+    private const PREFIX = 'Version';
+
+    public function __construct(
+        private CodeGenerator $codeGenerator,
+        private NamespaceResolver $namespaceResolver,
+    ) {
+    }
+
+    public function generateMigrationFile(string $methodName, string $methodCode, ?string $namespace, ?string $description = ''): string
     {
-        $command = is_string($namespace) ?
-            ['bin/console', 'doctrine:migrations:generate', '--namespace=' . $namespace] :
-            ['bin/console', 'doctrine:migrations:generate'];
-        $process = new Process($command);
-        $process->mustRun();
+        $classname = self::PREFIX . date('YmdHis');
+        $filename = $classname . '.php';
+        $path = $this->namespaceResolver->resolve($namespace);
+        $fullPath = $path . '/' . $filename;
 
-        if ($process->getExitCode() !== Command::SUCCESS) {
-            throw new GenerateMigrationFileException("Command bin/console doctrine:migrations:generate failed! \n" . $process->getOutput());
-        }
+        $content = $this->codeGenerator->generate('migration_template', [
+            'namespace' => $namespace,
+            'classname' => $classname,
+            'description' => $description,
+            'method_name' => $methodName,
+            'method_code' => $methodCode,
+        ]);
 
-        if (preg_match('/"([^"]+Version[0-9]+\.php)"/', $process->getOutput(), $matches)) {
-            $migrationFilePath = $matches[1];
-        } else {
-            throw new GenerateMigrationFileException('Could not find generated migration path in output of doctrine:migrations:generate command.');
-        }
+        file_put_contents($fullPath, $content);
 
-        $content = file_get_contents($migrationFilePath);
-        $content = str_replace('// this up() migration is auto-generated, please modify it to your needs', $code, $content);
-        file_put_contents($migrationFilePath, $content);
-
-        return $migrationFilePath;
+        return $fullPath;
     }
 }

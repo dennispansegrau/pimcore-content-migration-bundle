@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Command;
 
+use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
 use PimcoreContentMigration\Factory\SettingsFactoryInterface;
 use PimcoreContentMigration\Generator\GenerateMigrationFileException;
@@ -22,6 +23,7 @@ class CreateMigrationCommand extends AbstractCommand
         private readonly CodeGeneratorFactoryInterface $codeGeneratorFactory,
         private readonly ObjectLoaderInterface $objectLoader,
         private readonly MigrationGenerator $migrationGenerator,
+        private readonly AbstractElementToMethodNameConverter $methodNameConverter,
     ) {
         parent::__construct();
     }
@@ -71,22 +73,21 @@ class CreateMigrationCommand extends AbstractCommand
 
         $settings = $this->settingsFactory->createSettings($input);
         $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
-
-        if ($settings->withDependencies() && $object->getDependencies()->getRequiresTotalCount() > 0) {
-            // TODO: generate code for each dependency
-        }
-
         $generator = $this->codeGeneratorFactory->getCodeGenerator($settings->getType());
-        $mainCode = $generator->generateCode($object, $settings);
-
-        if ($settings->withChildren() && $object->getChildAmount() > 0) {
-            // TODO: generate code for each children with all their dependencies
-        }
+        $methodCode = $generator->generateCode($object, $settings);
 
         try {
-            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($mainCode, $settings->getNamespace());
+            $description = sprintf('Creates or updates the %s %s%s%s%s',
+                $settings->getType()->value,
+                $object->getFullPath(),
+                $settings->withDependencies() ? ' including all dependencies' : '',
+                $settings->withDependencies() && $settings->withChildren() ? ' and' : '',
+                $settings->withChildren() ? ' including all children' : '',
+            );
+            $methodName = $this->methodNameConverter->convert($object);
+            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($methodName, $methodCode, $settings->getNamespace(), $description);
             $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
-        } catch (GenerateMigrationFileException $e) {
+        } catch (\Exception $e) {
             $this->output->writeln($e->getMessage());
             return self::FAILURE;
         }

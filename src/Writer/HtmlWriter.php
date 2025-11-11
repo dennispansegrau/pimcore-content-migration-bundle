@@ -2,7 +2,6 @@
 
 namespace PimcoreContentMigration\Writer;
 
-use Doctrine\Migrations\DependencyFactory;
 use Pimcore\Model\Element\AbstractElement;
 
 readonly class HtmlWriter implements WriterInterface
@@ -11,14 +10,14 @@ readonly class HtmlWriter implements WriterInterface
     private const POSTFIX = '.wysiwyg.html';
 
     public function __construct(
-        private DependencyFactory $dependencyFactory,
+        private NamespaceResolver $namespaceResolver,
     ) {
     }
 
-    public function write(AbstractElement $object, string $migrationNamespace, string $fileName, string $data): RelativePath
+    public function write(AbstractElement $object, ?string $migrationNamespace, string $fileName, string $data): RelativePath
     {
         $relativePath = new RelativePath($fileName, self::PREFIX . $object->getFullPath() . '/' . $fileName . self::POSTFIX);
-        $absolutePath = $this->getMigrationPath($migrationNamespace) . $relativePath->getRelativePath();
+        $absolutePath = $this->namespaceResolver->resolve($migrationNamespace) . $relativePath->getRelativePath();
         $directory = dirname($absolutePath);
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
@@ -27,17 +26,5 @@ readonly class HtmlWriter implements WriterInterface
             throw new \RuntimeException("Failed to write to path: $absolutePath");
         }
         return $relativePath;
-    }
-
-    private function getMigrationPath(string $namespace): string
-    {
-        $configuration = $this->dependencyFactory->getConfiguration();
-        $migrationDirectories = $configuration->getMigrationDirectories();
-
-        if (!isset($migrationDirectories[$namespace])) {
-            throw new \RuntimeException("Migration path '{$namespace}' does not exist in configuration.");
-        }
-
-        return $migrationDirectories[$namespace];
     }
 }
