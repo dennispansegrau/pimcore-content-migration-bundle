@@ -2,10 +2,8 @@
 
 namespace PimcoreContentMigration\Command;
 
-use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
 use PimcoreContentMigration\Factory\SettingsFactoryInterface;
-use PimcoreContentMigration\Generator\GenerateMigrationFileException;
 use PimcoreContentMigration\Generator\MigrationGenerator;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
@@ -23,7 +21,6 @@ class CreateMigrationCommand extends AbstractCommand
         private readonly CodeGeneratorFactoryInterface $codeGeneratorFactory,
         private readonly ObjectLoaderInterface $objectLoader,
         private readonly MigrationGenerator $migrationGenerator,
-        private readonly AbstractElementToMethodNameConverter $methodNameConverter,
     ) {
         parent::__construct();
     }
@@ -77,15 +74,7 @@ class CreateMigrationCommand extends AbstractCommand
         $methodCode = $generator->generateCode($object, $settings);
 
         try {
-            $description = sprintf('Creates or updates the %s %s%s%s%s',
-                $settings->getType()->value,
-                $object->getFullPath(),
-                $settings->withDependencies() ? ' including all dependencies' : '',
-                $settings->withDependencies() && $settings->withChildren() ? ' and' : '',
-                $settings->withChildren() ? ' including all children' : '',
-            );
-            $methodName = $this->methodNameConverter->convert($object);
-            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($methodName, $methodCode, $settings->getNamespace(), $description);
+            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($object, $methodCode, $settings);
             $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
         } catch (\Exception $e) {
             $this->output->writeln($e->getMessage());
