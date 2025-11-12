@@ -5,32 +5,38 @@ namespace PimcoreContentMigration\Generator;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
 use Pimcore\Model\Document;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
+use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\Writer\HtmlWriter;
 
-readonly class DocumentCodeGenerator implements CodeGeneratorInterface
+class DocumentCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
 {
     public function __construct(
-        private CodeGenerator $codeGenerator,
-        private HtmlWriter $htmlWriter,
-        private AbstractElementToMethodNameConverter $methodNameConverter,
+        private readonly CodeGenerator $codeGenerator,
+        private readonly HtmlWriter $htmlWriter,
+        AbstractElementToMethodNameConverter $methodNameConverter,
+        ObjectLoaderInterface $objectLoader
     ) {
+        parent::__construct(
+            $methodNameConverter,
+            $objectLoader
+        );
     }
 
     /**
      * @implements CodeGeneratorInterface<Document>
      */
-    public function generateCode(object $object, Settings $settings): string
+    public function generateCode(object $object, Settings $settings, array &$existingMethodNames = []): string
     {
         if (!$object instanceof Document) {
             throw new \InvalidArgumentException();
         }
 
-        if ($settings->withDependencies() && $object->getDependencies()->getRequiresTotalCount() > 0) {
-            foreach ($object->getDependencies() as $dependency) {
-                // TODO: generate code for each dependency and add it to code[
-            }
+        $methodName = $this->methodNameConverter->convert($object);
+        if (empty($existingMethodNames)) {
+            $existingMethodNames[] = $methodName;
         }
 
+        $children = [];
         if ($settings->withChildren() && $object->getChildAmount() > 0) {
             // TODO: generate code for each children with all their dependencies code
         }
@@ -38,11 +44,13 @@ readonly class DocumentCodeGenerator implements CodeGeneratorInterface
         return $this->codeGenerator->generate('document_template', [
             'document' => $object,
             'type' => $object->getType(),
-            'methodName' => $this->methodNameConverter->convert($object),
+            'methodName' => $methodName,
             'settings' => $settings,
             'editables' => $this->getEditables($object, $settings),
             'isPageSnippet' => $object instanceof Document\PageSnippet,
             'isPrintAbstract' => $object instanceof PrintAbstract,
+            'dependencies' => $this->getDependencies($settings, $object, $existingMethodNames),
+            'children' => $children,
         ]);
     }
 

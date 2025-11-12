@@ -1,7 +1,8 @@
 # Pimcore Content Migrations Bundle
 
 The **Pimcore Content Migrations Bundle** introduces a migration system — similar to Doctrine Migrations — for **Documents**, **Assets**, and **Data Objects** in Pimcore.  
-It allows developers to export Pimcore content structures as **executable PHP migration scripts** and **rebuild entire environments from scratch**, enabling consistent and reproducible deployments across development, staging, and production systems.
+It allows developers to export Pimcore content structures as **executable PHP migration scripts** and **rebuild entire environments from scratch**, enabling consistent and reproducible deployments across development, staging, and production systems.  
+The generated migrations create only dummy dependencies — documents, assets, and data objects are included with their content, but without their dependencies or child elements.
 
 ---
 

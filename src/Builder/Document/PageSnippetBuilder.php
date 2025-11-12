@@ -24,6 +24,7 @@ abstract class PageSnippetBuilder extends DocumentBuilder
 
     public function setRawEditableFromJson(string $name, string $type, string $json): static
     {
+        $json = str_replace("\'", "'", $json);
         $decodedData = json_decode($json, true);
         $this->document->setRawEditable($name, $type, $decodedData);
         return $this;

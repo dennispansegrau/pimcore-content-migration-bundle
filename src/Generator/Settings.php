@@ -45,4 +45,16 @@ final readonly class Settings
     {
         return $this->withChildren;
     }
+
+    public function forDependencies(): self
+    {
+        return new self(
+            $this->getType(),
+            $this->getId(),
+            $this->getNamespace(),
+            $this->inlineWysiwyg(),
+            false,
+            false,
+        );
+    }
 }

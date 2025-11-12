@@ -19,6 +19,10 @@ readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
 
     public function getCodeGenerator(MigrationType $type): CodeGeneratorInterface
     {
+        $this->documentCodeGenerator->setCodeGeneratorFactory($this);
+        $this->assetCodeGenerator->setCodeGeneratorFactory($this);
+        $this->objectCodeGenerator->setCodeGeneratorFactory($this);
+
         return match ($type) {
             MigrationType::DOCUMENT => $this->documentCodeGenerator,
             MigrationType::ASSET => $this->assetCodeGenerator,

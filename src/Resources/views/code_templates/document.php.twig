@@ -1,68 +1,76 @@
-{% autoescape false %}
+{%- autoescape false -%}
 private function {{ methodName }}(): void {
-{% if type == 'email' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\EmailBuilder' %}
-{% elseif type == 'folder' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\FolderBuilder' %}
-{% elseif type == 'hardlink' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\HardLinkBuilder' %}
-{% elseif type == 'link' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\LinkBuilder' %}
-{% elseif type == 'page' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PageBuilder' %}
-{% elseif type == 'snippet' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\SnippetBuilder' %}
-{% elseif type == 'document' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\DocumentBuilder' %}
-{% elseif type == 'printpage' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintPageBuilder' %}
-{% elseif type == 'printcontainer' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintContainerBuilder' %}
-{% elseif type == 'newsletter' %}
-    {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\NewsletterBuilder' %}
-{% else %}
+{% if type == 'email' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\EmailBuilder' -%}
+{%- elseif type == 'folder' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\FolderBuilder' -%}
+{%- elseif type == 'hardlink' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\HardLinkBuilder' -%}
+{%- elseif type == 'link' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\LinkBuilder' -%}
+{%- elseif type == 'page' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\PageBuilder' -%}
+{%- elseif type == 'snippet' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\SnippetBuilder' -%}
+{%- elseif type == 'document' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\DocumentBuilder' -%}
+{%- elseif type == 'printpage' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintPageBuilder' -%}
+{%- elseif type == 'printcontainer' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintContainerBuilder' -%}
+{%- elseif type == 'newsletter' -%}
+    {%- set builder = '\\PimcoreContentMigration\\Builder\\Document\\NewsletterBuilder' -%}
+{%- else -%}
         // TODO: Insert a builder
         // No Builder found for type {{ type }}. Please create your own builder.
         // You can extend the \PimcoreContentMigration\Builder\Document\DocumentBuilder or any other builder.
 
-    {% set builder = '[YOUR-BUILDER]' %}
+    {%- set builder = '[YOUR-BUILDER]' -%}
 {% endif %}
-    {{ builder }}::createOrUpdate('{{ document.getFullPath() }}')
+    {% if dependencies is not empty %}
+    # Create dependencies
+        {% for methodname, dependency in dependencies %}
+            $this->{{ methodname }}();
+        {% endfor %}
+
+    {% endif %}
+        # Create {{ type }} {{ document.getFullPath() }}
+        {{ builder }}::createOrUpdate('{{ document.getFullPath() }}')
 {# BUILDER SPECIFIC SETTER #}
-{% if type == 'email' %}
+{%- if type == 'email' %}
             ->setSubject('{{ document.getSubject() }}')
             ->setTo('{{ document.getTo() }}')
             ->setFrom('{{ document.getFrom() }}')
             ->setReplyTo('{{ document.getReplyTo() }}')
             ->setCc('{{ document.getCc() }}')
             ->setBcc('{{ document.getBcc() }}')
-{% elseif type == 'folder' %}
-{% elseif type == 'hardlink' %}
-        ->setSourceId({% if document.getSourceId() %}{{ document.getSourceId() }}{% else %}null{% endif %})
+{%- elseif type == 'folder' -%}
+{%- elseif type == 'hardlink' -%}
+        ->setSourceId({%- if document.getSourceId() -%}{{ document.getSourceId() }}{%- else -%}null{%- endif -%})
         ->setPropertiesFromSource('{{ document.getPropertiesFromSource() ? 'true' : 'false' }}')
         ->setChildrenFromSource('{{ document.getChildrenFromSource() ? 'true' : 'false' }}')
-{% elseif type == 'link' %}
+{%- elseif type == 'link' -%}
         ->setDirect('{{ document.getDirect() }}')
         ->setLinktype('{{ document.getLinktype() }}')
-{% elseif type == 'page' %}
+{%- elseif type == 'page' -%}
         ->setDescription('{{ document.getDescription() }}')
         ->setTitle('{{ document.getTitle() }}')
         ->setPrettyUrl('{{ document.getPrettyUrl() }}')
-{% elseif type == 'snippet' %}
-{% elseif type == 'printpage' %}
-{% elseif type == 'printcontainer' %}
-{% elseif type == 'newsletter' %}
+{%- elseif type == 'snippet' -%}
+{%- elseif type == 'printpage' -%}
+{%- elseif type == 'printcontainer' -%}
+{%- elseif type == 'newsletter' -%}
         ->setPlaintext('{{ document.getPlaintext() }}')
         ->setEnableTrackingParameters('{{ document.getEnableTrackingParameters() ? 'true' : 'false' }}')
         ->setTrackingParameterSource('{{ document.getTrackingParameterSource() }}')
         ->setTrackingParameterMedium('{{ document.getTrackingParameterMedium() }}')
         ->setTrackingParameterName('{{ document.getTrackingParameterName() }}')
         ->setSendingMode('{{ document.getSendingMode() }}')
-{% endif %}
+{%- endif -%}
 {# PAGE SNIPPET BUILDER SETTER #}
-{% if isPageSnippet %}
-            ->setController({% if document.getController() %}'{{ document.getController() }}'{% else %}null{% endif %})
-            ->setTemplate({% if document.getTemplate() %}'{{ document.getTemplate() }}'{% else %}null{% endif %})
+{%- if isPageSnippet -%}
+            ->setController({%- if document.getController() -%}'{{ document.getController() }}'{%- else -%}null{%- endif -%})
+            ->setTemplate({%- if document.getTemplate() -%}'{{ document.getTemplate() }}'{%- else -%}null{%- endif -%})
     {% for property in document.getProperties %}
         ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
     {% endfor %}
@@ -70,20 +78,33 @@ private function {{ methodName }}(): void {
     {% if editable is instanceof('PimcoreContentMigration\\Writer\\RelativePath') %}
 ->loadWysiwygFromPath('{{ editable.getName() }}', __DIR__ . '{{ editable.getRelativePath() }}')
     {% else %}
-->setRawEditableFromJson('{{ editable.name }}', '{{ editable.type }}', '{{ editable.data|json_encode(constant('JSON_PRETTY_PRINT')) }}')
+->setRawEditableFromJson('{{ editable.name }}', '{{ editable.type }}', '{{ editable.data|json_encode()|replace({"'": "\\'"}) }}')
     {% endif %}
     {% endfor %}
-{% endif %}
+{%- endif -%}
 {# PRINT ABSTRACT BUILDER SETTER #}
-{% if isPrintAbstract %}
+{%- if isPrintAbstract -%}
         ->setLastGeneratedDate(new \DateTime('{{ document.getLastGeneratedDate()|date(constant('DateTime::ATOM')) }}'))
         ->setLastGenerated({{ document.getLastGenerated() }})
         ->setLastGenerateMessage('{{ document.getLastGenerateMessage() }}')
-{% endif %}
+{%- endif -%}
 {# DOCUMENT BUILDER SETTER #}
     ->setIndex({{ document.getIndex() }})
             ->setType('{{ document.getType() }}')
             ->setPublished({{ document.getPublished() ? 'true' : 'false' }})
             ->save();
-    }
-{% endautoescape %}
+    {% if children is not empty %}
+
+        # Create children
+        {% for methodname, child in children %}
+            $this->{{ methodname }}();
+        {% endfor %}
+    {% endif%}
+}
+{% for dependency in dependencies %}
+    {{ dependency }}
+{% endfor -%}
+{% for child in children %}
+    {{ child }}
+{% endfor -%}
+{%- endautoescape -%}
