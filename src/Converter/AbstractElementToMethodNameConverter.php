@@ -15,7 +15,10 @@ class AbstractElementToMethodNameConverter
     {
         $segments = preg_split('#[\\/]+#', trim($abstractElement->getFullPath(), '/'));
         $segments = array_map(
-            fn($part) => str_replace(['-', '_'], '', ucwords($part, '-_')),
+            function($part) {
+                $part = ucwords($part, "-_ ");
+                return preg_replace('/[^A-Za-z0-9]/', '_', $part);
+            },
             $segments
         );
 
