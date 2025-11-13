@@ -2,9 +2,16 @@
 
 namespace PimcoreContentMigration\Command;
 
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\Document;
+use Pimcore\Model\Element\AbstractElement;
+use Pimcore\Model\Listing\AbstractListing;
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
 use PimcoreContentMigration\Factory\SettingsFactoryInterface;
 use PimcoreContentMigration\Generator\MigrationGenerator;
+use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
 use Pimcore\Console\AbstractCommand;
@@ -66,22 +73,42 @@ class CreateMigrationCommand extends AbstractCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        \Pimcore\Model\DataObject\Concrete::setHideUnpublished(false);
+        Concrete::setHideUnpublished(false);
 
         $settings = $this->settingsFactory->createSettings($input);
-        $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
 
-        try {
-            $code = $this->codeGeneratorFactory
-                ->getCodeGenerator($settings->getType())
-                ->generateCode($object, $settings);
-            $migrationFilePath = $this->migrationGenerator->generateMigrationFile($object, $code, $settings);
-            $this->output->writeln(sprintf('New migration file created %s', $migrationFilePath));
-        } catch (\Exception $e) {
-            $this->output->writeln($e->getMessage());
-            return self::FAILURE;
+        $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
+        $this->generateCodeAndCreateMigrationFile($settings, $object);
+
+        if ($settings->withChildren() && $object->getChildAmount() > 0) {
+            $children = $this->getChildren($object);
+            foreach ($children as $child) {
+                $this->generateCodeAndCreateMigrationFile($settings, $child);
+            }
         }
 
         return self::SUCCESS;
+    }
+
+    private function getChildren(AbstractElement $object): AbstractListing
+    {
+        if ($object instanceof Document) {
+            return $object->getChildren(true);
+        } elseif ($object instanceof Asset) {
+            return $object->getChildren();
+        } elseif  ($object instanceof DataObject) {
+            return $object->getChildren(includingUnpublished: true);
+        } else {
+            throw new \LogicException(sprintf("Unsupported object type: %s", get_class($object)));
+        }
+    }
+
+    private function generateCodeAndCreateMigrationFile(Settings $settings, AbstractElement $abstractElement): void
+    {
+        $code = $this->codeGeneratorFactory
+            ->getCodeGenerator($settings->getType())
+            ->generateCode($abstractElement, $settings);
+        $migrationFilePath = $this->migrationGenerator->generateMigrationFile($abstractElement, $code, $settings);
+        $this->output->writeln(sprintf('New migration file created %s for %s', $migrationFilePath, $abstractElement->getFullPath()));
     }
 }

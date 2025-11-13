@@ -6,14 +6,15 @@ use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Writer\NamespaceResolver;
 
-readonly class MigrationGenerator
+class MigrationGenerator
 {
     private const PREFIX = 'Version';
+    private static ?string $lastClassname = null;   // ensures a unique class name
 
     public function __construct(
-        private CodeGenerator $codeGenerator,
-        private NamespaceResolver $namespaceResolver,
-        private AbstractElementToMethodNameConverter $methodNameConverter,
+        private readonly CodeGenerator $codeGenerator,
+        private readonly NamespaceResolver $namespaceResolver,
+        private readonly AbstractElementToMethodNameConverter $methodNameConverter,
     ) {
     }
 
@@ -21,16 +22,19 @@ readonly class MigrationGenerator
     {
         $namespace = $settings->getNamespace();
         $classname = self::PREFIX . date('YmdHis');
+        if ($classname === self::$lastClassname) {
+            sleep(1);
+            $classname = self::PREFIX . date('YmdHis');
+        };
+        self::$lastClassname = $classname;
         $filename = $classname . '.php';
         $path = $this->namespaceResolver->resolve($namespace);
         $fullPath = $path . '/' . $filename;
 
-        $description = sprintf('Creates or updates the %s %s%s%s%s',
+        $description = sprintf('Creates or updates the %s %s%s',
             $settings->getType()->value,
             $object->getFullPath(),
             $settings->withDependencies() ? ' including all dependencies' : '',
-            $settings->withDependencies() && $settings->withChildren() ? ' and' : '',
-            $settings->withChildren() ? ' including all children' : '',
         );
 
         $content = $this->codeGenerator->generate('migration_template', [

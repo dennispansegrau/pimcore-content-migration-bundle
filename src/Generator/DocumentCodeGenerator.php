@@ -36,11 +36,6 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
             $existingMethodNames[] = $methodName;
         }
 
-        $children = [];
-        if ($settings->withChildren() && $object->getChildAmount() > 0) {
-            // TODO: generate code for each children with all their dependencies code
-        }
-
         return $this->codeGenerator->generate('document_template', [
             'document' => $object,
             'type' => $object->getType(),
@@ -50,7 +45,6 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
             'isPageSnippet' => $object instanceof Document\PageSnippet,
             'isPrintAbstract' => $object instanceof PrintAbstract,
             'dependencies' => $this->getDependencies($settings, $object, $existingMethodNames),
-            'children' => $children,
         ]);
     }
 
