@@ -34,11 +34,21 @@ abstract class AbstractElementCodeGenerator
         return $this->codeGeneratorFactory;
     }
 
-    protected function getDependencies(Settings $settings, AbstractElement $object, array &$existingMethodNames): array
+    /**
+     * @param Settings $settings
+     * @param AbstractElement $abstractElement
+     * @param string[] $existingMethodNames
+     * @return array<string, string|null>
+     */
+    protected function getDependencies(Settings $settings, AbstractElement $abstractElement, array &$existingMethodNames): array
     {
         $dependencies = [];
-        if ($settings->withDependencies() && $object->getDependencies()->getRequiresTotalCount() > 0) {
-            foreach ($object->getDependencies()->getRequires() as $dependencyData) {
+        if ($settings->withDependencies() && $abstractElement->getDependencies()->getRequiresTotalCount() > 0) {
+            /** @var array<string, string|int> $dependencyData */
+            foreach ($abstractElement->getDependencies()->getRequires() as $dependencyData) {
+                if (!isset($dependencyData['type'], $dependencyData['id']) || !is_string($dependencyData['type']) || !is_int($dependencyData['id'])) {
+                    throw new \LogicException('Invalid dependency data (string type and integer id expected)');
+                }
                 $dependency = $this->objectLoader->loadObject(MigrationType::fromString($dependencyData['type']), $dependencyData['id']);
                 $methodName = $this->methodNameConverter->convert($dependency);
                 $code = null;

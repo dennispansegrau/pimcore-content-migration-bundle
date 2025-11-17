@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use LogicException;
 use Pimcore\Model\Document\Email;
 
 class EmailBuilder extends PageSnippetBuilder
@@ -13,37 +14,45 @@ class EmailBuilder extends PageSnippetBuilder
 
     public function setSubject(string $subject): static
     {
-        $this->document->setSubject($subject);
+        $this->getObject()->setSubject($subject);
         return $this;
     }
 
     public function setTo(string $to): static
     {
-        $this->document->setTo($to);
+        $this->getObject()->setTo($to);
         return $this;
     }
 
     public function setFrom(string $from): static
     {
-        $this->document->setFrom($from);
+        $this->getObject()->setFrom($from);
         return $this;
     }
 
     public function setReplyTo(string $replyTo): static
     {
-        $this->document->setReplyTo($replyTo);
+        $this->getObject()->setReplyTo($replyTo);
         return $this;
     }
 
     public function setCc(string $cc): static
     {
-        $this->document->setCc($cc);
+        $this->getObject()->setCc($cc);
         return $this;
     }
 
     public function setBcc(string $bcc): static
     {
-        $this->document->setBcc($bcc);
+        $this->getObject()->setBcc($bcc);
         return $this;
+    }
+
+    public function getObject(): Email
+    {
+        if (!$this->document instanceof Email) {
+            throw new LogicException('Email object has not been set');
+        }
+        return $this->document;
     }
 }

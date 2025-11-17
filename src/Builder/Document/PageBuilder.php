@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use LogicException;
+use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
 use Pimcore\Model\Document\Page;
 
 class PageBuilder extends PageSnippetBuilder
@@ -13,19 +15,27 @@ class PageBuilder extends PageSnippetBuilder
 
     public function setDescription(string $description): static
     {
-        $this->document->setDescription($description);
+        $this->getObject()->setDescription($description);
         return $this;
     }
 
     public function setTitle(string $title): static
     {
-        $this->document->setTitle($title);
+        $this->getObject()->setTitle($title);
         return $this;
     }
 
     public function setPrettyUrl(?string $prettyUrl): static
     {
-        $this->document->setPrettyUrl($prettyUrl);
+        $this->getObject()->setPrettyUrl($prettyUrl);
         return $this;
+    }
+
+    public function getObject(): Page
+    {
+        if (!$this->document instanceof Page) {
+            throw new LogicException('Page object has not been set');
+        }
+        return $this->document;
     }
 }

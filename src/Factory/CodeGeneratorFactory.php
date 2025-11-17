@@ -29,7 +29,9 @@ readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
         return match ($type) {
             MigrationType::DOCUMENT => $this->documentCodeGenerator,
             MigrationType::ASSET => $this->assetCodeGenerator,
+            /** @phpstan-ignore match.alwaysTrue */
             MigrationType::OBJECT => $this->objectCodeGenerator,
+            /** @phpstan-ignore argument.type */
             default => throw new RuntimeException(sprintf('Unsupported type "%s".', $type->value)),
         };
     }

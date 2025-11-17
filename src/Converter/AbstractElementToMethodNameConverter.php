@@ -23,6 +23,9 @@ class AbstractElementToMethodNameConverter
     public function convert(AbstractElement $abstractElement): string
     {
         $segments = preg_split('#[\/]+#', trim($abstractElement->getFullPath(), '/'));
+        if ($segments === false) {
+            throw new LogicException('Failed to split path: ' . $abstractElement->getFullPath());
+        }
         $segments = array_map(
             function ($part) {
                 $part = ucwords($part, '-_ ');

@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use LogicException;
 use Pimcore\Model\Document\Link;
 
 class LinkBuilder extends DocumentBuilder
@@ -13,13 +14,21 @@ class LinkBuilder extends DocumentBuilder
 
     public function setDirect(string $direct): static
     {
-        $this->document->setDirect($direct);
+        $this->getObject()->setDirect($direct);
         return $this;
     }
 
     public function setLinktype(string $linktype): static
     {
-        $this->document->setLinktype($linktype);
+        $this->getObject()->setLinktype($linktype);
         return $this;
+    }
+
+    public function getObject(): Link
+    {
+        if (!$this->document instanceof Link) {
+            throw new LogicException('Link object has not been set');
+        }
+        return $this->document;
     }
 }

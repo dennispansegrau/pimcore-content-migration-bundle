@@ -89,8 +89,9 @@ class CreateMigrationCommand extends AbstractCommand
         $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
         $this->generateCodeAndCreateMigrationFile($settings, $object);
 
-        if ($settings->withChildren() && $object->getChildAmount() > 0) {
+        if ($settings->withChildren() && method_exists($object, 'getChildAmount') && $object->getChildAmount() > 0) {
             $children = $this->getChildren($object);
+            /** @var AbstractElement $child */
             foreach ($children as $child) {
                 $this->generateCodeAndCreateMigrationFile($settings, $child);
             }

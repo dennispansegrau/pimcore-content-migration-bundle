@@ -2,7 +2,9 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use LogicException;
 use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
+use Pimcore\Model\Document\PageSnippet;
 
 class NewsletterBuilder extends EmailBuilder
 {
@@ -13,37 +15,45 @@ class NewsletterBuilder extends EmailBuilder
 
     public function setPlaintext(string $plaintext): static
     {
-        $this->document->setPlaintext($plaintext);
+        $this->getObject()->setPlaintext($plaintext);
         return $this;
     }
 
     public function setEnableTrackingParameters(bool $enableTrackingParameters): static
     {
-        $this->document->setEnableTrackingParameters($enableTrackingParameters);
+        $this->getObject()->setEnableTrackingParameters($enableTrackingParameters);
         return $this;
     }
 
     public function setTrackingParameterSource(string $trackingParameterSource): static
     {
-        $this->document->setTrackingParameterSource($trackingParameterSource);
+        $this->getObject()->setTrackingParameterSource($trackingParameterSource);
         return $this;
     }
 
     public function setTrackingParameterMedium(string $trackingParameterMedium): static
     {
-        $this->document->setTrackingParameterMedium($trackingParameterMedium);
+        $this->getObject()->setTrackingParameterMedium($trackingParameterMedium);
         return $this;
     }
 
     public function setTrackingParameterName(string $trackingParameterName): static
     {
-        $this->document->setTrackingParameterName($trackingParameterName);
+        $this->getObject()->setTrackingParameterName($trackingParameterName);
         return $this;
     }
 
     public function setSendingMode(string $sendingMode): static
     {
-        $this->document->setSendingMode($sendingMode);
+        $this->getObject()->setSendingMode($sendingMode);
         return $this;
+    }
+
+    public function getObject(): Newsletter
+    {
+        if (!$this->document instanceof Newsletter) {
+            throw new LogicException('Newsletter object has not been set');
+        }
+        return $this->document;
     }
 }

@@ -7,9 +7,12 @@ use Pimcore\Model\Asset;
 class AssetCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
 {
     /**
-     * @implements CodeGeneratorInterface<Asset>
+     * @param object $abstractElement
+     * @param Settings $settings
+     * @param string[] $existingMethodNames
+     * @return string
      */
-    public function generateCode(object $object, Settings $settings, array &$existingMethodNames = []): string
+    public function generateCode(object $abstractElement, Settings $settings, array &$existingMethodNames = []): string
     {
         return '// Hallo Welt';
     }

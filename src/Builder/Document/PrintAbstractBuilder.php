@@ -3,24 +3,34 @@
 namespace PimcoreContentMigration\Builder\Document;
 
 use DateTime;
+use LogicException;
+use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
 
 abstract class PrintAbstractBuilder extends PageSnippetBuilder
 {
     public function setLastGeneratedDate(DateTime $lastGenerated): static
     {
-        $this->document->setLastGeneratedDate($lastGenerated);
+        $this->getObject()->setLastGeneratedDate($lastGenerated);
         return $this;
     }
 
     public function setLastGenerated(int $lastGenerated): static
     {
-        $this->document->setLastGenerated($lastGenerated);
+        $this->getObject()->setLastGenerated($lastGenerated);
         return $this;
     }
 
     public function setLastGenerateMessage(string $lastGenerateMessage): static
     {
-        $this->document->setLastGenerateMessage($lastGenerateMessage);
+        $this->getObject()->setLastGenerateMessage($lastGenerateMessage);
         return $this;
+    }
+
+    public function getObject(): PrintAbstract
+    {
+        if (!$this->document instanceof PrintAbstract) {
+            throw new LogicException('PrintAbstract object has not been set');
+        }
+        return $this->document;
     }
 }

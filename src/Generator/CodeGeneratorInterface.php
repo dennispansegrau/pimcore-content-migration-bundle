@@ -2,14 +2,14 @@
 
 namespace PimcoreContentMigration\Generator;
 
-/**
- * @template T
- */
+use Pimcore\Model\Element\AbstractElement;
+
 interface CodeGeneratorInterface
 {
     /**
-     * @param T $object
+     * @param AbstractElement $abstractElement
      * @param Settings $settings
+     * @param string[] $existingMethodNames
      */
-    public function generateCode(object $object, Settings $settings, array &$existingMethodNames = []): string;
+    public function generateCode(AbstractElement $abstractElement, Settings $settings, array &$existingMethodNames = []): string;
 }

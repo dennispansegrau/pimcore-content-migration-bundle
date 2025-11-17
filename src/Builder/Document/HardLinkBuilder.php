@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use LogicException;
+use Pimcore\Model\Document\Email;
 use Pimcore\Model\Document\Hardlink;
 
 class HardLinkBuilder extends DocumentBuilder
@@ -13,19 +15,27 @@ class HardLinkBuilder extends DocumentBuilder
 
     public function setSourceId(?int $sourceId): static
     {
-        $this->document->setSourceId($sourceId);
+        $this->getObject()->setSourceId($sourceId);
         return $this;
     }
 
     public function setPropertiesFromSource(bool $propertiesFromSource): static
     {
-        $this->document->setPropertiesFromSource($propertiesFromSource);
+        $this->getObject()->setPropertiesFromSource($propertiesFromSource);
         return $this;
     }
 
     public function setChildrenFromSource(bool $childrenFromSource): static
     {
-        $this->document->setChildrenFromSource($childrenFromSource);
+        $this->getObject()->setChildrenFromSource($childrenFromSource);
         return $this;
+    }
+
+    public function getObject(): Hardlink
+    {
+        if (!$this->document instanceof Hardlink) {
+            throw new LogicException('Hardlink object has not been set');
+        }
+        return $this->document;
     }
 }

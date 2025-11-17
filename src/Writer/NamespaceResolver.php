@@ -21,7 +21,11 @@ readonly class NamespaceResolver
         $migrationDirectories = $configuration->getMigrationDirectories();
 
         if (empty($namespace)) {
-            return reset($migrationDirectories);
+            $directory = reset($migrationDirectories);
+            if (empty($directory)) {
+                throw new RuntimeException('No namespace defined');
+            }
+            return $directory;
         }
 
         if (!isset($migrationDirectories[$namespace])) {
