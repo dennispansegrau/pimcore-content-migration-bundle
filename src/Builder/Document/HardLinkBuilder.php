@@ -2,7 +2,6 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-use Pimcore\Model\Document;
 use Pimcore\Model\Document\Hardlink;
 
 class HardLinkBuilder extends DocumentBuilder

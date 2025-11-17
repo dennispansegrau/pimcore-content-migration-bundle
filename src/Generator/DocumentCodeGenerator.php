@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use InvalidArgumentException;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
 use Pimcore\Model\Document;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
@@ -28,7 +29,7 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
     public function generateCode(object $object, Settings $settings, array &$existingMethodNames = []): string
     {
         if (!$object instanceof Document) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $methodName = $this->methodNameConverter->convert($object);

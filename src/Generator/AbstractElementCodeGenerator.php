@@ -2,11 +2,14 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use function in_array;
+
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
+use RuntimeException;
 
 abstract class AbstractElementCodeGenerator
 {
@@ -26,7 +29,7 @@ abstract class AbstractElementCodeGenerator
     protected function getCodeGeneratorFactory(): CodeGeneratorFactoryInterface
     {
         if (null === $this->codeGeneratorFactory) {
-            throw new \RuntimeException('CodeGeneratorFactory not set');
+            throw new RuntimeException('CodeGeneratorFactory not set');
         }
         return $this->codeGeneratorFactory;
     }
@@ -36,7 +39,7 @@ abstract class AbstractElementCodeGenerator
         $dependencies = [];
         if ($settings->withDependencies() && $object->getDependencies()->getRequiresTotalCount() > 0) {
             foreach ($object->getDependencies()->getRequires() as $dependencyData) {
-                $dependency =  $this->objectLoader->loadObject(MigrationType::fromString($dependencyData['type']), $dependencyData['id']);
+                $dependency = $this->objectLoader->loadObject(MigrationType::fromString($dependencyData['type']), $dependencyData['id']);
                 $methodName = $this->methodNameConverter->convert($dependency);
                 $code = null;
                 if (!in_array($methodName, $existingMethodNames, true)) {

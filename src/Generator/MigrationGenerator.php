@@ -2,13 +2,20 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use function date;
+use function file_put_contents;
+
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Writer\NamespaceResolver;
 
+use function sleep;
+use function sprintf;
+
 class MigrationGenerator
 {
     private const PREFIX = 'Version';
+
     private static ?string $lastClassname = null;   // ensures a unique class name
 
     public function __construct(
@@ -31,7 +38,8 @@ class MigrationGenerator
         $path = $this->namespaceResolver->resolve($namespace);
         $fullPath = $path . '/' . $filename;
 
-        $description = sprintf('Creates or updates the %s %s%s',
+        $description = sprintf(
+            'Creates or updates the %s %s%s',
             $settings->getType()->value,
             $object->getFullPath(),
             $settings->withDependencies() ? ' including all dependencies' : '',

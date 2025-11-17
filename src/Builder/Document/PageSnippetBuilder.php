@@ -2,6 +2,13 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use function file_get_contents;
+use function json_decode;
+
+use RuntimeException;
+
+use function str_replace;
+
 abstract class PageSnippetBuilder extends DocumentBuilder
 {
     public function setController(?string $controller): static
@@ -24,7 +31,7 @@ abstract class PageSnippetBuilder extends DocumentBuilder
 
     public function setRawEditableFromJson(string $name, string $type, string $json): static
     {
-        $json = str_replace("\'", "'", $json);
+        $json = str_replace("\\'", "'", $json);
         $decodedData = json_decode($json, true);
         $this->document->setRawEditable($name, $type, $decodedData);
         return $this;
@@ -34,7 +41,7 @@ abstract class PageSnippetBuilder extends DocumentBuilder
     {
         $data = file_get_contents($path);
         if ($data === false) {
-            throw new \RuntimeException("Could not read file: $path");
+            throw new RuntimeException("Could not read file: $path");
         }
         $this->document->setRawEditable($name, 'wysiwyg', $data);
         return $this;

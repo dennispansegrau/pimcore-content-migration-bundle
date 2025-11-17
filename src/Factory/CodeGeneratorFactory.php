@@ -7,6 +7,9 @@ use PimcoreContentMigration\Generator\CodeGeneratorInterface;
 use PimcoreContentMigration\Generator\DocumentCodeGenerator;
 use PimcoreContentMigration\Generator\ObjectCodeGenerator;
 use PimcoreContentMigration\MigrationType;
+use RuntimeException;
+
+use function sprintf;
 
 readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
 {
@@ -27,7 +30,7 @@ readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
             MigrationType::DOCUMENT => $this->documentCodeGenerator,
             MigrationType::ASSET => $this->assetCodeGenerator,
             MigrationType::OBJECT => $this->objectCodeGenerator,
-            default => throw new \RuntimeException(\sprintf('Unsupported type "%s".', $type->value)),
+            default => throw new RuntimeException(sprintf('Unsupported type "%s".', $type->value)),
         };
     }
 }

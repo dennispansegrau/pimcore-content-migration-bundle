@@ -2,6 +2,10 @@
 
 namespace PimcoreContentMigration\Command;
 
+use function get_class;
+
+use LogicException;
+use Pimcore\Console\AbstractCommand;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Concrete;
@@ -14,7 +18,9 @@ use PimcoreContentMigration\Generator\MigrationGenerator;
 use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
-use Pimcore\Console\AbstractCommand;
+
+use function sprintf;
+
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +28,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateMigrationCommand extends AbstractCommand
 {
-
     public function __construct(
         private readonly SettingsFactoryInterface $settingsFactory,
         private readonly CodeGeneratorFactoryInterface $codeGeneratorFactory,
@@ -37,10 +42,14 @@ class CreateMigrationCommand extends AbstractCommand
         $this
             ->setName('content:migration:create')
             ->setDescription('Creates a migration file of a specific content object.')
-            ->addArgument('type', InputArgument::REQUIRED, sprintf('Pimcore content type (%s, %s, %s)',
-                MigrationType::DOCUMENT->value,
-                MigrationType::ASSET->value,
-                MigrationType::OBJECT->value
+            ->addArgument(
+                'type',
+                InputArgument::REQUIRED,
+                sprintf(
+                    'Pimcore content type (%s, %s, %s)',
+                    MigrationType::DOCUMENT->value,
+                    MigrationType::ASSET->value,
+                    MigrationType::OBJECT->value
                 )
             )
             ->addArgument('id', InputArgument::REQUIRED, 'Pimcore content ID')
@@ -96,10 +105,10 @@ class CreateMigrationCommand extends AbstractCommand
             return $object->getChildren(true);
         } elseif ($object instanceof Asset) {
             return $object->getChildren();
-        } elseif  ($object instanceof DataObject) {
+        } elseif ($object instanceof DataObject) {
             return $object->getChildren(includingUnpublished: true);
         } else {
-            throw new \LogicException(sprintf("Unsupported object type: %s", get_class($object)));
+            throw new LogicException(sprintf('Unsupported object type: %s', get_class($object)));
         }
     }
 

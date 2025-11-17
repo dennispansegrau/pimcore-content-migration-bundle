@@ -2,12 +2,12 @@
 
 namespace PimcoreContentMigration\Loader;
 
-use PimcoreContentMigration\MigrationType;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Exception\NotFoundException;
+use PimcoreContentMigration\MigrationType;
 
 class ObjectLoader implements ObjectLoaderInterface
 {

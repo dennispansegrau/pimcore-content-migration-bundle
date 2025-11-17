@@ -2,9 +2,11 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use DateTime;
+
 abstract class PrintAbstractBuilder extends PageSnippetBuilder
 {
-    public function setLastGeneratedDate(\DateTime $lastGenerated): static
+    public function setLastGeneratedDate(DateTime $lastGenerated): static
     {
         $this->document->setLastGeneratedDate($lastGenerated);
         return $this;

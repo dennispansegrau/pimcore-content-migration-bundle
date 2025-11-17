@@ -2,8 +2,17 @@
 
 namespace PimcoreContentMigration\Factory;
 
+use function gettype;
+
+use InvalidArgumentException;
+
+use function is_numeric;
+
 use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\MigrationType;
+
+use function sprintf;
+
 use Symfony\Component\Console\Input\InputInterface;
 
 final class SettingsFactory implements SettingsFactoryInterface
@@ -30,7 +39,7 @@ final class SettingsFactory implements SettingsFactoryInterface
     {
         $id = $input->getArgument('id');
         if (!is_numeric($id)) {
-            throw new \InvalidArgumentException(sprintf('Argument "id" must be an integer, "%s" given.', gettype($id)));
+            throw new InvalidArgumentException(sprintf('Argument "id" must be an integer, "%s" given.', gettype($id)));
         }
         return (int) $id;
     }

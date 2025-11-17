@@ -22,5 +22,4 @@ class LinkBuilder extends DocumentBuilder
         $this->document->setLinktype($linktype);
         return $this;
     }
-
 }

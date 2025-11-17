@@ -2,6 +2,11 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use function basename;
+use function dirname;
+
+use Exception;
+use LogicException;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\DuplicateFullPathException;
 
@@ -19,7 +24,7 @@ class DocumentBuilder
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function createOrUpdate(string $path): static
     {
@@ -72,8 +77,7 @@ class DocumentBuilder
         mixed $data,
         bool $inherited = false,
         bool $inheritable = false
-    ): static
-    {
+    ): static {
         $this->document->setProperty($name, $type, $data, $inherited, $inheritable);
         return $this;
     }
@@ -81,7 +85,7 @@ class DocumentBuilder
     public function getDocument(): Document
     {
         if (null === $this->document) {
-            throw new \LogicException("Document object has not been set");
+            throw new LogicException('Document object has not been set');
         }
         return $this->document;
     }

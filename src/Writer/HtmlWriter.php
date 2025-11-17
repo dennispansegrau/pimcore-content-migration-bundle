@@ -2,7 +2,13 @@
 
 namespace PimcoreContentMigration\Writer;
 
+use function dirname;
+use function file_put_contents;
+use function is_dir;
+use function mkdir;
+
 use Pimcore\Model\Element\AbstractElement;
+use RuntimeException;
 
 readonly class HtmlWriter implements WriterInterface
 {
@@ -23,7 +29,7 @@ readonly class HtmlWriter implements WriterInterface
             mkdir($directory, 0777, true);
         }
         if (file_put_contents($absolutePath, $data) === false) {
-            throw new \RuntimeException("Failed to write to path: $absolutePath");
+            throw new RuntimeException("Failed to write to path: $absolutePath");
         }
         return $relativePath;
     }
