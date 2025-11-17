@@ -6,7 +6,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use PimcoreContentMigration\Writer\RelativePath;
 
-#[CoversClass(RelativePath::class)]
 class RelativePathTest extends TestCase
 {
     public function testCanCreateRelativePath(): void

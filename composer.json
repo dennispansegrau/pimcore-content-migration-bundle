@@ -11,7 +11,9 @@
     "autoload-dev": {
         "psr-4": {
             "PimcoreContentMigration\\Tests\\Unit\\": "tests/Unit/",
-            "PimcoreContentMigration\\Tests\\Integration\\": "tests/Integration/"
+            "PimcoreContentMigration\\Tests\\Integration\\": "tests/Integration/",
+            "Pimcore\\": "tests/_support/Pimcore/",
+            "Doctrine\\": "tests/_support/Doctrine/"
         }
     },
     "authors": [
