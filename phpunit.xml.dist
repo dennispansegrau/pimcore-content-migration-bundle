@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheResult="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         failOnIncomplete="false"
+         failOnSkipped="false"
+         stopOnFailure="false"
+>
+    <testsuites>
+        <testsuite name="Unit Tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <directory>tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+
+<!--    <coverage processUncoveredFiles="true">-->
+<!--        <include>-->
+<!--            <directory suffix=".php">src/</directory>-->
+<!--        </include>-->
+
+<!--        <report>-->
+<!--            <html outputDirectory="build/coverage"/>-->
+<!--            <clover outputFile="build/logs/clover.xml"/>-->
+<!--        </report>-->
+<!--    </coverage>-->
+
+    <php>
+        <env name="APP_ENV" value="test"/>
+        <env name="PIMCORE_ENVIRONMENT" value="test"/>
+        <env name="APP_DEBUG" value="1"/>
+        <ini name="memory_limit" value="-1"/>
+    </php>
+</phpunit>

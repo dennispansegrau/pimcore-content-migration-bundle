@@ -15,12 +15,22 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {},
     "extra": {
         "pimcore": {
             "bundles": [
                 "PimcoreContentMigration\\PimcoreContentMigrationBundle"
             ]
         }
-    }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.89",
+        "phpunit/phpunit": "^12.4"
+    },
+  "scripts": {
+    "phpstan": "php -d memory_limit=1G vendor/bin/phpstan analyse",
+    "cs": "php-cs-fixer check --config=.php-cs-fixer.php",
+    "csfix": "php-cs-fixer fix --config=.php-cs-fixer.php --verbose",
+    "test": "phpunit"
+  }
 }
