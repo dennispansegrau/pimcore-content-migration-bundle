@@ -9,12 +9,12 @@ Thumbs.db
 
 # composer
 composer.lock
+vendor
 
 # PhpStorm / IDEA
 .idea
 .idea_modules
-# NetBeans
-nbproject
 
-vendor
-
+# phpunit
+.phpunit.cache
+build

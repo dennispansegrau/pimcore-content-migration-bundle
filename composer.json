@@ -8,6 +8,12 @@
             "PimcoreContentMigration\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "PimcoreContentMigration\\Tests\\Unit\\": "tests/Unit/",
+            "PimcoreContentMigration\\Tests\\Integration\\": "tests/Integration/"
+        }
+    },
     "authors": [
         {
             "name": "Dennis Pansegrau",
@@ -31,6 +37,7 @@
     "phpstan": "php -d memory_limit=1G vendor/bin/phpstan analyse",
     "cs": "php-cs-fixer check --config=.php-cs-fixer.php",
     "csfix": "php-cs-fixer fix --config=.php-cs-fixer.php --verbose",
-    "test": "phpunit"
+    "test": "php vendor/bin/phpunit --no-coverage",
+    "coverage": "phpunit"
   }
 }

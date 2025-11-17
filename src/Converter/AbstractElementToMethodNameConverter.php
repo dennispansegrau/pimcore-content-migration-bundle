@@ -22,7 +22,7 @@ class AbstractElementToMethodNameConverter
 
     public function convert(AbstractElement $abstractElement): string
     {
-        $segments = preg_split('#[\/]+#', trim($abstractElement->getFullPath(), '/'));
+        $segments = preg_split('#[/]+#', trim($abstractElement->getFullPath(), '/'));
         if ($segments === false) {
             throw new LogicException('Failed to split path: ' . $abstractElement->getFullPath());
         }
