@@ -18,22 +18,21 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: '8.3'
-                  extensions: mbstring, dom, json, xml
-                  coverage: none
+                  tools: composer
+                  extensions: mbstring, intl
 
             - name: Cache Composer dependencies
               uses: actions/cache@v3
               with:
                   path: vendor
-                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-composer-
+                  key: composer-${{ hashFiles('composer.lock') }}
+                  restore-keys: composer-
 
             - name: Install dependencies
-              run: composer install --no-interaction --prefer-dist
+              run: composer install --no-progress --prefer-dist
 
             - name: Run PHPStan
               run: composer phpstan
 
-            - name: Run Code Style (php-cs-fixer / phpcs / cs script)
+            - name: Run Code Style (php-cs-fixer)
               run: composer cs
