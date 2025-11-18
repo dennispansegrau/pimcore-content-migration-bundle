@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Writer;
 
 use Doctrine\Migrations\DependencyFactory;
 
+use function is_string;
 use function reset;
 
 use RuntimeException;
@@ -22,7 +23,7 @@ readonly class NamespaceResolver
 
         if (empty($namespace)) {
             $directory = reset($migrationDirectories);
-            if (empty($directory)) {
+            if (!is_string($directory) || empty($directory)) {
                 throw new RuntimeException('No namespace defined');
             }
             return $directory;
@@ -30,6 +31,10 @@ readonly class NamespaceResolver
 
         if (!isset($migrationDirectories[$namespace])) {
             throw new RuntimeException("Migration path '{$namespace}' does not exist in configuration.");
+        }
+
+        if (!is_string($migrationDirectories[$namespace]) || empty($migrationDirectories[$namespace])) {
+            throw new RuntimeException('No namespace defined');
         }
 
         return $migrationDirectories[$namespace];
