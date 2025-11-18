@@ -1,27 +1,38 @@
-name: Code Quality
+name: CI
 
 on:
     push:
-        branches: [main]
+        branches: [ main ]
     pull_request:
-        branches: [main]
+        branches: [ main ]
 
 jobs:
-    code-quality:
+    build:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-            - name: Start PHP-FPM Container
-              run: docker-compose up -d php
+            - name: Set up PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  tools: composer
+                  extensions: mbstring, intl
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v3
+              with:
+                  path: vendor
+                  key: composer-${{ hashFiles('composer.lock') }}
+                  restore-keys: composer-
+
+            - name: Install dependencies
+              run: composer install --no-progress --prefer-dist
 
             - name: Run PHPStan
-              run: docker-compose run --rm php composer phpstan
+              run: composer phpstan
 
-            - name: Run PHP CS Fixer
-              run: docker-compose run --rm php composer cs
-
-            - name: Stop PHP-FPM Container
-              run: docker-compose down
+            - name: Run Code Style (php-cs-fixer)
+              run: composer cs
