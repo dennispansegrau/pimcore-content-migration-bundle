@@ -2,8 +2,6 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use Pimcore\Model\DataObject;
-
 class ObjectCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
 {
     /**

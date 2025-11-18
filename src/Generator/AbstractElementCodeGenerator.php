@@ -3,7 +3,10 @@
 namespace PimcoreContentMigration\Generator;
 
 use function in_array;
+use function is_int;
+use function is_string;
 
+use LogicException;
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
@@ -47,7 +50,7 @@ abstract class AbstractElementCodeGenerator
             /** @var array<string, string|int> $dependencyData */
             foreach ($abstractElement->getDependencies()->getRequires() as $dependencyData) {
                 if (!isset($dependencyData['type'], $dependencyData['id']) || !is_string($dependencyData['type']) || !is_int($dependencyData['id'])) {
-                    throw new \LogicException('Invalid dependency data (string type and integer id expected)');
+                    throw new LogicException('Invalid dependency data (string type and integer id expected)');
                 }
                 $dependency = $this->objectLoader->loadObject(MigrationType::fromString($dependencyData['type']), $dependencyData['id']);
                 $methodName = $this->methodNameConverter->convert($dependency);

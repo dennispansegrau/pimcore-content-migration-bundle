@@ -3,7 +3,6 @@
 namespace PimcoreContentMigration\Builder\Document;
 
 use LogicException;
-use Pimcore\Model\Document\Email;
 use Pimcore\Model\Document\Hardlink;
 
 class HardLinkBuilder extends DocumentBuilder

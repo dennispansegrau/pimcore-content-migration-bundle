@@ -2,10 +2,10 @@
 
 namespace PimcoreContentMigration\Tests\Unit\Writer;
 
+use Doctrine\Migrations\Configuration\Configuration;
+use Doctrine\Migrations\DependencyFactory;
 use PHPUnit\Framework\TestCase;
 use PimcoreContentMigration\Writer\NamespaceResolver;
-use Doctrine\Migrations\DependencyFactory;
-use Doctrine\Migrations\Configuration\Configuration;
 use RuntimeException;
 
 class NamespaceResolverTest extends TestCase

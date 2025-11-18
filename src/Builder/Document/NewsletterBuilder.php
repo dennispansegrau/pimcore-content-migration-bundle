@@ -4,7 +4,6 @@ namespace PimcoreContentMigration\Builder\Document;
 
 use LogicException;
 use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
-use Pimcore\Model\Document\PageSnippet;
 
 class NewsletterBuilder extends EmailBuilder
 {

@@ -2,12 +2,22 @@
 
 namespace PimcoreContentMigration\Tests\Unit\Writer;
 
+use function array_map;
+use function glob;
+use function is_dir;
+use function mkdir;
+
 use PHPUnit\Framework\TestCase;
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Writer\HtmlWriter;
 use PimcoreContentMigration\Writer\NamespaceResolver;
 use PimcoreContentMigration\Writer\RelativePath;
+
+use function rmdir;
+
 use RuntimeException;
+
+use function sys_get_temp_dir;
 
 class HtmlWriterTest extends TestCase
 {

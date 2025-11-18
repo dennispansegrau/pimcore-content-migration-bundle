@@ -2,8 +2,6 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use Pimcore\Model\Asset;
-
 class AssetCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
 {
     /**

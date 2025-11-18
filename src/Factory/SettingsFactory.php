@@ -7,6 +7,7 @@ use function gettype;
 use InvalidArgumentException;
 
 use function is_numeric;
+use function is_string;
 
 use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\MigrationType;

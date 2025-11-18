@@ -5,6 +5,9 @@ namespace PimcoreContentMigration\Command;
 use function get_class;
 
 use LogicException;
+
+use function method_exists;
+
 use Pimcore\Console\AbstractCommand;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;

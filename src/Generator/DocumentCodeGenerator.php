@@ -3,6 +3,10 @@
 namespace PimcoreContentMigration\Generator;
 
 use InvalidArgumentException;
+
+use function is_string;
+
+use LogicException;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
@@ -67,7 +71,7 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
                 }
                 $data = $editable->getData();
                 if (!is_string($data) && $data !== null) {
-                    throw new \LogicException('Wysiwyg editable data must be a string or null.');
+                    throw new LogicException('Wysiwyg editable data must be a string or null.');
                 }
                 $editable = $this->htmlWriter->write($object, $settings->getNamespace(), $key, (string) $data);
             }

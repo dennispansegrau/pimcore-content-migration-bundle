@@ -2,7 +2,6 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-use PimcoreContentMigration\Builder\Builder;
 use function basename;
 use function dirname;
 
@@ -10,6 +9,7 @@ use Exception;
 use LogicException;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\DuplicateFullPathException;
+use PimcoreContentMigration\Builder\Builder;
 
 class DocumentBuilder extends Builder
 {

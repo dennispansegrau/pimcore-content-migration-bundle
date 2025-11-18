@@ -3,7 +3,6 @@
 namespace PimcoreContentMigration\Builder\Document;
 
 use LogicException;
-use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
 use Pimcore\Model\Document\Page;
 
 class PageBuilder extends PageSnippetBuilder
