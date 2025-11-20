@@ -3,6 +3,9 @@
 namespace PimcoreContentMigration\Generator;
 
 use InvalidArgumentException;
+
+use function is_string;
+
 use Pimcore\Model\Asset;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;

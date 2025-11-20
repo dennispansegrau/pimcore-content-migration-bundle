@@ -2,8 +2,8 @@
 
 namespace PimcoreContentMigration\Builder\Asset;
 
-use Pimcore\Model\Asset;
 use LogicException;
+use Pimcore\Model\Asset;
 
 class TextBuilder extends AssetBuilder
 {

@@ -2,16 +2,21 @@
 
 namespace PimcoreContentMigration\Builder\Asset;
 
-
-use Pimcore\Model\Element\DuplicateFullPathException;
-use RuntimeException;
 use function basename;
 use function dirname;
 
-use Pimcore\Model\Asset;
 use Exception;
+
+use function file_get_contents;
+use function json_decode;
+
 use LogicException;
+use Pimcore\Model\Asset;
+use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\Builder;
+use RuntimeException;
+
+use function str_replace;
 
 class AssetBuilder extends Builder
 {
@@ -142,7 +147,7 @@ class AssetBuilder extends Builder
         return $this;
     }
 
-    public function addMetadata(string $name, string $type, mixed $data = null, string $language = null): static
+    public function addMetadata(string $name, string $type, mixed $data = null, ?string $language = null): static
     {
         $this->getObject()->addMetadata($name, $type, $data, $language);
         return $this;
