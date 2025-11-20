@@ -1,0 +1,65 @@
+{% autoescape false %}
+    private function {{ methodName }}(): void
+    {
+    {% if type == 'archive' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\ArchiveBuilder' %}
+    {% elseif type == 'audio' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\AudioBuilder' %}
+    {% elseif type == 'document' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\DocumentBuilder' %}
+    {% elseif type == 'folder' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\FolderBuilder' %}
+    {% elseif type == 'image' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\ImageBuilder' %}
+    {% elseif type == 'text' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\TextBuilder' %}
+    {% elseif type == 'unknown' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\UnknownBuilder' %}
+    {% elseif type == 'video' %}
+        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\VideoBuilder' %}
+    {% else %}
+        // TODO: Insert a builder
+        // No Builder found for type {{ type }}. Please create your own builder.
+        // You can extend the \PimcoreContentMigration\Builder\Asset\AssetBuilder or any other builder.
+
+        {% set builder = '[YOUR-BUILDER]' %}
+    {% endif %}
+    {% if dependencies is not empty %}
+        # Create dependencies
+        {% for methodname, dependency in dependencies %}
+            $this->{{ methodname }}();
+        {% endfor %}
+
+    {% endif %}
+    # Create {{ type }} {{ asset.getFullPath() }}
+    {{ builder }}::createOrUpdate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
+    {# BUILDER SPECIFIC SETTER #}
+    {% if type == 'archive' %}
+    {% elseif type == 'audio' %}
+    {% elseif type == 'document' %}
+    {% elseif type == 'folder' %}
+    {% elseif type == 'image' %}
+    {% elseif type == 'text' %}
+    {% elseif type == 'unknown' %}
+    {% elseif type == 'video' %}
+    {% endif %}
+    {# ASSET BUILDER SETTER #}
+    ->setDataChanged(true)
+    ->setType('{{ asset.getType() }}')
+    ->setMimeType('{{ asset.getMimeType()}}')
+    {% for key, value in asset.getCustomSettings() %}
+    ->setCustomSettingFromJson('{{ key }}', '{{ value|json_encode()|replace({"'": "\\'"}) }}')
+    {% endfor %}
+    {% for meta in asset.getMetaData() %}
+    ->addMetadata('{{ meta.name }}', '{{ meta.type }}', '{{ meta.data }}', '{{ meta.language }}')
+    {% endfor %}
+    {% for property in asset.getProperties %}
+        ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
+    {% endfor %}
+    ->save();
+    }
+    {% for dependency in dependencies %}
+
+        {{ dependency }}
+    {%- endfor %}
+{% endautoescape %}
