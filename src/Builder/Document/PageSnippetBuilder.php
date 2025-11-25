@@ -31,14 +31,6 @@ abstract class PageSnippetBuilder extends DocumentBuilder
         return $this;
     }
 
-    public function setRawEditableFromJson(string $name, string $type, string $json): static
-    {
-        $json = str_replace("\\'", "'", $json);
-        $decodedData = json_decode($json, true);
-        $this->getObject()->setRawEditable($name, $type, $decodedData);
-        return $this;
-    }
-
     public function loadWysiwygFromPath(string $name, string $path): static
     {
         $data = file_get_contents($path);

@@ -79,7 +79,7 @@ private function {{ methodName }}(): void
 {% if editable is instanceof('PimcoreContentMigration\\Writer\\RelativePath') %}
         ->loadWysiwygFromPath('{{ editable.getName() }}', __DIR__ . '{{ editable.getRelativePath() }}')
 {% else %}
-        ->setRawEditableFromJson('{{ editable.name }}', '{{ editable.type }}', '{{ editable.data|json_encode()|replace({"'": "\\'"}) }}')
+        ->setRawEditable('{{ editable.name }}', '{{ editable.type }}', {{ value_to_string(editable.data) }})
 {% endif %}
 {% endfor %}
 {% endif %}

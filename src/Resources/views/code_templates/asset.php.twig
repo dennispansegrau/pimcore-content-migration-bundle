@@ -48,7 +48,7 @@
     ->setType('{{ asset.getType() }}')
     ->setMimeType('{{ asset.getMimeType()}}')
     {% for key, value in asset.getCustomSettings() %}
-    ->setCustomSettingFromJson('{{ key }}', '{{ value|json_encode()|replace({"'": "\\'"}) }}')
+    ->setCustomSetting('{{ key }}', {{ value_to_string(value) }})
     {% endfor %}
     {% for meta in asset.getMetaData() %}
     ->addMetadata('{{ meta.name }}', '{{ meta.type }}', '{{ meta.data }}', '{{ meta.language }}')

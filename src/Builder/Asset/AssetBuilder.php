@@ -13,12 +13,12 @@ use function json_decode;
 use LogicException;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Element\DuplicateFullPathException;
-use PimcoreContentMigration\Builder\Builder;
+use PimcoreContentMigration\Builder\AbstractElementBuilder;
 use RuntimeException;
 
 use function str_replace;
 
-class AssetBuilder extends Builder
+class AssetBuilder extends AbstractElementBuilder
 {
     protected ?Asset $asset = null;
 
@@ -106,14 +106,6 @@ class AssetBuilder extends Builder
     public function setCustomSetting(string $key, mixed $value): static
     {
         $this->getObject()->setCustomSetting($key, $value);
-        return $this;
-    }
-
-    public function setCustomSettingFromJson(string $key, string $json): static
-    {
-        $json = str_replace("\\'", "'", $json);
-        $decodedData = json_decode($json, true);
-        $this->getObject()->setCustomSetting($key, $decodedData);
         return $this;
     }
 

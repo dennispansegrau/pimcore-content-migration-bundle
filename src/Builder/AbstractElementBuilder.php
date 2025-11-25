@@ -4,7 +4,7 @@ namespace PimcoreContentMigration\Builder;
 
 use Pimcore\Model\Element\AbstractElement;
 
-abstract class Builder
+abstract class AbstractElementBuilder
 {
     final protected function __construct()
     {

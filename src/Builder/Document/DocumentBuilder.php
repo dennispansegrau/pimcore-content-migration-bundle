@@ -9,9 +9,9 @@ use Exception;
 use LogicException;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\DuplicateFullPathException;
-use PimcoreContentMigration\Builder\Builder;
+use PimcoreContentMigration\Builder\AbstractElementBuilder;
 
-class DocumentBuilder extends Builder
+class DocumentBuilder extends AbstractElementBuilder
 {
     protected ?Document $document = null;
 
