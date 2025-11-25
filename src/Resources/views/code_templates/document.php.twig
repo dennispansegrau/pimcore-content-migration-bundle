@@ -1,5 +1,5 @@
 {% autoescape false %}
-private function {{ methodName }}(): void
+private function {{ methodName }}(): {{ classname }}
     {
 {% if type == 'email' %}
 {% set builder = '\\PimcoreContentMigration\\Builder\\Document\\EmailBuilder' %}
@@ -30,13 +30,13 @@ private function {{ methodName }}(): void
 {% endif %}
 {% if dependencies is not empty %}
         # Create dependencies
-{% for methodname, dependency in dependencies %}
-        $this->{{ methodname }}();
+{% for dependency in dependencies %}
+    ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
 {% endfor %}
 
 {% endif %}
         # Create {{ type }} {{ document.getFullPath() }}
-        {{ builder }}::createOrUpdate('{{ document.getFullPath() }}')
+        return {{ builder }}::createOrUpdate('{{ document.getFullPath() }}')
 {# BUILDER SPECIFIC SETTER #}
 {% if type == 'email' %}
         ->setSubject('{{ document.getSubject() }}')
@@ -79,7 +79,7 @@ private function {{ methodName }}(): void
 {% if editable is instanceof('PimcoreContentMigration\\Writer\\RelativePath') %}
         ->loadWysiwygFromPath('{{ editable.getName() }}', __DIR__ . '{{ editable.getRelativePath() }}')
 {% else %}
-        ->setRawEditable('{{ editable.name }}', '{{ editable.type }}', {{ value_to_string(editable.data) }})
+        ->setRawEditable('{{ editable.name }}', '{{ editable.type }}', {{ value_to_string(editable.data, dependencies) }})
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -93,10 +93,11 @@ private function {{ methodName }}(): void
         ->setIndex({{ document.getIndex() }})
         ->setType('{{ document.getType() }}')
         ->setPublished({{ document.getPublished() ? 'true' : 'false' }})
-        ->save();
+        ->save()
+        ->getObject();
     }
 {% for dependency in dependencies %}
 
-    {{ dependency }}
+    {{ dependency.code }}
 {%- endfor %}
 {% endautoescape %}

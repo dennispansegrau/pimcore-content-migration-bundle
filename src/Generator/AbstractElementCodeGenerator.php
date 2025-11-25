@@ -2,6 +2,9 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
+use PimcoreContentMigration\Generator\Dependency\Dependency;
+use PimcoreContentMigration\Generator\Dependency\DependencyList;
 use function in_array;
 use function is_int;
 use function is_string;
@@ -20,6 +23,7 @@ abstract class AbstractElementCodeGenerator
 
     public function __construct(
         protected readonly AbstractElementToMethodNameConverter $methodNameConverter,
+        protected readonly AbstractElementToVariableNameConverter $variableNameConverter,
         protected readonly ObjectLoaderInterface $objectLoader,
     ) {
     }
@@ -41,9 +45,9 @@ abstract class AbstractElementCodeGenerator
      * @param Settings $settings
      * @param AbstractElement $abstractElement
      * @param string[] $existingMethodNames
-     * @return array<string, string|null>
+     * @return DependencyList
      */
-    protected function getDependencies(Settings $settings, AbstractElement $abstractElement, array &$existingMethodNames): array
+    protected function getDependencies(Settings $settings, AbstractElement $abstractElement, array &$existingMethodNames): DependencyList
     {
         $dependencies = [];
         if ($settings->withDependencies() && $abstractElement->getDependencies()->getRequiresTotalCount() > 0) {
@@ -54,6 +58,7 @@ abstract class AbstractElementCodeGenerator
                 }
                 $dependency = $this->objectLoader->loadObject(MigrationType::fromString($dependencyData['type']), $dependencyData['id']);
                 $methodName = $this->methodNameConverter->convert($dependency);
+                $variableName = $this->variableNameConverter->convert($dependency);
                 $code = null;
                 if (!in_array($methodName, $existingMethodNames, true)) {
                     $existingMethodNames[] = $methodName;
@@ -61,9 +66,9 @@ abstract class AbstractElementCodeGenerator
                         ->getCodeGenerator($settings->getType())
                         ->generateCode($dependency, $settings->forDependencies(), $existingMethodNames);
                 }
-                $dependencies[$methodName] = $code;
+                $dependencies[] = new Dependency($abstractElement, $settings->getType()->value, $variableName, $methodName, $code);
             }
         }
-        return $dependencies;
+        return new DependencyList($dependencies);
     }
 }

@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Generator;
 
 use InvalidArgumentException;
 
+use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use function is_string;
 
 use Pimcore\Model\Asset;
@@ -17,10 +18,12 @@ class AssetCodeGenerator extends AbstractElementCodeGenerator implements CodeGen
         private readonly AssetWriter $assetWriter,
         private readonly CodeGenerator $codeGenerator,
         AbstractElementToMethodNameConverter $methodNameConverter,
+        AbstractElementToVariableNameConverter $variableNameConverter,
         ObjectLoaderInterface $objectLoader
     ) {
         parent::__construct(
             $methodNameConverter,
+            $variableNameConverter,
             $objectLoader
         );
     }
@@ -52,6 +55,7 @@ class AssetCodeGenerator extends AbstractElementCodeGenerator implements CodeGen
             'asset' => $abstractElement,
             'type' => $abstractElement->getType(),
             'methodName' => $methodName,
+            'classname' => '\\' . get_class($abstractElement),
             'settings' => $settings,
             'dependencies' => $this->getDependencies($settings, $abstractElement, $existingMethodNames),
             'dataPath' => $dataPath,

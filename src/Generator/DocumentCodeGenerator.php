@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Generator;
 
 use InvalidArgumentException;
 
+use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use function is_string;
 
 use LogicException;
@@ -21,10 +22,12 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
         private readonly CodeGenerator $codeGenerator,
         private readonly HtmlWriter $htmlWriter,
         AbstractElementToMethodNameConverter $methodNameConverter,
+        AbstractElementToVariableNameConverter $variableNameConverter,
         ObjectLoaderInterface $objectLoader
     ) {
         parent::__construct(
             $methodNameConverter,
+            $variableNameConverter,
             $objectLoader
         );
     }
@@ -42,6 +45,7 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
 
         return $this->codeGenerator->generate('document_template', [
             'document' => $abstractElement,
+            'classname' => '\\' . get_class($abstractElement),
             'type' => $abstractElement->getType(),
             'methodName' => $methodName,
             'settings' => $settings,

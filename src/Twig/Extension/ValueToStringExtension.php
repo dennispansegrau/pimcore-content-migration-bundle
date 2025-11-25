@@ -2,6 +2,12 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\Document;
+use Pimcore\Model\Element\AbstractElement;
+use PimcoreContentMigration\Generator\Dependency\Dependency;
+use PimcoreContentMigration\Generator\Dependency\DependencyList;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -18,7 +24,7 @@ class ValueToStringExtension extends AbstractExtension
     /**
      * Converts any value into a readable string.
      */
-    public function valueToString(mixed $value): string
+    public function valueToString(mixed $value, DependencyList $dependencyList): string
     {
         // NULL
         if ($value === null) {
@@ -53,7 +59,7 @@ class ValueToStringExtension extends AbstractExtension
             }
             $arrayString = "[\n";
             foreach ($value as $key => $item) {
-                $arrayString .= '            \'' . $key . '\' => ' . $this->valueToString($item) . ",\n";
+                $arrayString .= '            \'' . $key . '\' => ' . $this->valueToString($item, $dependencyList) . ",\n";
             }
             $arrayString .= "        ]";
             return $arrayString;
@@ -61,7 +67,16 @@ class ValueToStringExtension extends AbstractExtension
 
         // OBJECT
         if (is_object($value)) {
-            throw new \InvalidArgumentException('Unsupported value type: ' . gettype($value));
+            $dependency = $dependencyList->getDependency($value);
+            if (!$dependency instanceof Dependency) {
+                // try to get the element by path if it is not in the dependency list
+                if ($value instanceof AbstractElement) {
+                    return '\\' . get_class($value) . '::getByPath(\'' . $value->getFullPath() . '\')';
+                } else {
+                    return 'null';
+                }
+            }
+            return $dependency->getVariableName();
         }
 
         // RESOURCE (z. B. Datei-Handle)

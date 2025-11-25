@@ -1,5 +1,5 @@
 {% autoescape false %}
-    private function {{ methodName }}(): void
+    private function {{ methodName }}(): {{ classname }}
     {
     {% if type == 'archive' %}
         {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\ArchiveBuilder' %}
@@ -26,13 +26,13 @@
     {% endif %}
     {% if dependencies is not empty %}
         # Create dependencies
-        {% for methodname, dependency in dependencies %}
-            $this->{{ methodname }}();
+        {% for dependency in dependencies %}
+            ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
         {% endfor %}
 
     {% endif %}
     # Create {{ type }} {{ asset.getFullPath() }}
-    {{ builder }}::createOrUpdate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
+    return {{ builder }}::createOrUpdate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
     {# BUILDER SPECIFIC SETTER #}
     {% if type == 'archive' %}
     {% elseif type == 'audio' %}
@@ -48,7 +48,7 @@
     ->setType('{{ asset.getType() }}')
     ->setMimeType('{{ asset.getMimeType()}}')
     {% for key, value in asset.getCustomSettings() %}
-    ->setCustomSetting('{{ key }}', {{ value_to_string(value) }})
+    ->setCustomSetting('{{ key }}', {{ value_to_string(value, dependencies) }})
     {% endfor %}
     {% for meta in asset.getMetaData() %}
     ->addMetadata('{{ meta.name }}', '{{ meta.type }}', '{{ meta.data }}', '{{ meta.language }}')
@@ -56,10 +56,11 @@
     {% for property in asset.getProperties %}
         ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
     {% endfor %}
-    ->save();
+    ->save()
+    ->getObject();
     }
     {% for dependency in dependencies %}
 
-        {{ dependency }}
+        {{ dependency.code }}
     {%- endfor %}
 {% endautoescape %}
