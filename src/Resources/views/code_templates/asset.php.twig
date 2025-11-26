@@ -48,7 +48,7 @@
     ->setType('{{ asset.getType() }}')
     ->setMimeType('{{ asset.getMimeType()}}')
     {% for key, value in asset.getCustomSettings() %}
-    ->setCustomSetting('{{ key }}', {{ value_to_string(value, dependencies) }})
+    ->setCustomSetting('{{ key }}', {{ pcmb_value_to_string(value, dependencies) }})
     {% endfor %}
     {% for meta in asset.getMetaData() %}
     ->addMetadata('{{ meta.name }}', '{{ meta.type }}', '{{ meta.data }}', '{{ meta.language }}')

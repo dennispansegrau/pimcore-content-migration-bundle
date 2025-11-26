@@ -30,7 +30,7 @@ class ValueToStringExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('value_to_string', [$this, 'valueToString']),
+            new TwigFunction('pcmb_value_to_string', [$this, 'valueToString']),
         ];
     }
 
