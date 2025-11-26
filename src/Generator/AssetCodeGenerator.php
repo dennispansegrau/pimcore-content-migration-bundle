@@ -2,13 +2,15 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use function get_class;
+
 use InvalidArgumentException;
 
-use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use function is_string;
 
 use Pimcore\Model\Asset;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
+use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\Writer\AssetWriter;
 

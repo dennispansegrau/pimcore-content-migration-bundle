@@ -2,9 +2,6 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
-use PimcoreContentMigration\Generator\Dependency\Dependency;
-use PimcoreContentMigration\Generator\Dependency\DependencyList;
 use function in_array;
 use function is_int;
 use function is_string;
@@ -12,7 +9,10 @@ use function is_string;
 use LogicException;
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
+use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
+use PimcoreContentMigration\Generator\Dependency\Dependency;
+use PimcoreContentMigration\Generator\Dependency\DependencyList;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
 use RuntimeException;

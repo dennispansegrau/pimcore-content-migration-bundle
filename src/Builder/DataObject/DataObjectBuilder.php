@@ -2,15 +2,22 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
-use Pimcore\Model\DataObject;
 use function basename;
 use function dirname;
 
 use Exception;
 
+use function get_class;
+
 use LogicException;
+
+use function method_exists;
+
+use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
+
+use function ucfirst;
 
 class DataObjectBuilder extends AbstractElementBuilder
 {
@@ -71,7 +78,7 @@ class DataObjectBuilder extends AbstractElementBuilder
         if (method_exists($this->getObject(), $setter)) {
             $this->getObject()->$setter($value);
         } else {
-            throw new \Exception("Setter $setter not found in " . get_class($this->getObject()));
+            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
         }
 
         return $this;

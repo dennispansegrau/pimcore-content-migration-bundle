@@ -2,18 +2,31 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
-use Pimcore\Model\Asset;
-use Pimcore\Model\DataObject;
-use Pimcore\Model\Document;
+use function get_class;
+use function gettype;
+
+use InvalidArgumentException;
+
+use function is_array;
+use function is_bool;
+use function is_callable;
+use function is_float;
+use function is_int;
+use function is_object;
+use function is_resource;
+use function is_string;
+
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
+
+use function str_replace;
+
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class ValueToStringExtension extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [
@@ -37,7 +50,7 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         // INTEGER
-        if (is_integer($value)) {
+        if (is_int($value)) {
             return (string) $value;
         }
 
@@ -61,7 +74,7 @@ class ValueToStringExtension extends AbstractExtension
             foreach ($value as $key => $item) {
                 $arrayString .= '            \'' . $key . '\' => ' . $this->valueToString($item, $dependencyList) . ",\n";
             }
-            $arrayString .= "        ]";
+            $arrayString .= '        ]';
             return $arrayString;
         }
 
@@ -81,15 +94,15 @@ class ValueToStringExtension extends AbstractExtension
 
         // RESOURCE (z. B. Datei-Handle)
         if (is_resource($value)) {
-            throw new \InvalidArgumentException('Unsupported value type: ' . gettype($value));
+            throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));
         }
 
         // CALLABLE
         if (is_callable($value)) {
-            throw new \InvalidArgumentException('Unsupported value type: ' . gettype($value));
+            throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));
         }
 
         // EVERYTHING ELSE (should not happen)
-        throw new \InvalidArgumentException('Unsupported value type: ' . gettype($value));
+        throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));
     }
 }

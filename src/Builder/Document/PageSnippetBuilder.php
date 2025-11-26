@@ -3,13 +3,10 @@
 namespace PimcoreContentMigration\Builder\Document;
 
 use function file_get_contents;
-use function json_decode;
 
 use LogicException;
 use Pimcore\Model\Document\PageSnippet;
 use RuntimeException;
-
-use function str_replace;
 
 abstract class PageSnippetBuilder extends DocumentBuilder
 {

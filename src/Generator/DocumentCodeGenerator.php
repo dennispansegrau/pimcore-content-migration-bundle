@@ -2,9 +2,10 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use function get_class;
+
 use InvalidArgumentException;
 
-use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use function is_string;
 
 use LogicException;
@@ -12,6 +13,7 @@ use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
+use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\Writer\HtmlWriter;
 use PimcoreContentMigration\Writer\RelativePath;

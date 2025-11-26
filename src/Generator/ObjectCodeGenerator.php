@@ -2,7 +2,13 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use function get_class;
+use function in_array;
+
 use InvalidArgumentException;
+
+use function lcfirst;
+
 use Pimcore\Model\DataObject;
 use PimcoreContentMigration\Builder\DataObject\ConcreteBuilder;
 use PimcoreContentMigration\Builder\DataObject\DataObjectBuilder;
@@ -11,7 +17,11 @@ use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
+
+use function str_starts_with;
+use function substr;
 
 class ObjectCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
 {
@@ -81,8 +91,8 @@ class ObjectCodeGenerator extends AbstractElementCodeGenerator implements CodeGe
 
     /**
      * @param DataObject $abstractElement
-     * @return array<string, string>
-     * @throws \ReflectionException
+     * @return array<string, mixed>
+     * @throws ReflectionException
      */
     private function getSetters(DataObject $abstractElement): array
     {

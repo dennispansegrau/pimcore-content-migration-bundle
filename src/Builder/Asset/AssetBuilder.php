@@ -8,15 +8,12 @@ use function dirname;
 use Exception;
 
 use function file_get_contents;
-use function json_decode;
 
 use LogicException;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
 use RuntimeException;
-
-use function str_replace;
 
 class AssetBuilder extends AbstractElementBuilder
 {
@@ -97,12 +94,6 @@ class AssetBuilder extends AbstractElementBuilder
         return $this;
     }
 
-    public function setVersions(array $versions): static
-    {
-        $this->getObject()->setVersions($versions);
-        return $this;
-    }
-
     public function setCustomSetting(string $key, mixed $value): static
     {
         $this->getObject()->setCustomSetting($key, $value);
@@ -118,18 +109,6 @@ class AssetBuilder extends AbstractElementBuilder
     public function setMimeType(string $mimetype): static
     {
         $this->getObject()->setMimeType($mimetype);
-        return $this;
-    }
-
-    public function setMetadataRaw(array $metadata): static
-    {
-        $this->getObject()->setMetadataRaw($metadata);
-        return $this;
-    }
-
-    public function setMetadata(array $metadata): static
-    {
-        $this->getObject()->setMetadata($metadata);
         return $this;
     }
 

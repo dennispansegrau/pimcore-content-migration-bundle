@@ -2,10 +2,18 @@
 
 namespace PimcoreContentMigration\Generator\Dependency;
 
+use ArrayIterator;
+
+use function count;
+
+use Countable;
+use IteratorAggregate;
+use Traversable;
+
 /**
- * @implements \IteratorAggregate<Dependency>
+ * @implements IteratorAggregate<Dependency>
  */
-class DependencyList implements \IteratorAggregate, \Countable
+class DependencyList implements IteratorAggregate, Countable
 {
     /**
      * @var Dependency[]
@@ -26,6 +34,7 @@ class DependencyList implements \IteratorAggregate, \Countable
     {
         $this->dependencies[] = $dependency;
     }
+
     public function getDependency(object $object): ?Dependency
     {
         foreach ($this->dependencies as $dependency) {
@@ -37,9 +46,9 @@ class DependencyList implements \IteratorAggregate, \Countable
         return null;
     }
 
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->dependencies);
+        return new ArrayIterator($this->dependencies);
     }
 
     public function count(): int
