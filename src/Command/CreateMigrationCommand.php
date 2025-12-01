@@ -14,7 +14,7 @@ use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Listing\AbstractListing;
 use PimcoreContentMigration\Factory\CodeGeneratorFactoryInterface;
 use PimcoreContentMigration\Factory\SettingsFactoryInterface;
-use PimcoreContentMigration\Generator\MigrationGenerator;
+use PimcoreContentMigration\Generator\MigrationGeneratorInterface;
 use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
@@ -32,7 +32,7 @@ class CreateMigrationCommand extends AbstractCommand
         private readonly SettingsFactoryInterface $settingsFactory,
         private readonly CodeGeneratorFactoryInterface $codeGeneratorFactory,
         private readonly ObjectLoaderInterface $objectLoader,
-        private readonly MigrationGenerator $migrationGenerator,
+        private readonly MigrationGeneratorInterface $migrationGenerator,
     ) {
         parent::__construct();
     }

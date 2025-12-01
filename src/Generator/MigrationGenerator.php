@@ -12,7 +12,7 @@ use PimcoreContentMigration\Writer\NamespaceResolver;
 use function sleep;
 use function sprintf;
 
-class MigrationGenerator
+class MigrationGenerator implements MigrationGeneratorInterface
 {
     private const PREFIX = 'Version';
 
