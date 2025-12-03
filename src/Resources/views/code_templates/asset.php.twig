@@ -1,23 +1,7 @@
 {% autoescape false %}
     private function {{ methodName }}(): {{ classname }}
     {
-    {% if type == 'archive' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\ArchiveBuilder' %}
-    {% elseif type == 'audio' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\AudioBuilder' %}
-    {% elseif type == 'document' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\DocumentBuilder' %}
-    {% elseif type == 'folder' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\FolderBuilder' %}
-    {% elseif type == 'image' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\ImageBuilder' %}
-    {% elseif type == 'text' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\TextBuilder' %}
-    {% elseif type == 'unknown' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\UnknownBuilder' %}
-    {% elseif type == 'video' %}
-        {% set builder = '\\PimcoreContentMigration\\Builder\\Asset\\VideoBuilder' %}
-    {% else %}
+    {% if builder is null %}
         // TODO: Insert a builder
         // No Builder found for type {{ type }}. Please create your own builder.
         // You can extend the \PimcoreContentMigration\Builder\Asset\AssetBuilder or any other builder.

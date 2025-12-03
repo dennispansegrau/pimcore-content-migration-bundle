@@ -1,27 +1,7 @@
 {% autoescape false %}
 private function {{ methodName }}(): {{ classname }}
     {
-{% if type == 'email' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\EmailBuilder' %}
-{% elseif type == 'folder' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\FolderBuilder' %}
-{% elseif type == 'hardlink' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\HardLinkBuilder' %}
-{% elseif type == 'link' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\LinkBuilder' %}
-{% elseif type == 'page' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PageBuilder' %}
-{% elseif type == 'snippet' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\SnippetBuilder' %}
-{% elseif type == 'document' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\DocumentBuilder' %}
-{% elseif type == 'printpage' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintPageBuilder' %}
-{% elseif type == 'printcontainer' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\PrintContainerBuilder' %}
-{% elseif type == 'newsletter' %}
-{% set builder = '\\PimcoreContentMigration\\Builder\\Document\\NewsletterBuilder' %}
-{% else %}
+{% if builder is null %}
         // TODO: Insert a builder
         // No Builder found for type {{ type }}. Please create your own builder.
         // You can extend the \PimcoreContentMigration\Builder\Document\DocumentBuilder or any other builder.

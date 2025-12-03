@@ -9,6 +9,14 @@ use InvalidArgumentException;
 use function is_string;
 
 use Pimcore\Model\Asset;
+use PimcoreContentMigration\Builder\Asset\ArchiveBuilder;
+use PimcoreContentMigration\Builder\Asset\AudioBuilder;
+use PimcoreContentMigration\Builder\Asset\DocumentBuilder;
+use PimcoreContentMigration\Builder\Asset\FolderBuilder;
+use PimcoreContentMigration\Builder\Asset\ImageBuilder;
+use PimcoreContentMigration\Builder\Asset\TextBuilder;
+use PimcoreContentMigration\Builder\Asset\UnknownBuilder;
+use PimcoreContentMigration\Builder\Asset\VideoBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
@@ -61,6 +69,44 @@ class AssetCodeGenerator extends AbstractElementCodeGenerator implements CodeGen
             'settings' => $settings,
             'dependencies' => $this->getDependencies($settings, $abstractElement, $existingMethodNames),
             'dataPath' => $dataPath,
+            'builder' => $this->getBuilderClass($abstractElement),
         ]);
+    }
+
+    private function getBuilderClass(Asset $asset): ?string
+    {
+        if ($asset instanceof Asset\Archive) {
+            return '\\' . ArchiveBuilder::class ;
+        }
+
+        if ($asset instanceof Asset\Audio) {
+            return '\\' . AudioBuilder::class ;
+        }
+
+        if ($asset instanceof Asset\Document) {
+            return '\\' . DocumentBuilder::class ;
+        }
+
+        if ($asset instanceof Asset\Folder) {
+            return '\\' . FolderBuilder::class ;
+        }
+
+        if ($asset instanceof Asset\Image) {
+            return '\\' . ImageBuilder::class ;
+        }
+
+        if ($asset instanceof Asset\Text) {
+            return '\\' . TextBuilder::class ;
+        }
+
+        if ($asset instanceof Asset\Unknown) {
+            return '\\' . UnknownBuilder::class ;
+        }
+
+        if ($asset instanceof Asset\Video) {
+            return '\\' . VideoBuilder::class ;
+        }
+
+        return null;
     }
 }

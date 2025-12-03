@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use function class_exists;
 use function get_class;
 
 use InvalidArgumentException;
@@ -9,9 +10,22 @@ use InvalidArgumentException;
 use function is_string;
 
 use LogicException;
+use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
+use Pimcore\Bundle\WebToPrintBundle\Model\Document\Printcontainer;
+use Pimcore\Bundle\WebToPrintBundle\Model\Document\Printpage;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
+use PimcoreContentMigration\Builder\Document\DocumentBuilder;
+use PimcoreContentMigration\Builder\Document\EmailBuilder;
+use PimcoreContentMigration\Builder\Document\FolderBuilder;
+use PimcoreContentMigration\Builder\Document\HardLinkBuilder;
+use PimcoreContentMigration\Builder\Document\LinkBuilder;
+use PimcoreContentMigration\Builder\Document\NewsletterBuilder;
+use PimcoreContentMigration\Builder\Document\PageBuilder;
+use PimcoreContentMigration\Builder\Document\PrintContainerBuilder;
+use PimcoreContentMigration\Builder\Document\PrintPageBuilder;
+use PimcoreContentMigration\Builder\Document\SnippetBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
@@ -55,7 +69,53 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
             'isPageSnippet' => $abstractElement instanceof Document\PageSnippet,
             'isPrintAbstract' => $abstractElement instanceof PrintAbstract,
             'dependencies' => $this->getDependencies($settings, $abstractElement, $existingMethodNames),
+            'builder' => $this->getBuilderClass($abstractElement),
         ]);
+    }
+
+    private function getBuilderClass(Document $document): ?string
+    {
+        if ($document instanceof Document\Email) {
+            return '\\' . EmailBuilder::class ;
+        }
+
+        if ($document instanceof Document\Folder) {
+            return '\\' . FolderBuilder::class;
+        }
+
+        if ($document instanceof Document\Hardlink) {
+            return '\\' . HardLinkBuilder::class;
+        }
+
+        if ($document instanceof Document\Link) {
+            return '\\' . LinkBuilder::class;
+        }
+
+        if ($document instanceof Document\Page) {
+            return '\\' . PageBuilder::class;
+        }
+
+        if ($document instanceof Document\Snippet) {
+            return '\\' . SnippetBuilder::class;
+        }
+
+        if (get_class($document) === Document::class) {
+            return '\\' . DocumentBuilder::class;
+        }
+
+        if (class_exists(Printpage::class) && $document instanceof Printpage) {
+            return '\\' . PrintPageBuilder::class;
+        }
+
+        if (class_exists(Printcontainer::class) && $document instanceof Printpage) {
+            return '\\' . PrintContainerBuilder::class;
+        }
+
+        if (class_exists(Newsletter::class) && $document instanceof Printpage) {
+            return '\\' . NewsletterBuilder::class;
+        }
+
+        return null;
     }
 
     /**
