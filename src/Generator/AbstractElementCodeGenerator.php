@@ -63,7 +63,7 @@ abstract class AbstractElementCodeGenerator
                 if (!in_array($methodName, $existingMethodNames, true)) {
                     $existingMethodNames[] = $methodName;
                     $code = $this->getCodeGeneratorFactory()
-                        ->getCodeGenerator($settings->getType())
+                        ->getCodeGenerator(MigrationType::fromString($dependencyData['type']))
                         ->generateCode($dependency, $settings->forDependencies(), $existingMethodNames);
                 }
                 $dependencies[] = new Dependency($abstractElement, $settings->getType()->value, $variableName, $methodName, $code);
