@@ -2,30 +2,36 @@
     private function {{ methodName }}(): {{ classname }}
     {
     {% if dependencies is not empty %}
-        # Create dependencies
+        # Find or create dependency dummies (without content)
         {% for dependency in dependencies %}
             ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
         {% endfor %}
 
     {% endif %}
+{% if settings.isRootLevel() %}
     # Create {{ type }} {{ object.getFullPath() }}
-    return {{ builder }}::createOrUpdate('{{ object.getFullPath() }}', {{ classname }}::class)
+    return {{ builder }}::findOrCreate('{{ object.getFullPath() }}', {{ classname }}::class)
     {# CONCRETE BUILDER SETTER #}
-    {% if isConcrete %}
-        ->setPublished({{ object.getPublished() ? 'true' : 'false' }})
-    {% endif %}
-    {# DATA OBJECT BUILDER SETTER #}
-    {% for name, value in setters %}
+{% if isConcrete %}
+    ->setPublished({{ object.getPublished() ? 'true' : 'false' }})
+{% endif %}
+{# DATA OBJECT BUILDER SETTER #}
+{% for name, value in setters %}
     ->set('{{ name }}', {{ pcmb_value_to_string(value, dependencies) }})
-    {% endfor %}
-    {% for property in object.getProperties %}
-        ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
-    {% endfor %}
+{% endfor %}
+{% for property in object.getProperties %}
+    ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
+{% endfor %}
     ->save()
     ->getObject();
-    }
-    {% for dependency in dependencies %}
+}
+{% for dependency in dependencies %}
 
-        {{ dependency.code }}
-    {%- endfor %}
+    {{ dependency.code }}
+{%- endfor %}
+{% else %}
+        return {{ builder }}::findOrCreate('{{ object.getFullPath() }}', {{ classname }}::class)
+            ->getObject();
+    }
+{% endif %}
 {% endautoescape %}

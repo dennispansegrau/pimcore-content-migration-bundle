@@ -27,7 +27,7 @@ class AssetBuilder extends AbstractElementBuilder
     /**
      * @throws Exception
      */
-    public static function createOrUpdate(string $path, ?string $dataPath = null): static
+    public static function findOrCreate(string $path, ?string $dataPath = null): static
     {
         $builder = new static();
         /** @var class-string<Asset> $assetClass */

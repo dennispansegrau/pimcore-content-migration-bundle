@@ -13,6 +13,7 @@ final readonly class Settings
         private bool $inlineWysiwyg = false,
         private bool $withDependencies = true,
         private bool $withChildren = false,
+        private int $level = 1,
     ) {
     }
 
@@ -55,6 +56,12 @@ final readonly class Settings
             $this->inlineWysiwyg(),
             false,
             false,
+            $this->level + 1
         );
+    }
+
+    public function isRootLevel(): bool
+    {
+        return $this->level === 1;
     }
 }

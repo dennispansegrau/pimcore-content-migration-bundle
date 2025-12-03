@@ -23,7 +23,7 @@ class DocumentBuilder extends AbstractElementBuilder
     /**
      * @throws Exception
      */
-    public static function createOrUpdate(string $path): static
+    public static function findOrCreate(string $path): static
     {
         $builder = new static();
         /** @var class-string<Document> $documentClass */

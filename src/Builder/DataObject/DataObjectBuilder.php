@@ -29,7 +29,7 @@ class DataObjectBuilder extends AbstractElementBuilder
      * @return static
      * @throws DuplicateFullPathException
      */
-    public static function createOrUpdate(string $path, string $dataObjectClass): static
+    public static function findOrCreate(string $path, string $dataObjectClass): static
     {
         $builder = new static();
 

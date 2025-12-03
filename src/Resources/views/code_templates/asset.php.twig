@@ -25,42 +25,48 @@
         {% set builder = '[YOUR-BUILDER]' %}
     {% endif %}
     {% if dependencies is not empty %}
-        # Create dependencies
+        # Find or create dependency dummies (without content)
         {% for dependency in dependencies %}
             ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
         {% endfor %}
 
     {% endif %}
+{% if settings.isRootLevel() %}
     # Create {{ type }} {{ asset.getFullPath() }}
-    return {{ builder }}::createOrUpdate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
+    return {{ builder }}::findOrCreate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
     {# BUILDER SPECIFIC SETTER #}
-    {% if type == 'archive' %}
-    {% elseif type == 'audio' %}
-    {% elseif type == 'document' %}
-    {% elseif type == 'folder' %}
-    {% elseif type == 'image' %}
-    {% elseif type == 'text' %}
-    {% elseif type == 'unknown' %}
-    {% elseif type == 'video' %}
-    {% endif %}
+{% if type == 'archive' %}
+{% elseif type == 'audio' %}
+{% elseif type == 'document' %}
+{% elseif type == 'folder' %}
+{% elseif type == 'image' %}
+{% elseif type == 'text' %}
+{% elseif type == 'unknown' %}
+{% elseif type == 'video' %}
+{% endif %}
     {# ASSET BUILDER SETTER #}
     ->setDataChanged(true)
     ->setType('{{ asset.getType() }}')
     ->setMimeType('{{ asset.getMimeType()}}')
-    {% for key, value in asset.getCustomSettings() %}
+{% for key, value in asset.getCustomSettings() %}
     ->setCustomSetting('{{ key }}', {{ pcmb_value_to_string(value, dependencies) }})
-    {% endfor %}
-    {% for meta in asset.getMetaData() %}
+{% endfor %}
+{% for meta in asset.getMetaData() %}
     ->addMetadata('{{ meta.name }}', '{{ meta.type }}', '{{ meta.data }}', '{{ meta.language }}')
-    {% endfor %}
-    {% for property in asset.getProperties %}
-        ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
-    {% endfor %}
+{% endfor %}
+{% for property in asset.getProperties %}
+    ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
+{% endfor %}
     ->save()
     ->getObject();
-    }
-    {% for dependency in dependencies %}
+}
+{% for dependency in dependencies %}
 
-        {{ dependency.code }}
-    {%- endfor %}
+    {{ dependency.code }}
+{%- endfor %}
+{% else %}
+        return {{ builder }}::findOrCreate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
+            ->getObject();
+    }
+{% endif %}
 {% endautoescape %}

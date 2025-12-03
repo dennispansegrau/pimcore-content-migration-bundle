@@ -18,7 +18,7 @@ use function ucwords;
 
 class AbstractElementToMethodNameConverter
 {
-    private const PREFIX = 'createOrUpdate';
+    private const PREFIX = 'findOrCreate';
 
     public function convert(AbstractElement $abstractElement): string
     {
