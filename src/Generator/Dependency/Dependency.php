@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator\Dependency;
 
+use LogicException;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
@@ -10,6 +11,7 @@ use Pimcore\Model\Element\AbstractElement;
 readonly class Dependency
 {
     private string $type;
+
     private int $id;
 
     public function __construct(
@@ -25,9 +27,12 @@ readonly class Dependency
         } elseif ($this->target instanceof DataObject) {
             $this->type = 'object';
         } else {
-            throw new \LogicException('Unknown element type');
+            throw new LogicException('Unknown element type');
         }
 
+        if ($this->target->getId() === null) {
+            throw new LogicException('Target element must have an ID');
+        }
         $this->id = $this->target->getId();
     }
 

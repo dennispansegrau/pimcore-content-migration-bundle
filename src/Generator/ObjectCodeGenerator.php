@@ -14,8 +14,7 @@ use PimcoreContentMigration\Builder\DataObject\ConcreteBuilder;
 use PimcoreContentMigration\Builder\DataObject\DataObjectBuilder;
 use PimcoreContentMigration\Builder\DataObject\FolderBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
-use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
-use PimcoreContentMigration\Loader\ObjectLoaderInterface;
+use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -23,7 +22,7 @@ use ReflectionMethod;
 use function str_starts_with;
 use function substr;
 
-class ObjectCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
+class ObjectCodeGenerator implements CodeGeneratorInterface
 {
     /** setters to ignore */
     private const SETTER_FILTERS = [
@@ -37,15 +36,9 @@ class ObjectCodeGenerator extends AbstractElementCodeGenerator implements CodeGe
 
     public function __construct(
         private readonly CodeGenerator $codeGenerator,
-        AbstractElementToMethodNameConverter $methodNameConverter,
-        AbstractElementToVariableNameConverter $variableNameConverter,
-        ObjectLoaderInterface $objectLoader
+        public DependencyCollector $dependencyCollector,
+        private readonly AbstractElementToMethodNameConverter $methodNameConverter,
     ) {
-        parent::__construct(
-            $methodNameConverter,
-            $variableNameConverter,
-            $objectLoader
-        );
     }
 
     /**
@@ -72,7 +65,7 @@ class ObjectCodeGenerator extends AbstractElementCodeGenerator implements CodeGe
             'builder' => $this->getBuilderClass($abstractElement),
             'methodName' => $methodName,
             'settings' => $settings,
-            'dependencies' => $this->getDependencies($settings, $abstractElement, $existingMethodNames),
+            'dependencies' => $this->dependencyCollector->getDependencies($settings, $abstractElement, $existingMethodNames),
             'isConcrete' => $abstractElement instanceof DataObject\Concrete,
             'setters' => $this->getSetters($abstractElement),
         ]);

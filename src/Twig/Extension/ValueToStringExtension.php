@@ -2,12 +2,9 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
-use Pimcore\Model\Asset;
-use Pimcore\Model\DataObject;
-use Pimcore\Model\Document;
-use Pimcore\Model\Element\Data\MarkerHotspotItem;
 use function get_class;
 use function gettype;
+use function in_array;
 
 use InvalidArgumentException;
 
@@ -16,11 +13,12 @@ use function is_bool;
 use function is_callable;
 use function is_float;
 use function is_int;
-use function is_object;
 use function is_resource;
 use function is_string;
 
+use LogicException;
 use Pimcore\Model\Element\AbstractElement;
+use Pimcore\Model\Element\Data\MarkerHotspotItem;
 use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
@@ -48,7 +46,7 @@ class ValueToStringExtension extends AbstractExtension
             if (in_array($value->getType(), ['document', 'asset', 'object'], true)) {
                 $id = $value->getValue();
                 if (!is_int($id)) {
-                    throw new \LogicException('Invalid value type in MarkerHotspotItem. Integer expected.');
+                    throw new LogicException('Invalid value type in MarkerHotspotItem. Integer expected.');
                 }
                 $dependency = $dependencyList->getByTypeAndId($value->getType(), $id);
                 if ($dependency === null) {

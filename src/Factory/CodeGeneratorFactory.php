@@ -22,9 +22,9 @@ readonly class CodeGeneratorFactory implements CodeGeneratorFactoryInterface
 
     public function getCodeGenerator(MigrationType $type): CodeGeneratorInterface
     {
-        $this->documentCodeGenerator->setCodeGeneratorFactory($this);
-        $this->assetCodeGenerator->setCodeGeneratorFactory($this);
-        $this->objectCodeGenerator->setCodeGeneratorFactory($this);
+        $this->documentCodeGenerator->dependencyCollector->setCodeGeneratorFactory($this);
+        $this->assetCodeGenerator->dependencyCollector->setCodeGeneratorFactory($this);
+        $this->objectCodeGenerator->dependencyCollector->setCodeGeneratorFactory($this);
 
         return match ($type) {
             MigrationType::DOCUMENT => $this->documentCodeGenerator,

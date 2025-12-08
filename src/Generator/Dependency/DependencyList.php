@@ -4,11 +4,11 @@ namespace PimcoreContentMigration\Generator\Dependency;
 
 use ArrayIterator;
 
-use Pimcore\Model\Element\AbstractElement;
 use function count;
 
 use Countable;
 use IteratorAggregate;
+use Pimcore\Model\Element\AbstractElement;
 use Traversable;
 
 /**

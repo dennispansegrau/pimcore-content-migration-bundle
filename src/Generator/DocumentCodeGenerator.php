@@ -27,25 +27,18 @@ use PimcoreContentMigration\Builder\Document\PrintContainerBuilder;
 use PimcoreContentMigration\Builder\Document\PrintPageBuilder;
 use PimcoreContentMigration\Builder\Document\SnippetBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
-use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
-use PimcoreContentMigration\Loader\ObjectLoaderInterface;
+use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
 use PimcoreContentMigration\Writer\HtmlWriter;
 use PimcoreContentMigration\Writer\RelativePath;
 
-class DocumentCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
+class DocumentCodeGenerator implements CodeGeneratorInterface
 {
     public function __construct(
         private readonly CodeGenerator $codeGenerator,
         private readonly HtmlWriter $htmlWriter,
-        AbstractElementToMethodNameConverter $methodNameConverter,
-        AbstractElementToVariableNameConverter $variableNameConverter,
-        ObjectLoaderInterface $objectLoader
+        public DependencyCollector $dependencyCollector,
+        private readonly AbstractElementToMethodNameConverter $methodNameConverter,
     ) {
-        parent::__construct(
-            $methodNameConverter,
-            $variableNameConverter,
-            $objectLoader
-        );
     }
 
     public function generateCode(AbstractElement $abstractElement, Settings $settings, array &$existingMethodNames = []): string
@@ -68,7 +61,7 @@ class DocumentCodeGenerator extends AbstractElementCodeGenerator implements Code
             'editables' => $this->getEditables($abstractElement, $settings),
             'isPageSnippet' => $abstractElement instanceof Document\PageSnippet,
             'isPrintAbstract' => $abstractElement instanceof PrintAbstract,
-            'dependencies' => $this->getDependencies($settings, $abstractElement, $existingMethodNames),
+            'dependencies' => $this->dependencyCollector->getDependencies($settings, $abstractElement, $existingMethodNames),
             'builder' => $this->getBuilderClass($abstractElement),
         ]);
     }

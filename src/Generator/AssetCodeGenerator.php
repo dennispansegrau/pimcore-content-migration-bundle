@@ -18,24 +18,17 @@ use PimcoreContentMigration\Builder\Asset\TextBuilder;
 use PimcoreContentMigration\Builder\Asset\UnknownBuilder;
 use PimcoreContentMigration\Builder\Asset\VideoBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
-use PimcoreContentMigration\Converter\AbstractElementToVariableNameConverter;
-use PimcoreContentMigration\Loader\ObjectLoaderInterface;
+use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
 use PimcoreContentMigration\Writer\AssetWriter;
 
-class AssetCodeGenerator extends AbstractElementCodeGenerator implements CodeGeneratorInterface
+class AssetCodeGenerator implements CodeGeneratorInterface
 {
     public function __construct(
         private readonly AssetWriter $assetWriter,
         private readonly CodeGenerator $codeGenerator,
-        AbstractElementToMethodNameConverter $methodNameConverter,
-        AbstractElementToVariableNameConverter $variableNameConverter,
-        ObjectLoaderInterface $objectLoader
+        public DependencyCollector $dependencyCollector,
+        private readonly AbstractElementToMethodNameConverter $methodNameConverter,
     ) {
-        parent::__construct(
-            $methodNameConverter,
-            $variableNameConverter,
-            $objectLoader
-        );
     }
 
     /**
@@ -67,7 +60,7 @@ class AssetCodeGenerator extends AbstractElementCodeGenerator implements CodeGen
             'methodName' => $methodName,
             'classname' => '\\' . get_class($abstractElement),
             'settings' => $settings,
-            'dependencies' => $this->getDependencies($settings, $abstractElement, $existingMethodNames),
+            'dependencies' => $this->dependencyCollector->getDependencies($settings, $abstractElement, $existingMethodNames),
             'dataPath' => $dataPath,
             'builder' => $this->getBuilderClass($abstractElement),
         ]);

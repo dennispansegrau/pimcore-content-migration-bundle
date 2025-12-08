@@ -3,7 +3,6 @@
 namespace PimcoreContentMigration\Builder\Document;
 
 use Pimcore\Model\Asset;
-use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\Document\Editable;
 use Pimcore\Model\Element\Data\MarkerHotspotItem;
@@ -64,21 +63,21 @@ class EditableBuilder
         string $name,
         string $text,
     ): Editable\Link {
-//        'internalType' => 'document',
-//        'linktype' => 'internal',
-//        'text' => 'Finde deinen Oldtimer',
-//        'path' => '/de/Finden-und-Kaufen',
-//        'target' => '',
-//        'parameters' => '',
-//        'anchor' => '',
-//        'title' => '',
-//        'accesskey' => '',
-//        'rel' => '',
-//        'tabindex' => '',
-//        'class' => '',
-//        'attributes' => '',
-//        'internal' => true,
-//        'internalId' => 138,
+        //        'internalType' => 'document',
+        //        'linktype' => 'internal',
+        //        'text' => 'Finde deinen Oldtimer',
+        //        'path' => '/de/Finden-und-Kaufen',
+        //        'target' => '',
+        //        'parameters' => '',
+        //        'anchor' => '',
+        //        'title' => '',
+        //        'accesskey' => '',
+        //        'rel' => '',
+        //        'tabindex' => '',
+        //        'class' => '',
+        //        'attributes' => '',
+        //        'internal' => true,
+        //        'internalId' => 138,
         $editable = new Editable\Link();
         $editable->setName($name);
         $editable->setDataFromResource($text);
