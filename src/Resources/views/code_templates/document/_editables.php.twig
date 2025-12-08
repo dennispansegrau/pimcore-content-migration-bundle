@@ -20,6 +20,10 @@
                 ]{% endif %}, {{ pcmb_value_to_string(marker.name, dependencies) }}),
 {% endfor %}
             ]{% endif %}))
+{% elseif editable.type == "input" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createInput('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
+{% elseif editable.type == "textarea" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createTextarea('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% else %}
             ->setRawEditable('{{ editable.name }}', '{{ editable.type }}', {{ pcmb_value_to_string(editable.data, dependencies) }})
 {% endif %}

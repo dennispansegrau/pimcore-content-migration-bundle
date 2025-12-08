@@ -40,6 +40,26 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createInput(
+        string $name,
+        string $text,
+    ): Editable\Input {
+        $editable = new Editable\Input();
+        $editable->setName($name);
+        $editable->setDataFromResource($text);
+        return $editable;
+    }
+
+    public function createTextarea(
+        string $name,
+        string $text,
+    ): Editable\Textarea {
+        $editable = new Editable\Textarea();
+        $editable->setName($name);
+        $editable->setDataFromResource($text);
+        return $editable;
+    }
+
     /**
      * @param MarkerHotspotItem[] $markerHotspotItems
      * @return array<string, mixed>
