@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
+use Pimcore\Model\Document\Editable;
 use function file_get_contents;
 
 use LogicException;
@@ -25,6 +26,12 @@ abstract class PageSnippetBuilder extends DocumentBuilder
     public function setRawEditable(string $name, string $type, mixed $data): static
     {
         $this->getObject()->setRawEditable($name, $type, $data);
+        return $this;
+    }
+
+    public function setEditable(Editable $editable): static
+    {
+        $this->getObject()->setEditable($editable);
         return $this;
     }
 

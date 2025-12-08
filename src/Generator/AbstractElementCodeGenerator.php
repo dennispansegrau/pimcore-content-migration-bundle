@@ -66,7 +66,7 @@ abstract class AbstractElementCodeGenerator
                         ->getCodeGenerator(MigrationType::fromString($dependencyData['type']))
                         ->generateCode($dependency, $settings->forDependencies(), $existingMethodNames);
                 }
-                $dependencies[] = new Dependency($abstractElement, $settings->getType()->value, $variableName, $methodName, $code);
+                $dependencies[] = new Dependency($dependency, $variableName, $methodName, $code);
             }
         }
         return new DependencyList($dependencies);

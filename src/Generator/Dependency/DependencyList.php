@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Generator\Dependency;
 
 use ArrayIterator;
 
+use Pimcore\Model\Element\AbstractElement;
 use function count;
 
 use Countable;
@@ -35,10 +36,21 @@ class DependencyList implements IteratorAggregate, Countable
         $this->dependencies[] = $dependency;
     }
 
-    public function getDependency(object $object): ?Dependency
+    public function getDependency(AbstractElement $object): ?Dependency
     {
         foreach ($this->dependencies as $dependency) {
             if ($dependency->getTarget() === $object) {
+                return $dependency;
+            }
+        }
+
+        return null;
+    }
+
+    public function getByTypeAndId(string $type, int $id): ?Dependency
+    {
+        foreach ($this->dependencies as $dependency) {
+            if ($dependency->getType() === $type && $dependency->getId() === $id) {
                 return $dependency;
             }
         }

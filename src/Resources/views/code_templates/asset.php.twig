@@ -1,24 +1,24 @@
 {% autoescape false %}
-    private function {{ methodName }}(): {{ classname }}
+private function {{ methodName }}(): {{ classname }}
     {
-    {% if builder is null %}
+{% if builder is null %}
         // TODO: Insert a builder
         // No Builder found for type {{ type }}. Please create your own builder.
         // You can extend the \PimcoreContentMigration\Builder\Asset\AssetBuilder or any other builder.
 
-        {% set builder = '[YOUR-BUILDER]' %}
-    {% endif %}
-    {% if dependencies is not empty %}
+{% set builder = '[YOUR-BUILDER]' %}
+{% endif %}
+{% if dependencies is not empty %}
         # Find or create dependency dummies (without content)
-        {% for dependency in dependencies %}
-            ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
-        {% endfor %}
+{% for dependency in dependencies %}
+        ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
+{% endfor %}
 
-    {% endif %}
+{% endif %}
 {% if settings.isRootLevel() %}
     # Create {{ type }} {{ asset.getFullPath() }}
     return {{ builder }}::findOrCreate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
-    {# BUILDER SPECIFIC SETTER #}
+{# BUILDER SPECIFIC SETTER #}
 {% if type == 'archive' %}
 {% elseif type == 'audio' %}
 {% elseif type == 'document' %}
@@ -28,7 +28,7 @@
 {% elseif type == 'unknown' %}
 {% elseif type == 'video' %}
 {% endif %}
-    {# ASSET BUILDER SETTER #}
+{# ASSET BUILDER SETTER #}
     ->setDataChanged(true)
     ->setType('{{ asset.getType() }}')
     ->setMimeType('{{ asset.getMimeType()}}')

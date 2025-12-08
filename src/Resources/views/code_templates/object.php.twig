@@ -1,17 +1,17 @@
 {% autoescape false %}
-    private function {{ methodName }}(): {{ classname }}
+private function {{ methodName }}(): {{ classname }}
     {
-    {% if dependencies is not empty %}
+{% if dependencies is not empty %}
         # Find or create dependency dummies (without content)
-        {% for dependency in dependencies %}
-            ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
-        {% endfor %}
+{% for dependency in dependencies %}
+        ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
+{% endfor %}
 
-    {% endif %}
+{% endif %}
 {% if settings.isRootLevel() %}
     # Create {{ type }} {{ object.getFullPath() }}
     return {{ builder }}::findOrCreate('{{ object.getFullPath() }}', {{ classname }}::class)
-    {# CONCRETE BUILDER SETTER #}
+{# CONCRETE BUILDER SETTER #}
 {% if isConcrete %}
     ->setPublished({{ object.getPublished() ? 'true' : 'false' }})
 {% endif %}

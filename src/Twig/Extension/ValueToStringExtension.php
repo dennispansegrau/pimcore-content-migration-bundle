@@ -2,6 +2,10 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\Document;
+use Pimcore\Model\Element\Data\MarkerHotspotItem;
 use function get_class;
 use function gettype;
 
@@ -39,6 +43,29 @@ class ValueToStringExtension extends AbstractExtension
      */
     public function valueToString(mixed $value, DependencyList $dependencyList): string
     {
+        // MarkerHotspotItem
+        if ($value instanceof MarkerHotspotItem) {
+            if ($value->getType() === 'document') {
+                /** @var int $id */
+                $id = $value->getValue();
+                $document = Document::getById($id);
+                return '\'' . $document?->getFullPath() . '\'';
+            }
+            if ($value->getType() === 'asset') {
+                /** @var int $id */
+                $id = $value->getValue();
+                $asset = Asset::getById($id);
+                return '\'' . $asset?->getFullPath() . '\'';
+            }
+            if ($value->getType() === 'object') {
+                /** @var int $id */
+                $id = $value->getValue();
+                $object = DataObject::getById($id);
+                return '\'' . $object?->getFullPath() . '\'';
+            }
+            $value = $value->getValue();
+        }
+
         // NULL
         if ($value === null) {
             return 'null';
@@ -79,17 +106,13 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         // OBJECT
-        if (is_object($value)) {
+        if ($value instanceof AbstractElement) {
             $dependency = $dependencyList->getDependency($value);
             if (!$dependency instanceof Dependency) {
                 // try to get the element by path if it is not in the dependency list
-                if ($value instanceof AbstractElement) {
-                    return '\\' . get_class($value) . '::getByPath(\'' . $value->getFullPath() . '\')';
-                } else {
-                    return 'null';
-                }
+                return '\\' . get_class($value) . '::getByPath(\'' . $value->getFullPath() . '\')';
             }
-            return $dependency->getVariableName();
+            return '$' . $dependency->getVariableName();
         }
 
         // RESOURCE (z. B. Datei-Handle)
