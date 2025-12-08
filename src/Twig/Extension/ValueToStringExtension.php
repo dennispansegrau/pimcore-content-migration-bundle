@@ -45,25 +45,19 @@ class ValueToStringExtension extends AbstractExtension
     {
         // MarkerHotspotItem
         if ($value instanceof MarkerHotspotItem) {
-            if ($value->getType() === 'document') {
-                /** @var int $id */
+            if (in_array($value->getType(), ['document', 'asset', 'object'], true)) {
                 $id = $value->getValue();
-                $document = Document::getById($id);
-                return '\'' . $document?->getFullPath() . '\'';
+                if (!is_int($id)) {
+                    throw new \LogicException('Invalid value type in MarkerHotspotItem. Integer expected.');
+                }
+                $dependency = $dependencyList->getByTypeAndId($value->getType(), $id);
+                if ($dependency === null) {
+                    return 'null';
+                }
+                return '$' . $dependency->getVariableName() . '->getId()';
             }
-            if ($value->getType() === 'asset') {
-                /** @var int $id */
-                $id = $value->getValue();
-                $asset = Asset::getById($id);
-                return '\'' . $asset?->getFullPath() . '\'';
-            }
-            if ($value->getType() === 'object') {
-                /** @var int $id */
-                $id = $value->getValue();
-                $object = DataObject::getById($id);
-                return '\'' . $object?->getFullPath() . '\'';
-            }
-            $value = $value->getValue();
+
+            $value = $value->getValue(); // bool or string
         }
 
         // NULL

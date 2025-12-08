@@ -11,6 +11,9 @@ use PimcoreContentMigration\MigrationType;
 
 class ObjectLoader implements ObjectLoaderInterface
 {
+    /**
+     * @throws NotFoundException
+     */
     public function loadObject(MigrationType $type, int $id): AbstractElement
     {
         $object = null;

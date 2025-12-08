@@ -60,6 +60,31 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createLink(
+        string $name,
+        string $text,
+    ): Editable\Link {
+//        'internalType' => 'document',
+//        'linktype' => 'internal',
+//        'text' => 'Finde deinen Oldtimer',
+//        'path' => '/de/Finden-und-Kaufen',
+//        'target' => '',
+//        'parameters' => '',
+//        'anchor' => '',
+//        'title' => '',
+//        'accesskey' => '',
+//        'rel' => '',
+//        'tabindex' => '',
+//        'class' => '',
+//        'attributes' => '',
+//        'internal' => true,
+//        'internalId' => 138,
+        $editable = new Editable\Link();
+        $editable->setName($name);
+        $editable->setDataFromResource($text);
+        return $editable;
+    }
+
     /**
      * @param MarkerHotspotItem[] $markerHotspotItems
      * @return array<string, mixed>
@@ -96,19 +121,6 @@ class EditableBuilder
      */
     public function createMarkerHotspotItem(string $name, string $type, null|string|bool|int $value): MarkerHotspotItem
     {
-        if (in_array($type, ['document', 'asset', 'object'], true) && is_string($value) && !empty($value)) {
-            if ($type === 'document') {
-                $document = Document::getByPath($value);
-                $value = $document?->getId();
-            } elseif ($type === 'asset') {
-                $asset = Asset::getByPath($value);
-                $value = $asset?->getId();
-            } elseif ($type === 'object') {
-                $object = DataObject::getByPath($value);
-                $value = $object?->getId();
-            }
-        }
-
         return new MarkerHotspotItem([
             'name' => $name,
             'type' => $type,
