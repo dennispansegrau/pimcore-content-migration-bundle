@@ -26,6 +26,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createTextarea('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "select" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createSelect('{{ editable.name }}', '{{ editable.text }}'))
+{% elseif editable.type == "renderlet" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createRenderlet('{{ editable.name }}', {{ pcmb_value_to_string(editable, dependencies) }}, '{{ editable.data.type }}', '{{ editable.data.subtype }}'))
 {% elseif editable.type == "block" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createBlock('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "link" %}

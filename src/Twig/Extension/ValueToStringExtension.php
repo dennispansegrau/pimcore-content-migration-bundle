@@ -3,6 +3,7 @@
 namespace PimcoreContentMigration\Twig\Extension;
 
 use Pimcore\Model\Document\Editable\Link;
+use Pimcore\Model\Document\Editable\Renderlet;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -73,6 +74,24 @@ class ValueToStringExtension extends AbstractExtension
             $dependency = $dependencyList->getByTypeAndId($internalType, $internalId);
             if ($dependency === null) {
                 return 'null';
+            }
+            return '$' . $dependency->getVariableName() . '->getId()';
+        }
+
+        // Editable\Link
+        if ($value instanceof Renderlet) {
+            $data = $value->getData();
+            if (!is_array($data)) {
+                return 'null';
+            }
+            $id = $data['id'] ?? null;
+            $type = $data['type'] ?? null;
+            if (empty($type) || empty($id) || !is_string($type) || !is_int($id)) {
+                throw new LogicException('Invalid renderlet data.');
+            }
+            $dependency = $dependencyList->getByTypeAndId($type, $id);
+            if ($dependency === null) {
+                return (string) $id;
             }
             return '$' . $dependency->getVariableName() . '->getId()';
         }

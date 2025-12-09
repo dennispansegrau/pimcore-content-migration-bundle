@@ -69,6 +69,25 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createRenderlet(
+        string $name,
+        int $id,
+        string $type,
+        string $subType,
+    ): Editable\Renderlet {
+        $editable = new Editable\Renderlet();
+        $editable->setName($name);
+        $editable->setDataFromResource([
+            'id' => $id,
+            'type' => $type,
+            'subtype' => $subType,
+        ]);
+        return $editable;
+    }
+
+    /**
+     * @param array<string, string> $data
+     */
     public function createBlock(
         string $name,
         array $data,
