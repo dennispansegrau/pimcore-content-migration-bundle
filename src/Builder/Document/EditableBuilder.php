@@ -81,6 +81,19 @@ class EditableBuilder
         return $editable;
     }
 
+    /**
+     * @param array<int, array<string, string|bool>> $blocks
+     */
+    public function createAreablock(
+        string $name,
+        array $blocks,
+    ): Editable\Areablock {
+        $editable = new Editable\Areablock();
+        $editable->setName($name);
+        $editable->setDataFromResource($blocks);
+        return $editable;
+    }
+
     public function createRenderlet(
         string $name,
         int $id,

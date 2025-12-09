@@ -28,6 +28,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createSelect('{{ editable.name }}', '{{ editable.text }}'))
 {% elseif editable.type == "area" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createArea('{{ editable.name }}', '{{ editable.getBrickType() ?? '' }}'))
+{% elseif editable.type == "areablock" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createAreablock('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "renderlet" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createRenderlet('{{ editable.name }}', {{ pcmb_value_to_string(editable, dependencies) }}, '{{ editable.data.type }}', '{{ editable.data.subtype }}'))
 {% elseif editable.type == "block" %}
