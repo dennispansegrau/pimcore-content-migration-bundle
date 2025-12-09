@@ -69,6 +69,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createCheckbox(
+        string $name,
+        bool $value,
+    ): Editable\Checkbox {
+        $editable = new Editable\Checkbox();
+        $editable->setName($name);
+        $editable->setDataFromResource($value);
+        return $editable;
+    }
+
     public function createArea(
         string $name,
         string $type,
