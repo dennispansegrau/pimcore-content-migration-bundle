@@ -127,6 +127,19 @@ class EditableBuilder
         return $editable;
     }
 
+    /**
+     * @param int[] $ids
+     */
+    public function createRelations(
+        string $name,
+        array $ids
+    ): Editable\Relations {
+        $editable = new Editable\Relations();
+        $editable->setName($name);
+        $editable->setDataFromEditmode($ids);
+        return $editable;
+    }
+
     public function createEmbed(
         string $name,
         string $url,
