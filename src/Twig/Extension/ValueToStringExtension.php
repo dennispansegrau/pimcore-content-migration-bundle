@@ -3,6 +3,7 @@
 namespace PimcoreContentMigration\Twig\Extension;
 
 use Pimcore\Model\Document\Editable\Link;
+use Pimcore\Model\Document\Editable\Pdf;
 use Pimcore\Model\Document\Editable\Renderlet;
 use function get_class;
 use function gettype;
@@ -92,6 +93,19 @@ class ValueToStringExtension extends AbstractExtension
             $dependency = $dependencyList->getByTypeAndId($type, $id);
             if ($dependency === null) {
                 return (string) $id;
+            }
+            return '$' . $dependency->getVariableName() . '->getId()';
+        }
+
+        // Editable\Pdf
+        if ($value instanceof Pdf) {
+            $data = $value->getElement();
+            if ($data === null) {
+                return (string) $value->getId();
+            }
+            $dependency = $dependencyList->getByTypeAndId('asset', $data->getId() ?? 0);
+            if ($dependency === null) {
+                return (string) $value->getId();
             }
             return '$' . $dependency->getVariableName() . '->getId()';
         }

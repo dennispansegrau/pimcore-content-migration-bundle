@@ -38,6 +38,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createDate('{{ editable.name }}', {{ pcmb_value_to_string(editable.getDataForResource(), dependencies) }}))
 {% elseif editable.type == "multiselect" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createMultiselect('{{ editable.name }}', {{ pcmb_value_to_string(editable.getData(), dependencies) }}))
+{% elseif editable.type == "pdf" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createPdf('{{ editable.name }}', {{ pcmb_value_to_string(editable, dependencies) }}))
 {% elseif editable.type == "areablock" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createAreablock('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "renderlet" %}

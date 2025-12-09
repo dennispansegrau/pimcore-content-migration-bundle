@@ -99,6 +99,18 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createPdf(
+        string $name,
+        int $assetId,
+    ): Editable\Pdf {
+        $editable = new Editable\Pdf();
+        $editable->setName($name);
+        $editable->setDataFromResource([
+            'id' => $assetId,
+        ]);
+        return $editable;
+    }
+
     public function createEmbed(
         string $name,
         string $url,
