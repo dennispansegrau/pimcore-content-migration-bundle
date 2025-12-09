@@ -59,6 +59,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createSelect(
+        string $name,
+        string $text,
+    ): Editable\Select {
+        $editable = new Editable\Select();
+        $editable->setName($name);
+        $editable->setDataFromResource($text);
+        return $editable;
+    }
+
     public function createLink(
         string $name,
         ?string $internalType,
