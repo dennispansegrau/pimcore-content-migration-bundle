@@ -111,6 +111,22 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createRelation(
+        string $name,
+        int $id,
+        string $type,
+        string $subType,
+    ): Editable\Relation {
+        $editable = new Editable\Relation();
+        $editable->setName($name);
+        $editable->setDataFromResource([
+            'id' => $id,
+            'type' => $type,
+            'subtype' => $subType,
+        ]);
+        return $editable;
+    }
+
     public function createEmbed(
         string $name,
         string $url,

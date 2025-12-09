@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Twig\Extension;
 
 use Pimcore\Model\Document\Editable\Link;
 use Pimcore\Model\Document\Editable\Pdf;
+use Pimcore\Model\Document\Editable\Relation;
 use Pimcore\Model\Document\Editable\Renderlet;
 use function get_class;
 use function gettype;
@@ -80,7 +81,7 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         // Editable\Link
-        if ($value instanceof Renderlet) {
+        if ($value instanceof Renderlet || $value instanceof Relation) {
             $data = $value->getData();
             if (!is_array($data)) {
                 return 'null';
@@ -88,7 +89,7 @@ class ValueToStringExtension extends AbstractExtension
             $id = $data['id'] ?? null;
             $type = $data['type'] ?? null;
             if (empty($type) || empty($id) || !is_string($type) || !is_int($id)) {
-                throw new LogicException('Invalid renderlet data.');
+                throw new LogicException('Invalid data.');
             }
             $dependency = $dependencyList->getByTypeAndId($type, $id);
             if ($dependency === null) {
