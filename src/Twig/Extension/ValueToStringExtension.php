@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Pimcore\Model\Document\Editable\Link;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -56,6 +57,24 @@ class ValueToStringExtension extends AbstractExtension
             }
 
             $value = $value->getValue(); // bool or string
+        }
+
+        // Editable\Link
+        if ($value instanceof Link) {
+            $data = $value->getData();
+            if (!is_array($data)) {
+                return 'null';
+            }
+            $internalType = $data['internalType'] ?? null;
+            $internalId = $data['internalId'] ?? null;
+            if (empty($internalType) || empty($internalId) || !is_string($internalType) || !is_int($internalId)) {
+                return 'null';
+            }
+            $dependency = $dependencyList->getByTypeAndId($internalType, $internalId);
+            if ($dependency === null) {
+                return 'null';
+            }
+            return '$' . $dependency->getVariableName() . '->getId()';
         }
 
         // NULL

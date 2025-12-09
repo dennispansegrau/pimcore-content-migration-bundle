@@ -61,26 +61,41 @@ class EditableBuilder
 
     public function createLink(
         string $name,
+        ?string $internalType,
+        string $linkType,
         string $text,
+        string $path,
+        string $target,
+        string $parameters,
+        string $anchor,
+        string $title,
+        string $accesskey,
+        string $rel,
+        string $tabindex,
+        string $class,
+        string $attributes,
+        bool $internal,
+        ?int $internalId,
     ): Editable\Link {
-        //        'internalType' => 'document',
-        //        'linktype' => 'internal',
-        //        'text' => 'Finde deinen Oldtimer',
-        //        'path' => '/de/Finden-und-Kaufen',
-        //        'target' => '',
-        //        'parameters' => '',
-        //        'anchor' => '',
-        //        'title' => '',
-        //        'accesskey' => '',
-        //        'rel' => '',
-        //        'tabindex' => '',
-        //        'class' => '',
-        //        'attributes' => '',
-        //        'internal' => true,
-        //        'internalId' => 138,
         $editable = new Editable\Link();
         $editable->setName($name);
-        $editable->setDataFromResource($text);
+        $editable->setDataFromResource([
+            'internalType' => $internalType,
+            'linktype' => $linkType,
+            'text' => $text,
+            'path' => $path,
+            'target' => $target,
+            'parameters' => $parameters,
+            'anchor' => $anchor,
+            'title' => $title,
+            'accesskey' => $accesskey,
+            'rel' => $rel,
+            'tabindex' => $tabindex,
+            'class' => $class,
+            'attributes' => $attributes,
+            'internal' => $internal,
+            'internalId' => $internalId,
+        ]);
         return $editable;
     }
 

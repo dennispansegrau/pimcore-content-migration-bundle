@@ -24,6 +24,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createInput('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "textarea" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createTextarea('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
+{% elseif editable.type == "link" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createLink('{{ editable.name }}', {{ pcmb_value_to_string(editable.data.internalType ?? null, dependencies) }}, '{{ editable.data.linktype ?? '' }}', '{{ editable.data.text ?? '' }}', '{{ editable.data.path ?? '' }}', '{{ editable.data.target ?? '' }}', '{{ editable.data.parameters ?? '' }}', '{{ editable.data.anchor ?? '' }}', '{{ editable.data.title ?? '' }}', '{{ editable.data.accesskey ?? '' }}', '{{ editable.data.rel ?? '' }}', '{{ editable.data.tabindex ?? '' }}', '{{ editable.data.class ?? '' }}', '{{ editable.data.attributes ?? '' }}', {{ (editable.data.internal ?? false) ? 'true' : 'false' }}, {{ pcmb_value_to_string(editable, dependencies) }}))
 {% else %}
             ->setRawEditable('{{ editable.name }}', '{{ editable.type }}', {{ pcmb_value_to_string(editable.data, dependencies) }})
 {% endif %}
