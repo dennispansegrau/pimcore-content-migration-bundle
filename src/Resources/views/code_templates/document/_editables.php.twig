@@ -30,6 +30,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createArea('{{ editable.name }}', '{{ editable.getBrickType() ?? '' }}'))
 {% elseif editable.type == "embed" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createEmbed('{{ editable.name }}', '{{ editable.getUrl() ?? '' }}'))
+{% elseif editable.type == "numeric" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createNumeric('{{ editable.name }}', '{{ editable.getData() ?? '' }}'))
 {% elseif editable.type == "checkbox" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createCheckbox('{{ editable.name }}', {{ editable.data ? 'true' : 'false' }}))
 {% elseif editable.type == "date" %}

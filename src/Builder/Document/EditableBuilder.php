@@ -89,6 +89,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createNumeric(
+        string $name,
+        string $number,
+    ): Editable\Numeric {
+        $editable = new Editable\Numeric();
+        $editable->setName($name);
+        $editable->setDataFromResource($number);
+        return $editable;
+    }
+
     public function createEmbed(
         string $name,
         string $url,
