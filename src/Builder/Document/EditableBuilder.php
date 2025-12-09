@@ -89,6 +89,18 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createEmbed(
+        string $name,
+        string $url,
+    ): Editable\Embed {
+        $editable = new Editable\Embed();
+        $editable->setName($name);
+        $editable->setDataFromResource([
+            'url' => $url,
+        ]);
+        return $editable;
+    }
+
     public function createArea(
         string $name,
         string $type,
