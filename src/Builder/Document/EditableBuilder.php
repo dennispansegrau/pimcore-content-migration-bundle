@@ -79,6 +79,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createDate(
+        string $name,
+        ?int $timestamp,
+    ): Editable\Date {
+        $editable = new Editable\Date();
+        $editable->setName($name);
+        $editable->setDataFromResource($timestamp);
+        return $editable;
+    }
+
     public function createArea(
         string $name,
         string $type,
