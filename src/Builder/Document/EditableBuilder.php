@@ -69,6 +69,18 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createArea(
+        string $name,
+        string $type,
+    ): Editable\Area {
+        $editable = new Editable\Area();
+        $editable->setName($name);
+        $editable->setDataFromResource([
+            'type' => $type,
+        ]);
+        return $editable;
+    }
+
     public function createRenderlet(
         string $name,
         int $id,
