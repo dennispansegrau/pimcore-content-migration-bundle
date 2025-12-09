@@ -101,6 +101,19 @@ class EditableBuilder
         return $editable;
     }
 
+    /**
+     * @param string[] $values
+     */
+    public function createMultiselect(
+        string $name,
+        array $values,
+    ): Editable\Multiselect {
+        $editable = new Editable\Multiselect();
+        $editable->setName($name);
+        $editable->setDataFromResource($values);
+        return $editable;
+    }
+
     public function createArea(
         string $name,
         string $type,
