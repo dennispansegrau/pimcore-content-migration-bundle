@@ -69,6 +69,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createBlock(
+        string $name,
+        array $data,
+    ): Editable\Block {
+        $editable = new Editable\Block();
+        $editable->setName($name);
+        $editable->setDataFromResource($data);
+        return $editable;
+    }
+
     public function createLink(
         string $name,
         ?string $internalType,
