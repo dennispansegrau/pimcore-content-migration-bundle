@@ -131,6 +131,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createWysiwyg(
+        string $name,
+        string $text,
+    ): Editable\Wysiwyg {
+        $editable = new Editable\Wysiwyg();
+        $editable->setName($name);
+        $editable->setDataFromResource($text);
+        return $editable;
+    }
+
     public function createVideo(
         string $name,
         int|string $videoId,

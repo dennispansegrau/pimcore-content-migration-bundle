@@ -26,6 +26,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createTextarea('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "select" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createSelect('{{ editable.name }}', '{{ editable.text }}'))
+{% elseif editable.type == "wysiwyg" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createWysiwyg('{{ editable.name }}', '{{ editable.getText() }}'))
 {% elseif editable.type == "area" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createArea('{{ editable.name }}', '{{ editable.getBrickType() ?? '' }}'))
 {% elseif editable.type == "embed" %}
