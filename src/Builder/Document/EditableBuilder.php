@@ -111,6 +111,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createTable(
+        string $name,
+        array $data,
+    ): Editable\Table {
+        $editable = new Editable\Table();
+        $editable->setName($name);
+        $editable->setDataFromResource($data);
+        return $editable;
+    }
+
     public function createVideo(
         string $name,
         int|string $videoId,
