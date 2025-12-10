@@ -44,6 +44,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createTable('{{ editable.name }}', {{ pcmb_value_to_string(editable.getData(), dependencies) }}))
 {% elseif editable.type == "areablock" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createAreablock('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
+{% elseif editable.type == "snippet" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createSnippet('{{ editable.name }}', {{ pcmb_value_to_string(editable, dependencies) }}))
 {% elseif editable.type == "relations" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createRelations('{{ editable.name }}', {{ pcmb_value_to_string(editable.getDataForResource(), dependencies) }}))
 {% elseif editable.type == "video" %}

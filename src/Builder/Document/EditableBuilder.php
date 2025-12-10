@@ -121,6 +121,16 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createSnippet(
+        string $name,
+        int $snippedId,
+    ): Editable\Snippet {
+        $editable = new Editable\Snippet();
+        $editable->setName($name);
+        $editable->setId($snippedId);
+        return $editable;
+    }
+
     public function createVideo(
         string $name,
         int|string $videoId,
