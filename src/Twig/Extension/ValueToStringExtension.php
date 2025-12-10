@@ -6,6 +6,7 @@ use Pimcore\Model\Document\Editable\Link;
 use Pimcore\Model\Document\Editable\Pdf;
 use Pimcore\Model\Document\Editable\Relation;
 use Pimcore\Model\Document\Editable\Renderlet;
+use Pimcore\Model\Document\Editable\Video;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -41,9 +42,10 @@ class ValueToStringExtension extends AbstractExtension
     }
 
     /**
+     * @param array<string, mixed> $parameters
      * Converts any value into a readable string.
      */
-    public function valueToString(mixed $value, DependencyList $dependencyList): string
+    public function valueToString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
         // MarkerHotspotItem
         if ($value instanceof MarkerHotspotItem) {
@@ -109,6 +111,26 @@ class ValueToStringExtension extends AbstractExtension
                 return (string) $value->getId();
             }
             return '$' . $dependency->getVariableName() . '->getId()';
+        }
+
+        // Editable\Video
+        if ($value instanceof Video && array_key_exists('field', $parameters)) {
+            $field = $parameters['field'] ?? null;
+            if ($field === 'id') {
+                $id = $value->getId();
+            } elseif ($field === 'poster') {
+                $id = $value->getPoster();
+            } else {
+                throw new InvalidArgumentException('Editable type video needs field parameter with value id or poster.');
+            }
+            if (is_int($id)) {
+                $dependency = $dependencyList->getByTypeAndId('asset', $id);
+                if ($dependency === null) {
+                    return (string) $id;
+                }
+                return '$' . $dependency->getVariableName() . '->getId()';
+            }
+            $value = $id; // handle null or string later
         }
 
         // NULL

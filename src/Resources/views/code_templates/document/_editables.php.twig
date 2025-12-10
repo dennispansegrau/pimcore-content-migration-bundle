@@ -44,6 +44,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createAreablock('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "relations" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createRelations('{{ editable.name }}', {{ pcmb_value_to_string(editable.getDataForResource(), dependencies) }}))
+{% elseif editable.type == "video" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createVideo('{{ editable.name }}', {{ pcmb_value_to_string(editable, dependencies, {'field': 'id'}) }}, '{{ editable.getVideoType() }}', '{{ editable.getTitle() }}', '{{ editable.getDescription() }}', {{ pcmb_value_to_string(editable, dependencies, {'field': 'poster'}) }}))
 {% elseif editable.type == "renderlet" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createRenderlet('{{ editable.name }}', {{ pcmb_value_to_string(editable, dependencies) }}, '{{ editable.data.type }}', '{{ editable.data.subtype }}'))
 {% elseif editable.type == "relation" %}

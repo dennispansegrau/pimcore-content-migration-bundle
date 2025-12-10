@@ -111,6 +111,26 @@ class EditableBuilder
         return $editable;
     }
 
+    public function createVideo(
+        string $name,
+        int|string $videoId,
+        string $type,
+        string $title,
+        string $description,
+        ?int $posterAssetId,
+    ): Editable\Video {
+        $editable = new Editable\Video();
+        $editable->setName($name);
+        $editable->setDataFromResource([
+            'id' => $videoId,
+            'type' => $type,
+            'title' => $title,
+            'description' => $description,
+            'poster' => $posterAssetId,
+        ]);
+        return $editable;
+    }
+
     public function createRelation(
         string $name,
         int $id,
