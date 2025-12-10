@@ -54,6 +54,8 @@
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createRelation('{{ editable.name }}', {{ pcmb_value_to_string(editable, dependencies) }}, '{{ editable.data.type }}', '{{ editable.data.subtype }}'))
 {% elseif editable.type == "block" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createBlock('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
+{% elseif editable.type == "scheduledblock" %}
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createScheduledBlock('{{ editable.name }}', {{ pcmb_value_to_string(editable.data, dependencies) }}))
 {% elseif editable.type == "link" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createLink('{{ editable.name }}', {{ pcmb_value_to_string(editable.data.internalType ?? null, dependencies) }}, '{{ editable.data.linktype ?? '' }}', '{{ editable.data.text ?? '' }}', '{{ editable.data.path ?? '' }}', '{{ editable.data.target ?? '' }}', '{{ editable.data.parameters ?? '' }}', '{{ editable.data.anchor ?? '' }}', '{{ editable.data.title ?? '' }}', '{{ editable.data.accesskey ?? '' }}', '{{ editable.data.rel ?? '' }}', '{{ editable.data.tabindex ?? '' }}', '{{ editable.data.class ?? '' }}', '{{ editable.data.attributes ?? '' }}', {{ (editable.data.internal ?? false) ? 'true' : 'false' }}, {{ pcmb_value_to_string(editable, dependencies) }}))
 {% else %}

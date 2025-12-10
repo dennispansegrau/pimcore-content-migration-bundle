@@ -249,6 +249,19 @@ class EditableBuilder
         return $editable;
     }
 
+    /**
+     * @param array<string, string> $data
+     */
+    public function createScheduledBlock(
+        string $name,
+        array $data,
+    ): Editable\Scheduledblock {
+        $editable = new Editable\Scheduledblock();
+        $editable->setName($name);
+        $editable->setDataFromResource($data);
+        return $editable;
+    }
+
     public function createLink(
         string $name,
         ?string $internalType,
