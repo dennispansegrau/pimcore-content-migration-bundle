@@ -1,7 +1,7 @@
 {% autoescape false %}
 {% for editable in editables %}
 {% if editable is instanceof('PimcoreContentMigration\\Writer\\RelativePath') %}
-            ->loadWysiwygFromPath('{{ editable.getName() }}', __DIR__ . '{{ editable.getRelativePath() }}')
+            ->loadWysiwygFromPath('{{ editable.getName() }}', __DIR__ . '{{ editable.getRelativePath() }}', {{ pcmb_value_to_string(editable.getEditable(), dependencies) }})
 {% elseif editable.type == "image" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createImage('{{ editable.getName() }}', {{ pcmb_value_to_string(editable.getImage(), dependencies) }}, '{{ editable.getText() }}', {{ editable.getCropPercent() ? 'true' : 'false' }}, {{ editable.getCropWidth() }}, {{ editable.getCropHeight() }}, {{ editable.getCropTop() }}, {{ editable.getCropLeft() }}, {% if editable.getHotspots() is empty %}[]{% else %}[
 {% for hotspot in editable.getHotspots() %}
@@ -27,7 +27,7 @@
 {% elseif editable.type == "select" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createSelect('{{ editable.name }}', '{{ editable.text }}'))
 {% elseif editable.type == "wysiwyg" %}
-            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createWysiwyg('{{ editable.name }}', '{{ editable.getText() }}'))
+            ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createWysiwyg('{{ editable.name }}', '{{ editable.getText() }}', {{ pcmb_value_to_string(editable, dependencies) }}))
 {% elseif editable.type == "area" %}
             ->setEditable({{ '\\PimcoreContentMigration\\Builder\\Document\\EditableBuilder' }}::createArea('{{ editable.name }}', '{{ editable.getBrickType() ?? '' }}'))
 {% elseif editable.type == "embed" %}

@@ -8,6 +8,7 @@ use Pimcore\Model\Document\Editable\Relation;
 use Pimcore\Model\Document\Editable\Renderlet;
 use Pimcore\Model\Document\Editable\Snippet;
 use Pimcore\Model\Document\Editable\Video;
+use Pimcore\Model\Document\Editable\Wysiwyg;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -125,6 +126,36 @@ class ValueToStringExtension extends AbstractExtension
                 return (string) $value->getId();
             }
             return '$' . $dependency->getVariableName() . '->getId()';
+        }
+
+        // Editable\Snippet
+        if ($value instanceof Wysiwyg) {
+            $wysiwygDependencies = $value->resolveDependencies();
+            $value = [];
+            foreach ($wysiwygDependencies as $data) {
+                if (!is_array($data) || !isset($data['type'], $data['id']) || !is_string($data['type']) || !is_int($data['id'])) {
+                    continue;
+                }
+                $dependency = $dependencyList->getByTypeAndId($data['type'], $data['id']);
+                if ($dependency === null) {
+                    $value[$data['type']][$data['id']] = $data['id'];
+                } else {
+                    $value[$data['type']][$data['id']] = '$' . $dependency->getVariableName() . '->getId()';
+                }
+            }
+            if (empty($value)) {
+                return '[]';
+            }
+            $arrayString = "[\n";
+            foreach ($value as $type => $item) {
+                $arrayString .= '            \'' . $type . '\' => [' . "\n";
+                foreach ($item as $oldId => $newId) {
+                    $arrayString .= '                ' . $oldId . ' => ' . $newId . ",\n";
+                }
+                $arrayString .= '            ],' . "\n";
+            }
+            $arrayString .= '        ]';
+            return $arrayString;
         }
 
         // Editable\Video

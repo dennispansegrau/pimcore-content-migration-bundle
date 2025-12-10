@@ -13,7 +13,7 @@ class EditableBuilder
      * @param array<int, array<string, mixed>> $hotspots
      * @param array<int, array<string, mixed>> $marker
      */
-    public function createImage(
+    public static function createImage(
         string $name,
         Asset\Image $image,
         string $alt,
@@ -39,7 +39,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createInput(
+    public static function createInput(
         string $name,
         string $text,
     ): Editable\Input {
@@ -49,7 +49,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createTextarea(
+    public static function createTextarea(
         string $name,
         string $text,
     ): Editable\Textarea {
@@ -59,7 +59,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createSelect(
+    public static function createSelect(
         string $name,
         string $text,
     ): Editable\Select {
@@ -69,7 +69,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createCheckbox(
+    public static function createCheckbox(
         string $name,
         bool $value,
     ): Editable\Checkbox {
@@ -79,7 +79,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createDate(
+    public static function createDate(
         string $name,
         ?int $timestamp,
     ): Editable\Date {
@@ -89,7 +89,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createNumeric(
+    public static function createNumeric(
         string $name,
         string $number,
     ): Editable\Numeric {
@@ -99,7 +99,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createPdf(
+    public static function createPdf(
         string $name,
         int $assetId,
     ): Editable\Pdf {
@@ -111,7 +111,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createTable(
+    public static function createTable(
         string $name,
         array $data,
     ): Editable\Table {
@@ -121,7 +121,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createSnippet(
+    public static function createSnippet(
         string $name,
         int $snippedId,
     ): Editable\Snippet {
@@ -131,17 +131,24 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createWysiwyg(
+    /**
+     * @param array<string, array<int, int>> $idMapping
+     */
+    public static function createWysiwyg(
         string $name,
         string $text,
+        array $idMapping = []
     ): Editable\Wysiwyg {
         $editable = new Editable\Wysiwyg();
         $editable->setName($name);
         $editable->setDataFromResource($text);
+        if (!empty($idMapping)) {
+            $editable->rewriteIds($idMapping);
+        }
         return $editable;
     }
 
-    public function createVideo(
+    public static function createVideo(
         string $name,
         int|string $videoId,
         string $type,
@@ -161,7 +168,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createRelation(
+    public static function createRelation(
         string $name,
         int $id,
         string $type,
@@ -180,7 +187,7 @@ class EditableBuilder
     /**
      * @param int[] $ids
      */
-    public function createRelations(
+    public static function createRelations(
         string $name,
         array $ids
     ): Editable\Relations {
@@ -190,7 +197,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createEmbed(
+    public static function createEmbed(
         string $name,
         string $url,
     ): Editable\Embed {
@@ -205,7 +212,7 @@ class EditableBuilder
     /**
      * @param string[] $values
      */
-    public function createMultiselect(
+    public static function createMultiselect(
         string $name,
         array $values,
     ): Editable\Multiselect {
@@ -215,7 +222,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createArea(
+    public static function createArea(
         string $name,
         string $type,
     ): Editable\Area {
@@ -230,7 +237,7 @@ class EditableBuilder
     /**
      * @param array<int, array<string, string|bool>> $blocks
      */
-    public function createAreablock(
+    public static function createAreablock(
         string $name,
         array $blocks,
     ): Editable\Areablock {
@@ -240,7 +247,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createRenderlet(
+    public static function createRenderlet(
         string $name,
         int $id,
         string $type,
@@ -259,7 +266,7 @@ class EditableBuilder
     /**
      * @param array<string, string> $data
      */
-    public function createBlock(
+    public static function createBlock(
         string $name,
         array $data,
     ): Editable\Block {
@@ -272,7 +279,7 @@ class EditableBuilder
     /**
      * @param array<string, string> $data
      */
-    public function createScheduledBlock(
+    public static function createScheduledBlock(
         string $name,
         array $data,
     ): Editable\Scheduledblock {
@@ -282,7 +289,7 @@ class EditableBuilder
         return $editable;
     }
 
-    public function createLink(
+    public static function createLink(
         string $name,
         ?string $internalType,
         string $linkType,
@@ -326,7 +333,7 @@ class EditableBuilder
      * @param MarkerHotspotItem[] $markerHotspotItems
      * @return array<string, mixed>
      */
-    public function createHotspot(float $top, float $left, float $width, float $height, array $markerHotspotItems, ?string $name): array
+    public static function createHotspot(float $top, float $left, float $width, float $height, array $markerHotspotItems, ?string $name): array
     {
         return [
             'top' => $top,
@@ -342,7 +349,7 @@ class EditableBuilder
      * @param MarkerHotspotItem[] $markerHotspotItems
      * @return array<string, mixed>
      */
-    public function createMarker(float $top, float $left, array $markerHotspotItems, ?string $name): array
+    public static function createMarker(float $top, float $left, array $markerHotspotItems, ?string $name): array
     {
         return [
             'top' => $top,
@@ -356,7 +363,7 @@ class EditableBuilder
      * If the type is document, asset, or object and the value is a string (path),
      * the path is automatically resolved and converted into a valid ID.
      */
-    public function createMarkerHotspotItem(string $name, string $type, null|string|bool|int $value): MarkerHotspotItem
+    public static function createMarkerHotspotItem(string $name, string $type, null|string|bool|int $value): MarkerHotspotItem
     {
         return new MarkerHotspotItem([
             'name' => $name,

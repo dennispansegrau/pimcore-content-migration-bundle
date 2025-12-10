@@ -2,11 +2,15 @@
 
 namespace PimcoreContentMigration\Writer;
 
-final readonly class RelativePath
+use Pimcore\Model\Document\Editable;
+
+final class RelativePath
 {
+    private ?Editable $editable = null;
+
     public function __construct(
-        private string $name,
-        private string $relativePath,
+        private readonly string $name,
+        private readonly string $relativePath,
     ) {
     }
 
@@ -18,5 +22,15 @@ final readonly class RelativePath
     public function getRelativePath(): string
     {
         return $this->relativePath;
+    }
+
+    public function setEditable(Editable $editable): void
+    {
+        $this->editable = $editable;
+    }
+
+    public function getEditable(): ?Editable
+    {
+        return $this->editable;
     }
 }

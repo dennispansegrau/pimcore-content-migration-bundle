@@ -35,13 +35,23 @@ abstract class PageSnippetBuilder extends DocumentBuilder
         return $this;
     }
 
-    public function loadWysiwygFromPath(string $name, string $path): static
+    public function setContentMainDocument(?PageSnippet $document): static
+    {
+        $this->getObject()->setContentMainDocument($document);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<int, int>> $idMapping    // [type => [old id => new id]]
+     */
+    public function loadWysiwygFromPath(string $name, string $path, array $idMapping = []): static
     {
         $data = file_get_contents($path);
         if ($data === false) {
             throw new RuntimeException("Could not read file: $path");
         }
-        $this->getObject()->setRawEditable($name, 'wysiwyg', $data);
+        $editable = EditableBuilder::createWysiwyg($name, $data, $idMapping);
+        $this->getObject()->setEditable($editable);
         return $this;
     }
 

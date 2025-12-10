@@ -52,6 +52,7 @@ private function {{ methodName }}(): {{ classname }}
 {# PAGE SNIPPET BUILDER SETTER #}
 {% if isPageSnippet %}
             ->setController({% if document.getController() %}'{{ document.getController() }}'{% else %}null{% endif %})
+            ->setContentMainDocument({{ pcmb_value_to_string(document.getContentMainDocument(), dependencies) }})
             ->setTemplate({% if document.getTemplate() %}'{{ document.getTemplate() }}'{% else %}null{% endif %})
 {% for property in document.getProperties %}
             ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {{ pcmb_value_to_string(property.getData(), dependencies) }}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})

@@ -132,7 +132,9 @@ class DocumentCodeGenerator implements CodeGeneratorInterface
                 if (!is_string($data) && $data !== null) {
                     throw new LogicException('Wysiwyg editable data must be a string or null.');
                 }
-                $editable = $this->htmlWriter->write($object, $settings->getNamespace(), $key, (string) $data);
+                $relativePath = $this->htmlWriter->write($object, $settings->getNamespace(), $key, (string) $data);
+                $relativePath->setEditable($editable);
+                $editable = $relativePath;
             }
         }
 
