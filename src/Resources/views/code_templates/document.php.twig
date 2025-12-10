@@ -54,7 +54,7 @@ private function {{ methodName }}(): {{ classname }}
             ->setController({% if document.getController() %}'{{ document.getController() }}'{% else %}null{% endif %})
             ->setTemplate({% if document.getTemplate() %}'{{ document.getTemplate() }}'{% else %}null{% endif %})
 {% for property in document.getProperties %}
-            ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
+            ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {{ pcmb_value_to_string(property.getData(), dependencies) }}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
 {% endfor %}
 {% include('@PimcoreContentMigration/code_templates/document/_editables.php.twig') %}
 {% endif %}
