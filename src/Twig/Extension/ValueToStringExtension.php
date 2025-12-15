@@ -147,14 +147,17 @@ class ValueToStringExtension extends AbstractExtension
                 return '[]';
             }
             $arrayString = "[\n";
+            $indent = is_numeric($parameters['indent'] ?? null)
+                ? (int) $parameters['indent']
+                : 12;
             foreach ($value as $type => $item) {
-                $arrayString .= '            \'' . $type . '\' => [' . "\n";
+                $arrayString .= str_repeat(' ', $indent + 4) . '\'' . $type . '\' => [' . "\n";
                 foreach ($item as $oldId => $newId) {
-                    $arrayString .= '                ' . $oldId . ' => ' . $newId . ",\n";
+                    $arrayString .= str_repeat(' ', $indent + 8) . $oldId . ' => ' . $newId . ",\n";
                 }
-                $arrayString .= '            ],' . "\n";
+                $arrayString .= str_repeat(' ', $indent + 4) . '],' . "\n";
             }
-            $arrayString .= '        ]';
+            $arrayString .= str_repeat(' ', $indent) . ']';
             return $arrayString;
         }
 
@@ -209,11 +212,14 @@ class ValueToStringExtension extends AbstractExtension
             if (empty($value)) {
                 return '[]';
             }
+            $indent = is_numeric($parameters['indent'] ?? null)
+                ? (int) $parameters['indent']
+                : 12;
             $arrayString = "[\n";
             foreach ($value as $key => $item) {
-                $arrayString .= '            \'' . $key . '\' => ' . $this->valueToString($item, $dependencyList) . ",\n";
+                $arrayString .= str_repeat(' ', $indent + 4) . '\'' . $key . '\' => ' . $this->valueToString($item, $dependencyList, ['indent' => $indent + 4]) . ",\n";
             }
-            $arrayString .= '        ]';
+            $arrayString .= str_repeat(' ', $indent) . ']';
             return $arrayString;
         }
 
