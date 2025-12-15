@@ -36,6 +36,9 @@ class AbstractElementToMethodNameConverter
         );
 
         $path = implode('', $segments);
+        if (empty($path)) {
+            $path = 'Root';
+        }
 
         if ($abstractElement instanceof Document) {
             return self::PREFIX . 'Document' . $path;

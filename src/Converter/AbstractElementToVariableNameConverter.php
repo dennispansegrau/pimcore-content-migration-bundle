@@ -30,6 +30,10 @@ class AbstractElementToVariableNameConverter
             },
             $segments
         );
-        return lcfirst(implode('', $segments));
+        $name = implode('', $segments);
+        if (empty($name)) {
+            $name = 'Root';
+        }
+        return lcfirst($name);
     }
 }
