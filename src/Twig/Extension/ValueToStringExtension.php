@@ -2,13 +2,7 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
-use Pimcore\Model\Document\Editable\Link;
-use Pimcore\Model\Document\Editable\Pdf;
-use Pimcore\Model\Document\Editable\Relation;
-use Pimcore\Model\Document\Editable\Renderlet;
-use Pimcore\Model\Document\Editable\Snippet;
-use Pimcore\Model\Document\Editable\Video;
-use Pimcore\Model\Document\Editable\Wysiwyg;
+use function array_key_exists;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -20,15 +14,24 @@ use function is_bool;
 use function is_callable;
 use function is_float;
 use function is_int;
+use function is_numeric;
 use function is_resource;
 use function is_string;
 
 use LogicException;
+use Pimcore\Model\Document\Editable\Link;
+use Pimcore\Model\Document\Editable\Pdf;
+use Pimcore\Model\Document\Editable\Relation;
+use Pimcore\Model\Document\Editable\Renderlet;
+use Pimcore\Model\Document\Editable\Snippet;
+use Pimcore\Model\Document\Editable\Video;
+use Pimcore\Model\Document\Editable\Wysiwyg;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Element\Data\MarkerHotspotItem;
 use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function str_repeat;
 use function str_replace;
 
 use Twig\Extension\AbstractExtension;

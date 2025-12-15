@@ -65,6 +65,13 @@ private function {{ methodName }}(): {{ classname }}
             ->setLastGenerated({{ document.getLastGenerated() }})
             ->setLastGenerateMessage('{{ document.getLastGenerateMessage() }}')
 {% endif %}
+{# Personalization Bundle Interface SETTER #}
+{% if isImplementingTargetingDocumentInterface %}
+{% if type == 'page' %}
+            ->setTargetGroupIds('{{ document.getTargetGroupIds() }}')
+{% endif %}
+            ->setUseTargetGroup({{ pcmb_value_to_string(document.getUseTargetGroup(), dependencies) }})
+{% endif %}
 {# DOCUMENT BUILDER SETTER #}
             ->setIndex({{ document.getIndex() }})
             ->setType('{{ document.getType() }}')

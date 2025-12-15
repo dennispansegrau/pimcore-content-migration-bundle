@@ -11,6 +11,9 @@ use function is_string;
 
 use LogicException;
 use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
+use Pimcore\Bundle\PersonalizationBundle\Model\Document\Page;
+use Pimcore\Bundle\PersonalizationBundle\Model\Document\Snippet;
+use Pimcore\Bundle\PersonalizationBundle\Model\Document\Targeting\TargetingDocumentInterface;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\Printcontainer;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\Printpage;
@@ -63,11 +66,20 @@ class DocumentCodeGenerator implements CodeGeneratorInterface
             'isPrintAbstract' => $abstractElement instanceof PrintAbstract,
             'dependencies' => $this->dependencyCollector->getDependencies($settings, $abstractElement, $existingMethodNames),
             'builder' => $this->getBuilderClass($abstractElement),
+            'isImplementingTargetingDocumentInterface' => $abstractElement instanceof TargetingDocumentInterface,
         ]);
     }
 
     private function getBuilderClass(Document $document): ?string
     {
+        if (class_exists(Page::class) && $document instanceof Page) {
+            return '\\' . \PimcoreContentMigration\Builder\Document\Personalization\PageBuilder::class;
+        }
+
+        if (class_exists(Snippet::class) && $document instanceof Snippet) {
+            return '\\' . \PimcoreContentMigration\Builder\Document\Personalization\SnippetBuilder::class;
+        }
+
         if ($document instanceof Document\Email) {
             return '\\' . EmailBuilder::class ;
         }

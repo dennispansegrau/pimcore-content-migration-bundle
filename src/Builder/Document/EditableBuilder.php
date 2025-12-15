@@ -264,7 +264,7 @@ class EditableBuilder
     }
 
     /**
-     * @param array<string, string> $data
+     * @param array<string|int, string|int> $data
      */
     public static function createBlock(
         string $name,
