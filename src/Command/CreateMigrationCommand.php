@@ -83,12 +83,17 @@ class CreateMigrationCommand extends AbstractCommand
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         Concrete::setHideUnpublished(false);
-
         $settings = $this->settingsFactory->createSettings($input);
-
         $object = $this->objectLoader->loadObject($settings->getType(), $settings->getId());
-        $this->generateCodeAndCreateMigrationFile($settings, $object);
 
+        $this->generateCodeAndCreateMigrationFile($settings, $object);
+        $this->generateMigrationsForChildren($object, $settings);
+
+        return self::SUCCESS;
+    }
+
+    private function generateMigrationsForChildren(AbstractElement $object, Settings $settings): void
+    {
         if (!$object instanceof DataObject\AbstractObject &&
             !$object instanceof Asset &&
             !$object instanceof Document) {
@@ -99,11 +104,10 @@ class CreateMigrationCommand extends AbstractCommand
             $children = $this->getChildren($object);
             /** @var AbstractElement $child */
             foreach ($children as $child) {
-                $this->generateCodeAndCreateMigrationFile($settings, $child);
+                $this->generateCodeAndCreateMigrationFile($settings->increaseLevel(), $child);
+                $this->generateMigrationsForChildren($child, $settings->increaseLevel());
             }
         }
-
-        return self::SUCCESS;
     }
 
     private function getChildren(AbstractElement $object): AbstractListing

@@ -60,6 +60,19 @@ final readonly class Settings
         );
     }
 
+    public function increaseLevel(): self
+    {
+        return new self(
+            $this->type,
+            $this->id,
+            $this->namespace,
+            $this->inlineWysiwyg,
+            $this->withDependencies,
+            $this->withChildren,
+            $this->level + 1
+        );
+    }
+
     public function isRootLevel(): bool
     {
         return $this->level === 1;
