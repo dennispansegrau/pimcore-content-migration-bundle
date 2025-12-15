@@ -29,7 +29,8 @@ class AbstractElementToMethodNameConverter
         $segments = array_map(
             function ($part) {
                 $part = ucwords($part, '-_ ');
-                return preg_replace('/[^A-Za-z0-9]/', '_', $part);
+                $part = preg_replace('/[^A-Za-z0-9]/', '_', $part);
+                return preg_replace('/(?<!_)_(?!_)/', '', $part ?? '');
             },
             $segments
         );
