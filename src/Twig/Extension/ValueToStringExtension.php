@@ -63,7 +63,7 @@ class ValueToStringExtension extends AbstractExtension
                 if ($dependency === null) {
                     return 'null';
                 }
-                return '$' . $dependency->getVariableName() . '->getId()';
+                return '(int) $' . $dependency->getVariableName() . '->getId()';
             }
 
             $value = $value->getValue(); // bool or string
@@ -84,7 +84,7 @@ class ValueToStringExtension extends AbstractExtension
             if ($dependency === null) {
                 return 'null';
             }
-            return '$' . $dependency->getVariableName() . '->getId()';
+            return '(int) $' . $dependency->getVariableName() . '->getId()';
         }
 
         // Editable\Link
@@ -102,7 +102,7 @@ class ValueToStringExtension extends AbstractExtension
             if ($dependency === null) {
                 return (string) $id;
             }
-            return '$' . $dependency->getVariableName() . '->getId()';
+            return '(int) $' . $dependency->getVariableName() . '->getId()';
         }
 
         // Editable\Pdf
@@ -115,7 +115,7 @@ class ValueToStringExtension extends AbstractExtension
             if ($dependency === null) {
                 return (string) $value->getId();
             }
-            return '$' . $dependency->getVariableName() . '->getId()';
+            return '(int) $' . $dependency->getVariableName() . '->getId()';
         }
 
         // Editable\Snippet
@@ -128,7 +128,7 @@ class ValueToStringExtension extends AbstractExtension
             if ($dependency === null) {
                 return (string) $value->getId();
             }
-            return '$' . $dependency->getVariableName() . '->getId()';
+            return '(int) $' . $dependency->getVariableName() . '->getId()';
         }
 
         // Editable\Snippet
@@ -143,7 +143,7 @@ class ValueToStringExtension extends AbstractExtension
                 if ($dependency === null) {
                     $value[$data['type']][$data['id']] = $data['id'];
                 } else {
-                    $value[$data['type']][$data['id']] = '$' . $dependency->getVariableName() . '->getId()';
+                    $value[$data['type']][$data['id']] = '(int) $' . $dependency->getVariableName() . '->getId()';
                 }
             }
             if (empty($value)) {
@@ -179,7 +179,7 @@ class ValueToStringExtension extends AbstractExtension
                 if ($dependency === null) {
                     return (string) $id;
                 }
-                return '$' . $dependency->getVariableName() . '->getId()';
+                return '(int) $' . $dependency->getVariableName() . '->getId()';
             }
             $value = $id; // handle null or string later
         }
