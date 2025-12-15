@@ -15,7 +15,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endfor %}
 
 {% endif %}
-{% if settings.isRootLevel() %}
+{% if settings.withDependencies() %}
     # Create {{ type }} {{ asset.getFullPath() }}
     return {{ builder }}::findOrCreate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
 {# BUILDER SPECIFIC SETTER #}

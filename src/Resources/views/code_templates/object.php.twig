@@ -8,7 +8,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endfor %}
 
 {% endif %}
-{% if settings.isRootLevel() %}
+{% if settings.withDependencies() %}
     # Create {{ type }} {{ object.getFullPath() }}
     return {{ builder }}::findOrCreate('{{ object.getFullPath() }}', {{ classname }}::class)
 {# CONCRETE BUILDER SETTER #}

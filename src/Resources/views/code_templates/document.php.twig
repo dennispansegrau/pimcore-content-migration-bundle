@@ -15,7 +15,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endfor %}
 
 {% endif %}
-{% if settings.isRootLevel() %}
+{% if settings.withDependencies() %}
         # Create {{ type }} {{ document.getFullPath() }}
         return {{ builder }}::findOrCreate('{{ document.getFullPath() }}')
 {# BUILDER SPECIFIC SETTER #}
