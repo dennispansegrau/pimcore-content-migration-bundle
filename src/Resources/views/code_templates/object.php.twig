@@ -16,8 +16,12 @@ private function {{ methodName }}(): {{ classname }}
     ->setPublished({{ object.getPublished() ? 'true' : 'false' }})
 {% endif %}
 {# DATA OBJECT BUILDER SETTER #}
-{% for name, value in setters %}
-    ->set('{{ name }}', {{ pcmb_value_to_string(value, dependencies) }})
+{% for setter in setters %}
+{% if setter.isObjectOrListOfObjects() %}
+{% include('@PimcoreContentMigration/code_templates/object/_setter.php.twig') %}
+{% else %}
+    ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% endif %}
 {% endfor %}
 {% for property in object.getProperties %}
     ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})

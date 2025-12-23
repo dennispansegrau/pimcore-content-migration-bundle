@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator;
 
+use PimcoreContentMigration\Generator\Setter\Setter;
 use function get_class;
 use function in_array;
 
@@ -120,7 +121,11 @@ class ObjectCodeGenerator implements CodeGeneratorInterface
                 $setterName = $method->getName();
                 $getterName = 'g' . substr($setterName, 1);
                 $name = lcfirst(substr($setterName, 3));
-                $setters[$name] = $abstractElement->$getterName();
+                $setter = new Setter(
+                    $name,
+                    $abstractElement->$getterName()
+                );
+                $setters[$name] = $setter;
             }
         }
         return $setters;
