@@ -52,201 +52,273 @@ class ValueToStringExtension extends AbstractExtension
      */
     public function valueToString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
-        // MarkerHotspotItem
         if ($value instanceof MarkerHotspotItem) {
-            if (in_array($value->getType(), ['document', 'asset', 'object'], true)) {
-                $id = $value->getValue();
-                if (!is_int($id)) {
-                    throw new LogicException('Invalid value type in MarkerHotspotItem. Integer expected.');
-                }
-                $dependency = $dependencyList->getByTypeAndId($value->getType(), $id);
-                if ($dependency === null) {
-                    return 'null';
-                }
-                return '(int) $' . $dependency->getVariableName() . '->getId()';
-            }
-
-            $value = $value->getValue(); // bool or string
+            return $this->handleMarkerHotspotItem($value, $dependencyList);
         }
 
-        // Editable\Link
         if ($value instanceof Link) {
-            $data = $value->getData();
-            if (!is_array($data)) {
-                return 'null';
-            }
-            $internalType = $data['internalType'] ?? null;
-            $internalId = $data['internalId'] ?? null;
-            if (empty($internalType) || empty($internalId) || !is_string($internalType) || !is_int($internalId)) {
-                return 'null';
-            }
-            $dependency = $dependencyList->getByTypeAndId($internalType, $internalId);
-            if ($dependency === null) {
-                return 'null';
-            }
-            return '(int) $' . $dependency->getVariableName() . '->getId()';
+            return $this->handleLink($value, $dependencyList);
         }
 
-        // Editable\Link
         if ($value instanceof Renderlet || $value instanceof Relation) {
-            $data = $value->getData();
-            if (!is_array($data)) {
-                return 'null';
-            }
-            $id = $data['id'] ?? null;
-            $type = $data['type'] ?? null;
-            if (empty($type) || empty($id) || !is_string($type) || !is_int($id)) {
-                throw new LogicException('Invalid data.');
-            }
-            $dependency = $dependencyList->getByTypeAndId($type, $id);
-            if ($dependency === null) {
-                return (string) $id;
-            }
-            return '(int) $' . $dependency->getVariableName() . '->getId()';
+            return $this->handleRelation($value, $dependencyList);
         }
 
-        // Editable\Pdf
         if ($value instanceof Pdf) {
-            $data = $value->getElement();
-            if ($data === null) {
-                return (string) $value->getId();
-            }
-            $dependency = $dependencyList->getByTypeAndId('asset', $data->getId() ?? 0);
-            if ($dependency === null) {
-                return (string) $value->getId();
-            }
-            return '(int) $' . $dependency->getVariableName() . '->getId()';
+            return $this->handlePdf($value, $dependencyList);
         }
 
-        // Editable\Snippet
         if ($value instanceof Snippet) {
-            $data = $value->getSnippet();
-            if ($data === null) {
-                return (string) $value->getId();
-            }
-            $dependency = $dependencyList->getByTypeAndId('document', $value->getId());
-            if ($dependency === null) {
-                return (string) $value->getId();
-            }
-            return '(int) $' . $dependency->getVariableName() . '->getId()';
+            return $this->handleSnippet($value, $dependencyList);
         }
 
-        // Editable\Snippet
         if ($value instanceof Wysiwyg) {
-            $wysiwygDependencies = $value->resolveDependencies();
-            $value = [];
-            foreach ($wysiwygDependencies as $data) {
-                if (!is_array($data) || !isset($data['type'], $data['id']) || !is_string($data['type']) || !is_int($data['id'])) {
-                    continue;
-                }
-                $dependency = $dependencyList->getByTypeAndId($data['type'], $data['id']);
-                if ($dependency === null) {
-                    $value[$data['type']][$data['id']] = $data['id'];
-                } else {
-                    $value[$data['type']][$data['id']] = '(int) $' . $dependency->getVariableName() . '->getId()';
-                }
-            }
-            if (empty($value)) {
-                return '[]';
-            }
-            $arrayString = "[\n";
-            $indent = is_numeric($parameters['indent'] ?? null)
-                ? (int) $parameters['indent']
-                : 12;
-            foreach ($value as $type => $item) {
-                $arrayString .= str_repeat(' ', $indent + 4) . '\'' . $type . '\' => [' . "\n";
-                foreach ($item as $oldId => $newId) {
-                    $arrayString .= str_repeat(' ', $indent + 8) . $oldId . ' => ' . $newId . ",\n";
-                }
-                $arrayString .= str_repeat(' ', $indent + 4) . '],' . "\n";
-            }
-            $arrayString .= str_repeat(' ', $indent) . ']';
-            return $arrayString;
+            return $this->handleWysiwyg($value, $dependencyList, $parameters);
         }
 
-        // Editable\Video
-        if ($value instanceof Video && array_key_exists('field', $parameters)) {
-            $field = $parameters['field'] ?? null;
-            if ($field === 'id') {
-                $id = $value->getId();
-            } elseif ($field === 'poster') {
-                $id = $value->getPoster();
-            } else {
-                throw new InvalidArgumentException('Editable type video needs field parameter with value id or poster.');
-            }
-            if (is_int($id)) {
-                $dependency = $dependencyList->getByTypeAndId('asset', $id);
-                if ($dependency === null) {
-                    return (string) $id;
-                }
-                return '(int) $' . $dependency->getVariableName() . '->getId()';
-            }
-            $value = $id; // handle null or string later
+        if ($value instanceof Video) {
+            return $this->handleVideo($value, $dependencyList, $parameters);
         }
 
-        // NULL
-        if ($value === null) {
+        return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
+    }
+
+    private function idToDependencyString(
+        string $type,
+        int $id,
+        DependencyList $dependencyList,
+        bool $fallbackToId = true
+    ): string {
+        $dependency = $dependencyList->getByTypeAndId($type, $id);
+
+        if ($dependency === null) {
+            return $fallbackToId ? (string) $id : 'null';
+        }
+
+        return '(int) $' . $dependency->getVariableName() . '->getId()';
+    }
+
+    private function getIndent(array $parameters, int $default = 12): int
+    {
+        return is_numeric($parameters['indent'] ?? null)
+            ? (int) $parameters['indent']
+            : $default;
+    }
+
+    private function handleMarkerHotspotItem(
+        MarkerHotspotItem $item,
+        DependencyList $dependencyList
+    ): string {
+        if (!in_array($item->getType(), ['document', 'asset', 'object'], true)) {
+            return $this->valueToString($item->getValue(), $dependencyList);
+        }
+
+        $id = $item->getValue();
+
+        if (!is_int($id)) {
+            throw new LogicException('Invalid value type in MarkerHotspotItem.');
+        }
+
+        return $this->idToDependencyString($item->getType(), $id, $dependencyList, false);
+    }
+
+    private function handleRelation(
+        Renderlet|Relation $value,
+        DependencyList $dependencyList
+    ): string {
+        $data = $value->getData();
+
+        if (!is_array($data) || !isset($data['type'], $data['id'])) {
+            throw new LogicException('Invalid data.');
+        }
+
+        if (!is_string($data['type']) || !is_int($data['id'])) {
+            throw new LogicException('Invalid data.');
+        }
+
+        return $this->idToDependencyString(
+            $data['type'],
+            $data['id'],
+            $dependencyList
+        );
+    }
+
+    private function handleWysiwyg(
+        Wysiwyg $value,
+        DependencyList $dependencyList,
+        array $parameters
+    ): string {
+        $dependencies = $value->resolveDependencies();
+        if (empty($dependencies)) {
+            return '[]';
+        }
+
+        $indent = $this->getIndent($parameters);
+        $result = "[\n";
+
+        foreach ($dependencies as $data) {
+            if (!is_array($data) || !isset($data['type'], $data['id'])) {
+                continue;
+            }
+
+            $replacement = $this->idToDependencyString(
+                $data['type'],
+                $data['id'],
+                $dependencyList
+            );
+
+            $result .= str_repeat(' ', $indent + 4)
+                . "'{$data['type']}' => [\n"
+                . str_repeat(' ', $indent + 8)
+                . "{$data['id']} => {$replacement},\n"
+                . str_repeat(' ', $indent + 4)
+                . "],\n";
+        }
+
+        return $result . str_repeat(' ', $indent) . ']';
+    }
+
+    private function renderScalarOrComplex(
+        mixed $value,
+        DependencyList $dependencyList,
+        array $parameters
+    ): string {
+        return match (true) {
+            $value === null => 'null',
+            is_bool($value) => $value ? 'true' : 'false',
+            is_int($value), is_float($value) => (string) $value,
+            is_string($value) => '\'' . str_replace('\'', '\\\'', $value) . '\'',
+            is_array($value) => $this->renderArray($value, $dependencyList, $parameters),
+            $value instanceof AbstractElement => $this->renderAbstractElement($value, $dependencyList),
+            default => throw new InvalidArgumentException('Unsupported value type: ' . gettype($value)),
+        };
+    }
+
+    private function handleLink(
+        Link $value,
+        DependencyList $dependencyList
+    ): string {
+        $data = $value->getData();
+
+        if (!is_array($data)) {
             return 'null';
         }
 
-        // BOOLEAN
-        if (is_bool($value)) {
-            return $value ? 'true' : 'false';
+        $type = $data['internalType'] ?? null;
+        $id   = $data['internalId'] ?? null;
+
+        if (!is_string($type) || !is_int($id)) {
+            return 'null';
         }
 
-        // INTEGER
-        if (is_int($value)) {
-            return (string) $value;
+        return $this->idToDependencyString($type, $id, $dependencyList, false);
+    }
+
+    private function handlePdf(
+        Pdf $value,
+        DependencyList $dependencyList
+    ): string {
+        $asset = $value->getElement();
+
+        if ($asset === null) {
+            return (string) $value->getId();
         }
 
-        // FLOAT
-        if (is_float($value)) {
-            return (string) $value;
+        return $this->idToDependencyString(
+            'asset',
+            $asset->getId(),
+            $dependencyList
+        );
+    }
+
+    private function handleSnippet(
+        Snippet $value,
+        DependencyList $dependencyList
+    ): string {
+        $snippet = $value->getSnippet();
+
+        if ($snippet === null) {
+            return (string) $value->getId();
         }
 
-        // STRING
-        if (is_string($value)) {
-            $value = str_replace('\'', '\\\'', $value);
-            return '\'' . $value . '\'';
+        return $this->idToDependencyString(
+            'document',
+            $value->getId(),
+            $dependencyList
+        );
+    }
+
+    private function handleVideo(
+        Video $value,
+        DependencyList $dependencyList,
+        array $parameters
+    ): string {
+        if (!isset($parameters['field'])) {
+            throw new InvalidArgumentException(
+                'Editable type video needs field parameter with value id or poster.'
+            );
         }
 
-        // ARRAY
-        if (is_array($value)) {
-            if (empty($value)) {
-                return '[]';
-            }
-            $indent = is_numeric($parameters['indent'] ?? null)
-                ? (int) $parameters['indent']
-                : 12;
-            $arrayString = "[\n";
-            foreach ($value as $key => $item) {
-                $arrayString .= str_repeat(' ', $indent + 4) . '\'' . $key . '\' => ' . $this->valueToString($item, $dependencyList, ['indent' => $indent + 4]) . ",\n";
-            }
-            $arrayString .= str_repeat(' ', $indent) . ']';
-            return $arrayString;
+        $field = $parameters['field'];
+
+        $id = match ($field) {
+            'id'     => $value->getId(),
+            'poster' => $value->getPoster(),
+            default  => throw new InvalidArgumentException(
+                'Editable type video needs field parameter with value id or poster.'
+            ),
+        };
+
+        if (!is_int($id)) {
+            return $this->renderScalarOrComplex($id, $dependencyList, $parameters);
         }
 
-        // OBJECT
-        if ($value instanceof AbstractElement) {
-            $dependency = $dependencyList->getDependency($value);
-            if (!$dependency instanceof Dependency) {
-                // try to get the element by path if it is not in the dependency list
-                return '\\' . get_class($value) . '::getByPath(\'' . $value->getFullPath() . '\')';
-            }
-            return '$' . $dependency->getVariableName();
+        return $this->idToDependencyString(
+            'asset',
+            $id,
+            $dependencyList
+        );
+    }
+
+    private function renderArray(
+        array $value,
+        DependencyList $dependencyList,
+        array $parameters
+    ): string {
+        if ($value === []) {
+            return '[]';
         }
 
-        // RESOURCE (z. B. Datei-Handle)
-        if (is_resource($value)) {
-            throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));
+        $indent = $this->getIndent($parameters);
+        $result = "[\n";
+
+        foreach ($value as $key => $item) {
+            $result .= str_repeat(' ', $indent + 4)
+                . "'" . $key . "' => "
+                . $this->valueToString(
+                    $item,
+                    $dependencyList,
+                    ['indent' => $indent + 4]
+                )
+                . ",\n";
         }
 
-        // CALLABLE
-        if (is_callable($value)) {
-            throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));
+        return $result . str_repeat(' ', $indent) . ']';
+    }
+
+    private function renderAbstractElement(
+        AbstractElement $value,
+        DependencyList $dependencyList
+    ): string {
+        $dependency = $dependencyList->getDependency($value);
+
+        if (!$dependency instanceof Dependency) {
+            return '\\' . get_class($value)
+                . "::getByPath('"
+                . $value->getFullPath()
+                . "')";
         }
 
-        // EVERYTHING ELSE (should not happen)
-        throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));
+        return '$' . $dependency->getVariableName();
     }
 }
