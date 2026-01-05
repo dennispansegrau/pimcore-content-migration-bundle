@@ -3,6 +3,7 @@
 namespace PimcoreContentMigration\Generator;
 
 use PimcoreContentMigration\Generator\Setter\Setter;
+use PimcoreContentMigration\Generator\Setter\SetterListFactory;
 use function get_class;
 use function in_array;
 
@@ -25,39 +26,10 @@ use function substr;
 
 class ObjectCodeGenerator implements CodeGeneratorInterface
 {
-    /** setters to ignore */
-    private const SETTER_FILTERS = [
-        'setId',
-        'setPublished',
-        'setDao',
-        'setDoNotRestoreKeyAndPath',
-        'setDisableDirtyDetection',
-        'setInDumpState',
-        'setParent',
-        'setType',
-        'setKey',
-        'setParentId',
-        'setHideUnpublished',
-        'setVersions',
-        'setVersionCount',
-        'setClass',
-        'setClassName',
-        'setOmitMandatoryCheck',
-        'setGetInheritedValues',
-        'setClassId',
-        'setPath',
-        'setUserModification',
-        'setCreationDate',
-        'setModificationDate',
-        'setUserOwner',
-        'setLocked',
-        'setProperties',
-        'setScheduledTasks',
-    ];
-
     public function __construct(
         private readonly CodeGenerator $codeGenerator,
         public DependencyCollector $dependencyCollector,
+        public SetterListFactory $setterListFactory,
         private readonly AbstractElementToMethodNameConverter $methodNameConverter,
     ) {
     }
@@ -87,8 +59,8 @@ class ObjectCodeGenerator implements CodeGeneratorInterface
             'methodName' => $methodName,
             'settings' => $settings,
             'dependencies' => $this->dependencyCollector->getDependencies($settings, $abstractElement, $existingMethodNames),
+            'setters' => $this->setterListFactory->getList($abstractElement),
             'isConcrete' => $abstractElement instanceof DataObject\Concrete,
-            'setters' => $this->getSetters($abstractElement),
         ]);
     }
 
@@ -101,33 +73,5 @@ class ObjectCodeGenerator implements CodeGeneratorInterface
         } else {
             return '\\' . DataObjectBuilder::class;
         }
-    }
-
-    /**
-     * @param DataObject $abstractElement
-     * @return array<string, mixed>
-     * @throws ReflectionException
-     */
-    private function getSetters(DataObject $abstractElement): array
-    {
-        $reflection = new ReflectionClass($abstractElement::class);
-        $setters = [];
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if (str_starts_with($method->getName(), 'set') && $method->getNumberOfParameters() === 1) {
-                if (in_array($method->getName(), self::SETTER_FILTERS, true)) {
-                    continue;
-                }
-
-                $setterName = $method->getName();
-                $getterName = 'g' . substr($setterName, 1);
-                $name = lcfirst(substr($setterName, 3));
-                $setter = new Setter(
-                    $name,
-                    $abstractElement->$getterName()
-                );
-                $setters[$name] = $setter;
-            }
-        }
-        return $setters;
     }
 }
