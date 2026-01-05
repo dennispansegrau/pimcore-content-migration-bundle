@@ -20,7 +20,7 @@ private function {{ methodName }}(): {{ classname }}
 {% if setter.isObjectOrListOfObjects() %}
 {% if setter.value is instanceof('Pimcore\\Model\\DataObject\\Localizedfield') %}
     ->setLocalizedfield('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% elseif setter.type == 'Pimcore\\Model\\DataObject\\Data\\ImageGallery' %}
+{% elseif setter.value is instanceof('Pimcore\\Model\\DataObject\\Data\\ImageGallery') %}
     ->setImageGallery('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% else %}
     // TODO: type {{ setter.type }} is not implemented for {{ setter.name }}
