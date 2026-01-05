@@ -47,10 +47,10 @@ class SetterListFactory
 
     /**
      * @param DataObject $abstractElement
-     * @return array<string, Setter>
+     * @return SetterList
      * @throws ReflectionException
      */
-    public function getList(DataObject $abstractElement): array
+    public function getList(DataObject $abstractElement): SetterList
     {
         $reflection = new ReflectionClass($abstractElement::class);
         $setters = [];
@@ -70,6 +70,6 @@ class SetterListFactory
                 $setters[$name] = $setter;
             }
         }
-        return $setters;
+        return new SetterList($setters);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Generator\Dependency;
 
+use Pimcore\Model\DataObject;
+use PimcoreContentMigration\Generator\Setter\SetterListFactory;
 use function in_array;
 use function is_array;
 use function is_int;
@@ -27,9 +29,10 @@ class DependencyCollector
     private ?CodeGeneratorFactoryInterface $codeGeneratorFactory = null;
 
     public function __construct(
-        protected readonly AbstractElementToMethodNameConverter $methodNameConverter,
-        protected readonly AbstractElementToVariableNameConverter $variableNameConverter,
-        protected readonly ObjectLoaderInterface $objectLoader,
+        private readonly AbstractElementToMethodNameConverter $methodNameConverter,
+        private readonly AbstractElementToVariableNameConverter $variableNameConverter,
+        private readonly ObjectLoaderInterface $objectLoader,
+        private readonly SetterListFactory $setterListFactory,
     ) {
     }
 
@@ -62,6 +65,7 @@ class DependencyCollector
 
         $this->collectDirectDependencies($abstractElement, $settings, $existingMethodNames, $dependencies);
         $this->collectMarkerDependencies($abstractElement, $settings, $existingMethodNames, $dependencies);
+        $this->collectConcreteDependencies($abstractElement, $settings, $existingMethodNames, $dependencies);
 
         return new DependencyList($dependencies);
     }
@@ -191,5 +195,32 @@ class DependencyCollector
         }
 
         return new Dependency($dependency, $variableName, $methodName, $code);
+    }
+
+    /**
+     * @param string[] $existingMethodNames
+     * @param Dependency[] $dependencies
+     */
+    private function collectConcreteDependencies(AbstractElement $abstractElement, Settings $settings, array &$existingMethodNames, array &$dependencies): void
+    {
+        if (!$abstractElement instanceof DataObject) {
+            return;
+        }
+
+        $setters = $this->setterListFactory->getList($abstractElement);
+        foreach ($setters as $setter) {
+            if (!$setter->isConcrete()) {
+                continue;
+            }
+
+            /** @var DataObject\Concrete $concrete */
+            $concrete = $setter->getValue();
+
+            try {
+                $dependencies[] = $this->createDependency(MigrationType::OBJECT, $concrete->getId(), $settings, $existingMethodNames);
+            } catch (NotFoundException) {
+                // ignore missing references
+            }
+        }
     }
 }

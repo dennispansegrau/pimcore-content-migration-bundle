@@ -26,6 +26,8 @@ private function {{ methodName }}(): {{ classname }}
     ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% elseif setter.getType() == 'array of Pimcore\\Model\\DataObject\\Data\\UrlSlug' %}
     ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% elseif setter.isConcrete() %}
+    ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% else %}
     // TODO: type {{ setter.type }} is not implemented for {{ setter.name }}
 {% endif %}

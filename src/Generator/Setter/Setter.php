@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
+use Pimcore\Model\DataObject\Concrete;
 use function get_resource_type;
 use function is_array;
 use function is_bool;
@@ -94,5 +95,10 @@ readonly class Setter
         }
 
         return 'unknown';
+    }
+
+    public function isConcrete(): bool
+    {
+        return $this->value instanceof Concrete;
     }
 }
