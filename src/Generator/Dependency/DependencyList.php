@@ -39,7 +39,8 @@ class DependencyList implements IteratorAggregate, Countable
     public function getDependency(AbstractElement $object): ?Dependency
     {
         foreach ($this->dependencies as $dependency) {
-            if ($dependency->getTarget() === $object) {
+            if ($dependency->getTarget()->getId() === $object->getId() &&
+                $dependency->getTarget()->getType() === $object->getType()) {
                 return $dependency;
             }
         }

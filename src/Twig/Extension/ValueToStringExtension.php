@@ -2,6 +2,9 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Pimcore\Model\DataObject\Data\Hotspotimage;
+use Pimcore\Model\DataObject\Data\ImageGallery;
+use Pimcore\Model\DataObject\Localizedfield;
 use function array_key_exists;
 use function get_class;
 use function gettype;
@@ -78,6 +81,18 @@ class ValueToStringExtension extends AbstractExtension
 
         if ($value instanceof Video) {
             return $this->handleVideo($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof Localizedfield) {
+            return $this->handleLocalizedfield($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof ImageGallery) {
+            return $this->handleImageGallery($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof Hotspotimage) {
+            return $this->handleHotspotimage($value, $dependencyList, $parameters);
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -293,14 +308,18 @@ class ValueToStringExtension extends AbstractExtension
         $result = "[\n";
 
         foreach ($value as $key => $item) {
-            $result .= str_repeat(' ', $indent + 4)
-                . "'" . $key . "' => "
-                . $this->valueToString(
+            $result .= str_repeat(' ', $indent + 4);
+            if (is_int($key)) {
+                $result .= $key . " => ";
+            } else {
+                $result .= "'" . $key . "' => ";
+            }
+            $result .= $this->valueToString(
                     $item,
                     $dependencyList,
                     ['indent' => $indent + 4]
-                )
-                . ",\n";
+                );
+            $result .= ",\n";
         }
 
         return $result . str_repeat(' ', $indent) . ']';
@@ -320,5 +339,38 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         return '$' . $dependency->getVariableName();
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleLocalizedfield(Localizedfield $localizedfield, DependencyList $dependencyList, array $parameters): string
+    {
+        $items = $localizedfield->getItems();
+        return $this->renderArray($items, $dependencyList, $parameters);
+    }
+
+    private function handleImageGallery(ImageGallery $imageGallery, DependencyList $dependencyList, array $parameters): string
+    {
+        $items = $imageGallery->getItems();
+        if (empty($items)) {
+            return '[]';
+        }
+        return $this->renderArray($items, $dependencyList, $parameters);
+    }
+
+    private function handleHotspotimage(Hotspotimage $hotspotimage, DependencyList $dependencyList, array $parameters): string
+    {
+        $image = $hotspotimage->getImage();
+        $hotspot = $hotspotimage->getHotspots();
+        $marker = $hotspotimage->getMarker();
+        $crop = $hotspotimage->getCrop();
+
+        $imageString = empty($image) ? 'null' : $this->renderAbstractElement($image, $dependencyList);
+        $hotspotString = empty($image) ? 'null' : $this->valueToString($hotspot, $dependencyList, $parameters);
+        $markerString = empty($image) ? 'null' : $this->valueToString($marker, $dependencyList, $parameters);
+        $cropString = empty($image) ? 'null' : $this->valueToString($crop, $dependencyList, $parameters);
+
+        return sprintf('new Hotspotimage(%s, %s, %s, %s)', $imageString, $hotspotString, $markerString, $cropString);
     }
 }

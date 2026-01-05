@@ -38,4 +38,50 @@ readonly class Setter
 
         return true;
     }
+
+    public function getType(int $level = 1): string
+    {
+        $value = $this->value;
+        if ($level === 2) {
+            if (!is_array($value)) {
+                throw new \RuntimeException('level 2 is only valid for arrays');
+            }
+            $value = reset($value);
+        }
+
+        if ($value === null) {
+            return 'null';
+        }
+
+        if (is_bool($value)) {
+            return 'bool';
+        }
+
+        if (is_int($value)) {
+            return 'int';
+        }
+
+        if (is_float($value)) {
+            return 'float';
+        }
+
+        if (is_string($value)) {
+            return 'string';
+        }
+
+        if (is_array($value)) {
+            return 'array of ' . $this->getType(2);
+        }
+
+        if (is_object($value)) {
+            return $value::class;
+        }
+
+        if (is_resource($value)) {
+            return get_resource_type($value);
+        }
+
+        return 'unknown';
+    }
+
 }

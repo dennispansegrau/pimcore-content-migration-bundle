@@ -18,7 +18,13 @@ private function {{ methodName }}(): {{ classname }}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
 {% if setter.isObjectOrListOfObjects() %}
-{% include('@PimcoreContentMigration/code_templates/object/_setter.php.twig') %}
+{% if setter.value is instanceof('Pimcore\\Model\\DataObject\\Localizedfield') %}
+    ->setLocalizedfield('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% elseif setter.type == 'Pimcore\\Model\\DataObject\\Data\\ImageGallery' %}
+    ->setImageGallery('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% else %}
+    // TODO: type {{ setter.type }} is not implemented for {{ setter.name }}
+{% endif %}
 {% else %}
     ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% endif %}
