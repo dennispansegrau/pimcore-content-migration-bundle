@@ -22,8 +22,10 @@ private function {{ methodName }}(): {{ classname }}
     ->setLocalizedfield('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% elseif setter.value is instanceof('Pimcore\\Model\\DataObject\\Data\\ImageGallery') %}
     ->setImageGallery('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% elseif setter.value is instanceof('Pimcore\\Model\\DataObject\\Data\\GeoCoordinates') %}
+    ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% elseif setter.getType() == 'array of Pimcore\\Model\\DataObject\\Data\\UrlSlug' %}
-    ->setUrlSlug('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+    ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% else %}
     // TODO: type {{ setter.type }} is not implemented for {{ setter.name }}
 {% endif %}

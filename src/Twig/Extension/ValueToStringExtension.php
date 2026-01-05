@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Pimcore\Model\DataObject\Data\GeoCoordinates;
 use Pimcore\Model\DataObject\Data\Hotspotimage;
 use Pimcore\Model\DataObject\Data\ImageGallery;
 use Pimcore\Model\DataObject\Data\UrlSlug;
@@ -98,6 +99,10 @@ class ValueToStringExtension extends AbstractExtension
 
         if ($value instanceof UrlSlug) {
             return $this->handleUrlSlug($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof GeoCoordinates) {
+            return $this->handleGeoCoordinates($value, $dependencyList, $parameters);
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -409,5 +414,19 @@ class ValueToStringExtension extends AbstractExtension
         $siteIdString = $this->valueToString($siteId, $dependencyList, $parameters);
 
         return sprintf('new \Pimcore\Model\DataObject\Data\UrlSlug(%s, %s)', $slugString, $siteIdString);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleGeoCoordinates(GeoCoordinates $geoCoordinates, DependencyList $dependencyList, array $parameters): string
+    {
+        $lat = $geoCoordinates->getLatitude();
+        $long = $geoCoordinates->getLongitude();
+
+        $latString = $this->valueToString($lat, $dependencyList, $parameters);
+        $longString = $this->valueToString($long, $dependencyList, $parameters);
+
+        return sprintf('new \Pimcore\Model\DataObject\Data\GeoCoordinates(%s, %s)', $latString, $longString);
     }
 }
