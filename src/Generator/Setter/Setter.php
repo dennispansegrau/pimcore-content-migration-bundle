@@ -2,6 +2,18 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
+use function get_resource_type;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_object;
+use function is_resource;
+use function is_string;
+use function reset;
+
+use RuntimeException;
+
 readonly class Setter
 {
     public function __construct(
@@ -44,7 +56,7 @@ readonly class Setter
         $value = $this->value;
         if ($level === 2) {
             if (!is_array($value)) {
-                throw new \RuntimeException('level 2 is only valid for arrays');
+                throw new RuntimeException('level 2 is only valid for arrays');
             }
             $value = reset($value);
         }
@@ -83,5 +95,4 @@ readonly class Setter
 
         return 'unknown';
     }
-
 }

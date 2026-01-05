@@ -2,12 +2,6 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
-use Pimcore\Model\DataObject\Data\GeoCoordinates;
-use Pimcore\Model\DataObject\Data\Hotspotimage;
-use Pimcore\Model\DataObject\Data\ImageGallery;
-use Pimcore\Model\DataObject\Data\UrlSlug;
-use Pimcore\Model\DataObject\Localizedfield;
-use function array_key_exists;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -16,14 +10,17 @@ use InvalidArgumentException;
 
 use function is_array;
 use function is_bool;
-use function is_callable;
 use function is_float;
 use function is_int;
 use function is_numeric;
-use function is_resource;
 use function is_string;
 
 use LogicException;
+use Pimcore\Model\DataObject\Data\GeoCoordinates;
+use Pimcore\Model\DataObject\Data\Hotspotimage;
+use Pimcore\Model\DataObject\Data\ImageGallery;
+use Pimcore\Model\DataObject\Data\UrlSlug;
+use Pimcore\Model\DataObject\Localizedfield;
 use Pimcore\Model\Document\Editable\Link;
 use Pimcore\Model\Document\Editable\Pdf;
 use Pimcore\Model\Document\Editable\Relation;
@@ -36,6 +33,7 @@ use Pimcore\Model\Element\Data\MarkerHotspotItem;
 use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function sprintf;
 use function str_repeat;
 use function str_replace;
 
@@ -236,7 +234,7 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         $type = $data['internalType'] ?? null;
-        $id   = $data['internalId'] ?? null;
+        $id = $data['internalId'] ?? null;
 
         if (!is_string($type) || !is_int($id)) {
             return 'null';
@@ -296,9 +294,9 @@ class ValueToStringExtension extends AbstractExtension
         $field = $parameters['field'];
 
         $id = match ($field) {
-            'id'     => $value->getId(),
+            'id' => $value->getId(),
             'poster' => $value->getPoster(),
-            default  => throw new InvalidArgumentException(
+            default => throw new InvalidArgumentException(
                 'Editable type video needs field parameter with value id or poster.'
             ),
         };
@@ -332,15 +330,15 @@ class ValueToStringExtension extends AbstractExtension
         foreach ($value as $key => $item) {
             $result .= str_repeat(' ', $indent + 4);
             if (is_int($key)) {
-                $result .= $key . " => ";
+                $result .= $key . ' => ';
             } else {
                 $result .= "'" . $key . "' => ";
             }
             $result .= $this->valueToString(
-                    $item,
-                    $dependencyList,
-                    ['indent' => $indent + 4]
-                );
+                $item,
+                $dependencyList,
+                ['indent' => $indent + 4]
+            );
             $result .= ",\n";
         }
 

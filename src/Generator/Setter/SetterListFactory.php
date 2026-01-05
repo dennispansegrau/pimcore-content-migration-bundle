@@ -2,10 +2,16 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
+use function in_array;
+use function lcfirst;
+
 use Pimcore\Model\DataObject;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+
+use function str_starts_with;
+use function substr;
 
 class SetterListFactory
 {

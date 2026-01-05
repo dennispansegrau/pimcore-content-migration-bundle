@@ -2,27 +2,16 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use PimcoreContentMigration\Generator\Setter\Setter;
-use PimcoreContentMigration\Generator\Setter\SetterListFactory;
 use function get_class;
-use function in_array;
 
 use InvalidArgumentException;
-
-use function lcfirst;
-
 use Pimcore\Model\DataObject;
 use PimcoreContentMigration\Builder\DataObject\ConcreteBuilder;
 use PimcoreContentMigration\Builder\DataObject\DataObjectBuilder;
 use PimcoreContentMigration\Builder\DataObject\FolderBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-
-use function str_starts_with;
-use function substr;
+use PimcoreContentMigration\Generator\Setter\SetterListFactory;
 
 class ObjectCodeGenerator implements CodeGeneratorInterface
 {
