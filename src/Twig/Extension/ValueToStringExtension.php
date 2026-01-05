@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Twig\Extension;
 
 use Pimcore\Model\DataObject\Data\Hotspotimage;
 use Pimcore\Model\DataObject\Data\ImageGallery;
+use Pimcore\Model\DataObject\Data\UrlSlug;
 use Pimcore\Model\DataObject\Localizedfield;
 use function array_key_exists;
 use function get_class;
@@ -95,6 +96,10 @@ class ValueToStringExtension extends AbstractExtension
             return $this->handleHotspotimage($value, $dependencyList, $parameters);
         }
 
+        if ($value instanceof UrlSlug) {
+            return $this->handleUrlSlug($value, $dependencyList, $parameters);
+        }
+
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
     }
 
@@ -158,6 +163,9 @@ class ValueToStringExtension extends AbstractExtension
         );
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function handleWysiwyg(
         Wysiwyg $value,
         DependencyList $dependencyList,
@@ -193,6 +201,9 @@ class ValueToStringExtension extends AbstractExtension
         return $result . str_repeat(' ', $indent) . ']';
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function renderScalarOrComplex(
         mixed $value,
         DependencyList $dependencyList,
@@ -263,6 +274,9 @@ class ValueToStringExtension extends AbstractExtension
         );
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function handleVideo(
         Video $value,
         DependencyList $dependencyList,
@@ -295,6 +309,9 @@ class ValueToStringExtension extends AbstractExtension
         );
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function renderArray(
         array $value,
         DependencyList $dependencyList,
@@ -350,6 +367,9 @@ class ValueToStringExtension extends AbstractExtension
         return $this->renderArray($items, $dependencyList, $parameters);
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function handleImageGallery(ImageGallery $imageGallery, DependencyList $dependencyList, array $parameters): string
     {
         $items = $imageGallery->getItems();
@@ -359,6 +379,9 @@ class ValueToStringExtension extends AbstractExtension
         return $this->renderArray($items, $dependencyList, $parameters);
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function handleHotspotimage(Hotspotimage $hotspotimage, DependencyList $dependencyList, array $parameters): string
     {
         $image = $hotspotimage->getImage();
@@ -371,6 +394,20 @@ class ValueToStringExtension extends AbstractExtension
         $markerString = empty($image) ? 'null' : $this->valueToString($marker, $dependencyList, $parameters);
         $cropString = empty($image) ? 'null' : $this->valueToString($crop, $dependencyList, $parameters);
 
-        return sprintf('new Hotspotimage(%s, %s, %s, %s)', $imageString, $hotspotString, $markerString, $cropString);
+        return sprintf('new \Pimcore\Model\DataObject\Data\Hotspotimage(%s, %s, %s, %s)', $imageString, $hotspotString, $markerString, $cropString);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleUrlSlug(UrlSlug $urlSlug, DependencyList $dependencyList, array $parameters): string
+    {
+        $slug = $urlSlug->getSlug();
+        $siteId = $urlSlug->getSiteId();
+
+        $slugString = $this->valueToString($slug, $dependencyList, $parameters);
+        $siteIdString = $this->valueToString($siteId, $dependencyList, $parameters);
+
+        return sprintf('new \Pimcore\Model\DataObject\Data\UrlSlug(%s, %s)', $slugString, $siteIdString);
     }
 }
