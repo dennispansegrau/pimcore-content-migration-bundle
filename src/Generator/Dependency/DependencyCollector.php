@@ -209,17 +209,32 @@ class DependencyCollector
 
         $setters = $this->setterListFactory->getList($abstractElement);
         foreach ($setters as $setter) {
-            if (!$setter->isConcrete()) {
-                continue;
+            if ($setter->isConcrete()) {
+                try {
+                    /** @var DataObject\Concrete $concrete */
+                    $concrete = $setter->getValue();
+
+                    if ($concrete->getId() === null) {
+                        throw new RuntimeException('Concrete object must have an ID');
+                    }
+
+                    $dependencies[] = $this->createDependency(MigrationType::OBJECT, $concrete->getId(), $settings, $existingMethodNames);
+                } catch (NotFoundException) {
+                    // ignore missing references
+                }
             }
-
-            /** @var DataObject\Concrete $concrete */
-            $concrete = $setter->getValue();
-
-            try {
-                $dependencies[] = $this->createDependency(MigrationType::OBJECT, $concrete->getId(), $settings, $existingMethodNames);
-            } catch (NotFoundException) {
-                // ignore missing references
+            elseif ($setter->isConcreteList() && is_iterable($setter->getValue())) {
+                /** @var DataObject\Concrete $concrete */
+                foreach ($setter->getValue() as $concrete) {
+                    try {
+                        if ($concrete->getId() === null) {
+                            throw new RuntimeException('Concrete object must have an ID');
+                        }
+                        $dependencies[] = $this->createDependency(MigrationType::OBJECT, $concrete->getId(), $settings, $existingMethodNames);
+                    } catch (NotFoundException) {
+                        // ignore missing references
+                    }
+                }
             }
         }
     }

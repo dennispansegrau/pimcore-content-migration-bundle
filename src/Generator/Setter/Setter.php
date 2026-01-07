@@ -97,6 +97,13 @@ readonly class Setter
         return 'unknown';
     }
 
+    public function isConcreteList(): bool
+    {
+        return is_array($this->value)
+            && $this->value !== []
+            && $this->value[array_key_first($this->value)] instanceof Concrete;
+    }
+
     public function isConcrete(): bool
     {
         return $this->value instanceof Concrete;
