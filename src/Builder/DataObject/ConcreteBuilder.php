@@ -2,9 +2,18 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use Exception;
+
+use function get_class;
+
 use LogicException;
+
+use function method_exists;
+
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Objectbrick\Data\AbstractData;
+
+use function ucfirst;
 
 class ConcreteBuilder extends DataObjectBuilder
 {
@@ -43,7 +52,7 @@ class ConcreteBuilder extends DataObjectBuilder
         if (method_exists($this->getObject(), $setter)) {
             $this->getObject()->$setter($objectBrick);
         } else {
-            throw new \Exception("Setter $setter not found in " . get_class($this->getObject()));
+            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
         }
 
         return $this;

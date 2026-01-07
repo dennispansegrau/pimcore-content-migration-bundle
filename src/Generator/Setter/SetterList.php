@@ -2,10 +2,18 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
+use ArrayIterator;
+
+use function count;
+
+use Countable;
+use IteratorAggregate;
+use Traversable;
+
 /**
- * @implements \IteratorAggregate<int, Setter>
+ * @implements IteratorAggregate<int, Setter>
  */
-final class SetterList implements \IteratorAggregate, \Countable
+final class SetterList implements IteratorAggregate, Countable
 {
     /** @var list<Setter> */
     private array $items = [];
@@ -27,11 +35,11 @@ final class SetterList implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @return \Traversable<int, Setter>
+     * @return Traversable<int, Setter>
      */
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->items);
+        return new ArrayIterator($this->items);
     }
 
     public function count(): int

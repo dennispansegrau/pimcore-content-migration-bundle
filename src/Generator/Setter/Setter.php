@@ -2,7 +2,7 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
-use Pimcore\Model\DataObject\Concrete;
+use function array_key_first;
 use function get_resource_type;
 use function is_array;
 use function is_bool;
@@ -11,6 +11,9 @@ use function is_int;
 use function is_object;
 use function is_resource;
 use function is_string;
+
+use Pimcore\Model\DataObject\Concrete;
+
 use function reset;
 
 use RuntimeException;

@@ -2,9 +2,7 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
-use Pimcore\Model\DataObject\Category;
-use Pimcore\Model\DataObject\Data\QuantityValue;
-use Pimcore\Model\DataObject\Objectbrick;
+use function array_keys;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -16,14 +14,17 @@ use function is_bool;
 use function is_float;
 use function is_int;
 use function is_numeric;
+use function is_object;
 use function is_string;
 
 use LogicException;
 use Pimcore\Model\DataObject\Data\GeoCoordinates;
 use Pimcore\Model\DataObject\Data\Hotspotimage;
 use Pimcore\Model\DataObject\Data\ImageGallery;
+use Pimcore\Model\DataObject\Data\QuantityValue;
 use Pimcore\Model\DataObject\Data\UrlSlug;
 use Pimcore\Model\DataObject\Localizedfield;
+use Pimcore\Model\DataObject\Objectbrick;
 use Pimcore\Model\Document\Editable\Link;
 use Pimcore\Model\Document\Editable\Pdf;
 use Pimcore\Model\Document\Editable\Relation;
@@ -35,10 +36,12 @@ use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Element\Data\MarkerHotspotItem;
 use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
+use RuntimeException;
 
 use function sprintf;
 use function str_repeat;
 use function str_replace;
+use function str_starts_with;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -398,7 +401,8 @@ class ValueToStringExtension extends AbstractExtension
     {
         $items = $imageGallery->getItems();
 
-        return sprintf('new \DataObject\Data\ImageGallery(%s)',
+        return sprintf(
+            'new \DataObject\Data\ImageGallery(%s)',
             empty($items) ?
                 '[]' :
                 $this->renderArray($items, $dependencyList, $parameters)
@@ -460,7 +464,7 @@ class ValueToStringExtension extends AbstractExtension
         $data = [];
         foreach ($items as $item) {
             if (!is_object($item)) {
-                throw new \RuntimeException('Invalid objectbrick item type.');
+                throw new RuntimeException('Invalid objectbrick item type.');
             }
             $data[$item::class] = $item;
         }
