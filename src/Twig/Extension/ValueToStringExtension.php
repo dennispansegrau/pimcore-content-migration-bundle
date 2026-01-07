@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Pimcore\Model\DataObject\Category;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -367,7 +368,8 @@ class ValueToStringExtension extends AbstractExtension
     private function handleLocalizedfield(Localizedfield $localizedfield, DependencyList $dependencyList, array $parameters): string
     {
         $items = $localizedfield->getItems();
-        return $this->renderArray($items, $dependencyList, $parameters);
+
+        return sprintf('new \DataObject\Localizedfield(%s)', $this->renderArray($items, $dependencyList, $parameters));
     }
 
     /**
@@ -376,10 +378,12 @@ class ValueToStringExtension extends AbstractExtension
     private function handleImageGallery(ImageGallery $imageGallery, DependencyList $dependencyList, array $parameters): string
     {
         $items = $imageGallery->getItems();
-        if (empty($items)) {
-            return '[]';
-        }
-        return $this->renderArray($items, $dependencyList, $parameters);
+
+        return sprintf('new \DataObject\Data\ImageGallery(%s)',
+            empty($items) ?
+                '[]' :
+                $this->renderArray($items, $dependencyList, $parameters)
+        );
     }
 
     /**

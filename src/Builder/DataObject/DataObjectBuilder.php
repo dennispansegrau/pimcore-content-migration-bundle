@@ -83,35 +83,4 @@ class DataObjectBuilder extends AbstractElementBuilder
 
         return $this;
     }
-
-    public function setLocalizedfield(string $property, ?array $items): static
-    {
-        $setter = 'set' . ucfirst($property);
-        $localizedField = new DataObject\Localizedfield($items);
-
-        if (method_exists($this->getObject(), $setter)) {
-            $this->getObject()->$setter($localizedField);
-        } else {
-            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array<int, DataObject\Data\Hotspotimage> $items
-     */
-    public function setImageGallery(string $property, array $items): static
-    {
-        $setter = 'set' . ucfirst($property);
-        $imageGallery = new DataObject\Data\ImageGallery($items);
-
-        if (method_exists($this->getObject(), $setter)) {
-            $this->getObject()->$setter($imageGallery);
-        } else {
-            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
-        }
-
-        return $this;
-    }
 }

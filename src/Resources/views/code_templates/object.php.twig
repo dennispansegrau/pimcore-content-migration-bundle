@@ -17,23 +17,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
-{% if setter.isObjectOrListOfObjects() %}
-{% if setter.value is instanceof('Pimcore\\Model\\DataObject\\Localizedfield') %}
-    ->setLocalizedfield('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% elseif setter.value is instanceof('Pimcore\\Model\\DataObject\\Data\\ImageGallery') %}
-    ->setImageGallery('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% elseif setter.value is instanceof('Pimcore\\Model\\DataObject\\Data\\GeoCoordinates') %}
     ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% elseif setter.getType() == 'array of Pimcore\\Model\\DataObject\\Data\\UrlSlug' %}
-    ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% elseif setter.isConcrete() %}
-    ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% else %}
-    // TODO: type {{ setter.type }} is not implemented for {{ setter.name }}
-{% endif %}
-{% else %}
-    ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% endif %}
 {% endfor %}
 {% for property in object.getProperties %}
     ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
