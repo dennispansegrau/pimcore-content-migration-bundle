@@ -220,6 +220,7 @@ class ValueToStringExtension extends AbstractExtension
             is_string($value) => '\'' . str_replace('\'', '\\\'', $value) . '\'',
             is_array($value) => $this->renderArray($value, $dependencyList, $parameters),
             $value instanceof AbstractElement => $this->renderAbstractElement($value, $dependencyList),
+            is_object($value) => throw new InvalidArgumentException('Unsupported object of class: ' . get_class($value)),
             default => throw new InvalidArgumentException('Unsupported value type: ' . gettype($value)),
         };
     }
