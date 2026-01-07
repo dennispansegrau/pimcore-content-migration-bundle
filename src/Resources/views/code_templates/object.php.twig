@@ -17,7 +17,11 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
+{% if setter.value is instanceof('\\Pimcore\\Model\\DataObject\\Objectbrick') %}
+    ->setObjectbrick('{{ setter.name }}', '{{ setter.value.fieldname }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% else %}
     ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% endif %}
 {% endfor %}
 {% for property in object.getProperties %}
     ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})

@@ -3,6 +3,8 @@
 namespace PimcoreContentMigration\Twig\Extension;
 
 use Pimcore\Model\DataObject\Category;
+use Pimcore\Model\DataObject\Data\QuantityValue;
+use Pimcore\Model\DataObject\Objectbrick;
 use function get_class;
 use function gettype;
 use function in_array;
@@ -102,6 +104,22 @@ class ValueToStringExtension extends AbstractExtension
 
         if ($value instanceof GeoCoordinates) {
             return $this->handleGeoCoordinates($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof Objectbrick) {
+            return $this->handleObjectbrick($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof Objectbrick\Data\AbstractData) {
+            return $this->handleObjectbrickElement($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof QuantityValue) {
+            return $this->handleQuantityValue($value, $dependencyList, $parameters);
+        }
+
+        if (is_string($value) && str_starts_with($value, 'new ')) { // special case for new *Class*
+            return $value;
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -431,5 +449,50 @@ class ValueToStringExtension extends AbstractExtension
         $longString = $this->valueToString($long, $dependencyList, $parameters);
 
         return sprintf('new \Pimcore\Model\DataObject\Data\GeoCoordinates(%s, %s)', $latString, $longString);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleObjectbrick(Objectbrick $objectbrick, DependencyList $dependencyList, array $parameters): string
+    {
+        $items = $objectbrick->getItems();
+        $data = [];
+        foreach ($items as $item) {
+            if (!is_object($item)) {
+                throw new \RuntimeException('Invalid objectbrick item type.');
+            }
+            $data[$item::class] = $item;
+        }
+        return $this->renderArray($data, $dependencyList, $parameters);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleObjectbrickElement(Objectbrick\Data\AbstractData $element, DependencyList $dependencyList, array $parameters): string
+    {
+        $fields = array_keys($element->getDefinition()->getFieldDefinitions());
+        $values = [];
+        foreach ($fields as $field) {
+            $values[$field] = $element->get($field);
+        }
+        return $this->valueToString($values, $dependencyList, $parameters);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleQuantityValue(QuantityValue $quantityValue, DependencyList $dependencyList, array $parameters): string
+    {
+        $value = $quantityValue->getValue();
+        $unitId = $quantityValue->getUnit()?->getId();
+        if ($unitId === null) {
+            throw new InvalidArgumentException('QuantityValue must have a unit with an id.');
+        }
+
+        $valueString = $this->valueToString($value, $dependencyList, $parameters);
+
+        return sprintf('new \Pimcore\Model\DataObject\Data\QuantityValue(%s, \'%s\')', $valueString, $unitId);
     }
 }
