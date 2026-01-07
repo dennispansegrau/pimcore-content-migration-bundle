@@ -201,39 +201,49 @@ class DependencyCollector
      * @param string[] $existingMethodNames
      * @param Dependency[] $dependencies
      */
-    private function collectConcreteDependencies(AbstractElement $abstractElement, Settings $settings, array &$existingMethodNames, array &$dependencies): void
-    {
+    private function collectConcreteDependencies(
+        AbstractElement $abstractElement,
+        Settings $settings,
+        array &$existingMethodNames,
+        array &$dependencies
+    ): void {
         if (!$abstractElement instanceof DataObject) {
             return;
         }
 
         $setters = $this->setterListFactory->getList($abstractElement);
-        foreach ($setters as $setter) {
-            if ($setter->isConcrete()) {
-                try {
-                    /** @var DataObject\Concrete $concrete */
-                    $concrete = $setter->getValue();
 
-                    if ($concrete->getId() === null) {
+        foreach ($setters as $setter) {
+            if (!$setter->isConcrete() && !$setter->isConcreteList()) {
+                continue;
+            }
+
+            $value = $setter->getValue();
+
+            // Normalize to an iterable list of Concrete objects
+            $items = $setter->isConcrete()
+                ? [$value]
+                : (is_iterable($value) ? $value : []);
+
+            foreach ($items as $concrete) {
+                if (!$concrete instanceof DataObject\Concrete) {
+                    continue; // defensive: in case setter returns unexpected types
+                }
+
+                try {
+                    $id = $concrete->getId();
+                    if ($id === null) {
                         throw new RuntimeException('Concrete object must have an ID');
                     }
 
-                    $dependencies[] = $this->createDependency(MigrationType::OBJECT, $concrete->getId(), $settings, $existingMethodNames);
+                    $dependencies[] = $this->createDependency(
+                        MigrationType::OBJECT,
+                        $id,
+                        $settings,
+                        $existingMethodNames
+                    );
                 } catch (NotFoundException) {
                     // ignore missing references
-                }
-            }
-            elseif ($setter->isConcreteList() && is_iterable($setter->getValue())) {
-                /** @var DataObject\Concrete $concrete */
-                foreach ($setter->getValue() as $concrete) {
-                    try {
-                        if ($concrete->getId() === null) {
-                            throw new RuntimeException('Concrete object must have an ID');
-                        }
-                        $dependencies[] = $this->createDependency(MigrationType::OBJECT, $concrete->getId(), $settings, $existingMethodNames);
-                    } catch (NotFoundException) {
-                        // ignore missing references
-                    }
                 }
             }
         }
