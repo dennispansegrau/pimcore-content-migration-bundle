@@ -33,6 +33,9 @@ class DependencyList implements IteratorAggregate, Countable
 
     public function add(Dependency $dependency): void
     {
+        if ($this->getByTypeAndId($dependency->getType(), $dependency->getId())) {
+            return;
+        }
         $this->dependencies[] = $dependency;
     }
 
