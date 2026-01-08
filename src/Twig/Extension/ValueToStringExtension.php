@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Pimcore\Model\DataObject\Data\Consent;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use function array_keys;
 use function get_class;
 use function gettype;
@@ -119,6 +121,14 @@ class ValueToStringExtension extends AbstractExtension
 
         if ($value instanceof QuantityValue) {
             return $this->handleQuantityValue($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof Consent) {
+            return $this->handleConsent($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof ObjectMetadata) {
+            return $this->handleObjectMetadata($value, $dependencyList, $parameters);
         }
 
         if (is_string($value) && str_starts_with($value, 'new ')) { // special case for new *Class*
@@ -498,5 +508,35 @@ class ValueToStringExtension extends AbstractExtension
         $valueString = $this->valueToString($value, $dependencyList, $parameters);
 
         return sprintf('new \Pimcore\Model\DataObject\Data\QuantityValue(%s, \'%s\')', $valueString, $unitId);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleConsent(Consent $consent, DependencyList $dependencyList, array $parameters): string
+    {
+        $noteId = $consent->getNoteId();
+        if ($noteId === null) {
+            $noteId = 'null';
+        }
+        return sprintf('new \Pimcore\Model\DataObject\Data\Consent(%s, %s)',
+            $consent->getConsent() ? 'true' : 'false',
+            (string) $noteId
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleObjectMetadata(ObjectMetadata $objectMetadata, DependencyList $dependencyList, array $parameters)
+    {
+        $dataString = $this->valueToString($objectMetadata->getData(), $dependencyList, $parameters);
+
+        return sprintf('(new \Pimcore\Model\DataObject\Data\ObjectMetadata(\'%s\', %s, %s))->setData(%s)',
+            $objectMetadata->getFieldname(),
+            $this->valueToString($objectMetadata->getColumns(), $dependencyList, $parameters),
+            $this->renderAbstractElement($objectMetadata->getObject(), $dependencyList),
+            $dataString
+        );
     }
 }
