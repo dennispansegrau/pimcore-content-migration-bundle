@@ -127,10 +127,6 @@ class ValueToStringExtension extends AbstractExtension
             return $this->handleConsent($value, $dependencyList, $parameters);
         }
 
-        if ($value instanceof ObjectMetadata) {
-            return $this->handleObjectMetadata($value, $dependencyList, $parameters);
-        }
-
         if (is_string($value) && str_starts_with($value, 'new ')) { // special case for new *Class*
             return $value;
         }
@@ -522,21 +518,6 @@ class ValueToStringExtension extends AbstractExtension
         return sprintf('new \Pimcore\Model\DataObject\Data\Consent(%s, %s)',
             $consent->getConsent() ? 'true' : 'false',
             (string) $noteId
-        );
-    }
-
-    /**
-     * @param array<string, mixed> $parameters
-     */
-    private function handleObjectMetadata(ObjectMetadata $objectMetadata, DependencyList $dependencyList, array $parameters)
-    {
-        $dataString = $this->valueToString($objectMetadata->getData(), $dependencyList, $parameters);
-
-        return sprintf('(new \Pimcore\Model\DataObject\Data\ObjectMetadata(\'%s\', %s, %s))->setData(%s)',
-            $objectMetadata->getFieldname(),
-            $this->valueToString($objectMetadata->getColumns(), $dependencyList, $parameters),
-            $this->renderAbstractElement($objectMetadata->getObject(), $dependencyList),
-            $dataString
         );
     }
 }
