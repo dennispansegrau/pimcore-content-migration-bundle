@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use function array_key_first;
 use function get_resource_type;
 use function is_array;
@@ -110,5 +111,17 @@ readonly class Setter
     public function isConcrete(): bool
     {
         return $this->value instanceof Concrete;
+    }
+
+    public function isObjectMetadataList(): bool
+    {
+        return is_array($this->value)
+            && $this->value !== []
+            && $this->value[array_key_first($this->value)] instanceof ObjectMetadata;
+    }
+
+    public function isObjectMetadata(): bool
+    {
+        return $this->value instanceof ObjectMetadata;
     }
 }

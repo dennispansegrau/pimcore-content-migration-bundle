@@ -19,6 +19,14 @@ private function {{ methodName }}(): {{ classname }}
 {% for setter in setters %}
 {% if setter.value is instanceof('\\Pimcore\\Model\\DataObject\\Objectbrick') %}
             ->setObjectbrick('{{ setter.name }}', '{{ setter.value.fieldname }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% elseif setter.isObjectMetadata %}
+            ->setObjectMetadata('{{ setter.name }}', '{{ setter.value.fieldname }}', '{{ setter.value.columns }}', {{ pcmb_value_to_string(setter.value.data, dependencies) }})
+{% elseif setter.isObjectMetadataList %}
+            ->setObjectMetadataList('{{ setter.name }}', [
+{% for objectMetadata in setter.value %}
+                ['{{ objectMetadata.fieldname }}', {{ pcmb_value_to_string(objectMetadata.object, dependencies, {'indent': 16}) }}, {{ pcmb_value_to_string(objectMetadata.columns, dependencies, {'indent': 16}) }}, {{ pcmb_value_to_string(objectMetadata.data, dependencies, {'indent': 16}) }}],
+{% endfor %}
+            ])
 {% else %}
             ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% endif %}
