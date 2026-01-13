@@ -129,6 +129,6 @@ class CreateMigrationCommand extends AbstractCommand
             ->getCodeGenerator($settings->getType())
             ->generateCode($abstractElement, $settings);
         $migrationFilePath = $this->migrationGenerator->generateMigrationFile($abstractElement, $code, $settings);
-        $this->output->writeln(sprintf('New migration file created %s (ID %s) for %s %s', $migrationFilePath, $abstractElement->getType(), (string) $abstractElement->getId(), $abstractElement->getFullPath()));
+        $this->output->writeln(sprintf(' %s – A new migration file was created for (ID: %s) %s %s', $migrationFilePath, (string) $abstractElement->getId(), strtoupper($abstractElement->getType()), $abstractElement->getFullPath()));
     }
 }
