@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
+use Carbon\Carbon;
 use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use function array_keys;
@@ -129,6 +130,10 @@ class ValueToStringExtension extends AbstractExtension
 
         if (is_string($value) && str_starts_with($value, 'new ')) { // special case for new *Class*
             return $value;
+        }
+
+        if ($value instanceof Carbon) {
+            return $this->handleCarbon($value, $dependencyList, $parameters);
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -519,5 +524,15 @@ class ValueToStringExtension extends AbstractExtension
             $consent->getConsent() ? 'true' : 'false',
             (string) $noteId
         );
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleCarbon(Carbon $carbon, DependencyList $dependencyList, array $parameters): string
+    {
+        $time = $carbon->toDateTimeString();
+        $timezone = $carbon->getTimezone()->getName();
+        return sprintf('new \Carbon\Carbon(\'%s\', \'%s\')', $time, $timezone);
     }
 }
