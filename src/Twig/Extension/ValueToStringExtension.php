@@ -8,6 +8,8 @@ use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
+use PimcoreContentMigration\Builder\DataObject\FieldcollectionBuilder;
+use PimcoreContentMigration\Builder\DataObject\FieldcollectionItemBuilder;
 use PimcoreContentMigration\Builder\DataObject\LocalizedfieldBuilder;
 use function array_keys;
 use function get_class;
@@ -560,17 +562,26 @@ class ValueToStringExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $parameters
      */
+    private function handleLocalizedfield(Localizedfield $value, DependencyList $dependencyList, array $parameters): string
+    {
+        $builderName = LocalizedfieldBuilder::class;
+        $owner = '$builder->getObject()';
+        if (array_key_exists('owner', $parameters) &&
+            is_string($parameters['owner'])) {
+            $owner = $parameters['owner'];
+        }
+        $values = $this->valueToString($value->getItems(), $dependencyList, $parameters);
+        return sprintf('\%s::create(%s)->setLocalizedValues(%s)->getObject()', $builderName, $owner, $values);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
     private function handleFieldcollection(Fieldcollection $fieldCollection, DependencyList $dependencyList, array $parameters): string
     {
-        $items = $fieldCollection->getItems();
-        $data = [];
-        foreach ($items as $item) {
-            if (!is_object($item)) {
-                throw new RuntimeException('Invalid Fieldcollection item type.');
-            }
-            $data[$item::class] = $item;
-        }
-        return $this->renderArray($data, $dependencyList, $parameters);
+        $builderName = FieldcollectionBuilder::class;
+        $fields = $this->valueToString($fieldCollection->getItems(), $dependencyList, $parameters);
+        return sprintf('\%s::create(\'%s\', %s)->getObject()', $builderName, $fieldCollection->getFieldname(), $fields);
     }
 
     /**
@@ -583,21 +594,18 @@ class ValueToStringExtension extends AbstractExtension
         foreach ($fields as $field) {
             $values[$field] = $element->get($field);
         }
-        return $this->valueToString($values, $dependencyList, $parameters);
-    }
 
-    /**
-     * @param array<string, mixed> $parameters
-     */
-    private function handleLocalizedfield(Localizedfield $value, DependencyList $dependencyList, array $parameters): string
-    {
-        $builderName = LocalizedfieldBuilder::class;
-        $owner = '$builder->getObject()';
-        if (array_key_exists('owner', $parameters) &&
-            is_string($parameters['owner'])) {
-            $owner = $parameters['owner'];
+        $setter = [];
+        foreach ($values as $field => $value) {
+            $setter[] = sprintf('->set(\'%s\', %s)', $field, $this->valueToString($value, $dependencyList, $parameters));
         }
-        $values = $this->valueToString($value->getItems(), $dependencyList, $parameters);
-        return sprintf('\%s::create(%s)->setLocalizedValues(%s)->getObject()', $builderName, $owner, $values);
+
+        $setterString = '';
+        if (!empty($setter)) {
+            $setterString = "\n" . implode("\n", $setter) . "\n";
+        }
+
+        $builderName = FieldcollectionItemBuilder::class;
+        return sprintf('\%s::create(\'%s\')%s->getObject()', $builderName, $setterString, $element::class);
     }
 }
