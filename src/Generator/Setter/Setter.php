@@ -4,7 +4,9 @@ namespace PimcoreContentMigration\Generator\Setter;
 
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\DataObject\Data\Video;
+use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Localizedfield;
+use Pimcore\Model\DataObject\Objectbrick;
 use function array_key_first;
 use function get_resource_type;
 use function is_array;
@@ -135,5 +137,15 @@ readonly class Setter
     public function isLocalizedfield(): bool
     {
         return $this->value instanceof Localizedfield;
+    }
+
+    public function isObjectbrick(): bool
+    {
+        return $this->value instanceof Objectbrick;
+    }
+
+    public function isFieldcollection(): bool
+    {
+        return $this->value instanceof Fieldcollection;
     }
 }

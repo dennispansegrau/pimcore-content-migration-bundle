@@ -35,10 +35,10 @@ class ConcreteBuilder extends DataObjectBuilder
     /**
      * @param array<string, array<string, mixed>> $items
      */
-    public function setObjectbrick(string $property, string $fieldname, array $items): static
+    public function setObjectbrick(string $property, string $fieldName, array $items): static
     {
         $setter = 'set' . ucfirst($property);
-        $objectBrick = new DataObject\Objectbrick($this->getObject(), $fieldname);
+        $objectBrick = new DataObject\Objectbrick($this->getObject(), $fieldName);
         $data = [];
         foreach ($items as $classname => $item) {
             /** @var AbstractData $element */
@@ -52,6 +52,32 @@ class ConcreteBuilder extends DataObjectBuilder
 
         if (method_exists($this->getObject(), $setter)) {
             $this->getObject()->$setter($objectBrick);
+        } else {
+            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, mixed>> $items
+     */
+    public function setFieldcollection(string $property, array $items): static
+    {
+        $setter = 'set' . ucfirst($property);
+        $data = [];
+        foreach ($items as $classname => $item) {
+            /** @var DataObject\Fieldcollection\Data\AbstractData $element */
+            $element = new $classname($this->getObject());
+            foreach ($item as $key => $value) {
+                $element->set($key, $value);
+            }
+            $data[] = $element;
+        }
+        $fieldCollection = new DataObject\Fieldcollection($data, $property);
+
+        if (method_exists($this->getObject(), $setter)) {
+            $this->getObject()->$setter($fieldCollection);
         } else {
             throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
         }

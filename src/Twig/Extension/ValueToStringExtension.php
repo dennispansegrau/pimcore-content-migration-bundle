@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Fieldcollection;
+use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 use function array_keys;
 use function get_class;
 use function gettype;
@@ -135,6 +137,14 @@ class ValueToStringExtension extends AbstractExtension
 
         if ($value instanceof \Pimcore\Model\DataObject\Data\Video) {
             return $this->handleDataVideo($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof Fieldcollection) {
+            return $this->handleFieldcollection($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof AbstractData) {
+            return $this->handleFieldcollectionElement($value, $dependencyList, $parameters);
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -540,5 +550,34 @@ class ValueToStringExtension extends AbstractExtension
             'description' => $video->getDescription() ?? '',
         ];
         return $this->valueToString($data, $dependencyList, $parameters);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleFieldcollection(Fieldcollection $fieldCollection, DependencyList $dependencyList, array $parameters): string
+    {
+        $items = $fieldCollection->getItems();
+        $data = [];
+        foreach ($items as $item) {
+            if (!is_object($item)) {
+                throw new RuntimeException('Invalid Fieldcollection item type.');
+            }
+            $data[$item::class] = $item;
+        }
+        return $this->renderArray($data, $dependencyList, $parameters);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleFieldcollectionElement(AbstractData $element, DependencyList $dependencyList, array $parameters): string
+    {
+        $fields = array_keys($element->getDefinition()->getFieldDefinitions());
+        $values = [];
+        foreach ($fields as $field) {
+            $values[$field] = $element->get($field);
+        }
+        return $this->valueToString($values, $dependencyList, $parameters);
     }
 }

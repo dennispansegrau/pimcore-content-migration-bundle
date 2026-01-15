@@ -17,7 +17,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
-{% if setter.value is instanceof('\\Pimcore\\Model\\DataObject\\Objectbrick') %}
+{% if setter.isObjectbrick %}
             ->setObjectbrick('{{ setter.name }}', '{{ setter.value.fieldname }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% elseif setter.isObjectMetadata %}
             ->set('{{ setter.name }}', \PimcoreContentMigration\Builder\DataObject\ObjectMetadataBuilder::create('{{ setter.value.fieldname }}', {{ pcmb_value_to_string(setter.value.columns, dependencies, {'indent': 16}) }}, {{ pcmb_value_to_string(setter.value.object, dependencies) }})
@@ -26,6 +26,8 @@ private function {{ methodName }}(): {{ classname }}
             )
 {% elseif setter.isVideo %}
             ->setVideo('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% elseif setter.isFieldcollection %}
+            ->setFieldcollection('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
 {% elseif setter.isLocalizedfield %}
             ->setLocalizedfield('{{ setter.name }}', {{ pcmb_value_to_string(setter.value.items, dependencies) }})
 {% elseif setter.isObjectMetadataList %}
