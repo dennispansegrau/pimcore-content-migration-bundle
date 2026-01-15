@@ -2,9 +2,10 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
-use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Objectbrick\Data\AbstractData;
 
-class FieldcollectionItemBuilder
+class ObjectbrickItemBuilder
 {
     private ?AbstractData $item = null;
 
@@ -18,17 +19,17 @@ class FieldcollectionItemBuilder
      * @return static
      * @throws \Exception
      */
-    public static function create(string $classname): static
+    public static function create(string $classname, Concrete $concrete): static
     {
         $builder = new static();
-        $builder->item = new $classname();
+        $builder->item = new $classname($concrete);
         return $builder;
     }
 
     public function getObject(): AbstractData
     {
         if (!$this->item instanceof AbstractData) {
-            throw new \LogicException('AbstractData object has not been set');
+            throw new \LogicException('Objectbrick AbstractData object has not been set');
         }
         return $this->item;
     }

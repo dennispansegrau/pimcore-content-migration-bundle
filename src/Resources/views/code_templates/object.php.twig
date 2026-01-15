@@ -18,9 +18,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
-{% if setter.isObjectbrick %}
-            ->setObjectbrick('{{ setter.name }}', '{{ setter.value.fieldname }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% elseif setter.isObjectMetadata %}
+{% if setter.isObjectMetadata %}
             ->set('{{ setter.name }}', \PimcoreContentMigration\Builder\DataObject\ObjectMetadataBuilder::create('{{ setter.value.fieldname }}', {{ pcmb_value_to_string(setter.value.columns, dependencies, {'indent': 16}) }}, {{ pcmb_value_to_string(setter.value.object, dependencies) }})
                 ->setData({{ pcmb_value_to_string(setter.value.data, dependencies, {'indent': 16}) }})
                 ->getObject()

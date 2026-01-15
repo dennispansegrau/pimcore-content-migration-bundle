@@ -31,31 +31,4 @@ class ConcreteBuilder extends DataObjectBuilder
         }
         return $this->dataObject;
     }
-
-    /**
-     * @param array<string, array<string, mixed>> $items
-     */
-    public function setObjectbrick(string $property, string $fieldName, array $items): static
-    {
-        $setter = 'set' . ucfirst($property);
-        $objectBrick = new DataObject\Objectbrick($this->getObject(), $fieldName);
-        $data = [];
-        foreach ($items as $classname => $item) {
-            /** @var AbstractData $element */
-            $element = new $classname($this->getObject());
-            foreach ($item as $key => $value) {
-                $element->set($key, $value);
-            }
-            $data[] = $element;
-        }
-        $objectBrick->setItems($data);
-
-        if (method_exists($this->getObject(), $setter)) {
-            $this->getObject()->$setter($objectBrick);
-        } else {
-            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
-        }
-
-        return $this;
-    }
 }

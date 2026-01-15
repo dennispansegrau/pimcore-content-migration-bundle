@@ -3,14 +3,15 @@
 namespace PimcoreContentMigration\Twig\Extension;
 
 use Carbon\Carbon;
-use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Data\BlockElement;
 use Pimcore\Model\DataObject\Data\Consent;
-use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 use PimcoreContentMigration\Builder\DataObject\FieldcollectionBuilder;
 use PimcoreContentMigration\Builder\DataObject\FieldcollectionItemBuilder;
 use PimcoreContentMigration\Builder\DataObject\LocalizedfieldBuilder;
+use PimcoreContentMigration\Builder\DataObject\ObjectbrickBuilder;
+use PimcoreContentMigration\Builder\DataObject\ObjectbrickItemBuilder;
 use function array_keys;
 use function get_class;
 use function gettype;
@@ -119,7 +120,7 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         if ($value instanceof Objectbrick\Data\AbstractData) {
-            return $this->handleObjectbrickElement($value, $dependencyList, $parameters);
+            return $this->handleObjectbrickItem($value, $dependencyList, $parameters);
         }
 
         if ($value instanceof QuantityValue) {
@@ -147,11 +148,15 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         if ($value instanceof AbstractData) {
-            return $this->handleFieldcollectionElement($value, $dependencyList, $parameters);
+            return $this->handleFieldcollectionItem($value, $dependencyList, $parameters);
         }
 
         if ($value instanceof Localizedfield) {
             return $this->handleLocalizedfield($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof BlockElement) {
+            return $this->handleBlockElement($value, $dependencyList, $parameters);
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -477,35 +482,6 @@ class ValueToStringExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $parameters
      */
-    private function handleObjectbrick(Objectbrick $objectbrick, DependencyList $dependencyList, array $parameters): string
-    {
-        $items = $objectbrick->getItems();
-        $data = [];
-        foreach ($items as $item) {
-            if (!is_object($item)) {
-                throw new RuntimeException('Invalid objectbrick item type.');
-            }
-            $data[$item::class] = $item;
-        }
-        return $this->renderArray($data, $dependencyList, $parameters);
-    }
-
-    /**
-     * @param array<string, mixed> $parameters
-     */
-    private function handleObjectbrickElement(Objectbrick\Data\AbstractData $element, DependencyList $dependencyList, array $parameters): string
-    {
-        $fields = array_keys($element->getDefinition()->getFieldDefinitions());
-        $values = [];
-        foreach ($fields as $field) {
-            $values[$field] = $element->get($field);
-        }
-        return $this->valueToString($values, $dependencyList, $parameters);
-    }
-
-    /**
-     * @param array<string, mixed> $parameters
-     */
     private function handleQuantityValue(QuantityValue $quantityValue, DependencyList $dependencyList, array $parameters): string
     {
         $value = $quantityValue->getValue();
@@ -587,7 +563,7 @@ class ValueToStringExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $parameters
      */
-    private function handleFieldcollectionElement(AbstractData $element, DependencyList $dependencyList, array $parameters): string
+    private function handleFieldcollectionItem(AbstractData $element, DependencyList $dependencyList, array $parameters): string
     {
         $fields = array_keys($element->getDefinition()->getFieldDefinitions());
         $values = [];
@@ -606,6 +582,65 @@ class ValueToStringExtension extends AbstractExtension
         }
 
         $builderName = FieldcollectionItemBuilder::class;
-        return sprintf('\%s::create(\'%s\')%s->getObject()', $builderName, $setterString, $element::class);
+        return sprintf('\%s::create(\%s::class)%s->getObject()', $builderName, $element::class, $setterString);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleObjectbrick(Objectbrick $objectbrick, DependencyList $dependencyList, array $parameters): string
+    {
+        $builderName = ObjectbrickBuilder::class;
+        $owner = '$builder->getObject()';
+        if (array_key_exists('owner', $parameters) &&
+            is_string($parameters['owner'])) {
+            $owner = $parameters['owner'];
+        }
+        $setterString = '';
+        $items = $objectbrick->getItems();
+        if (!empty($items)) {
+            $setterString = "->setItems([\n";
+            foreach ($items as $item) {
+                $setterString .= $this->renderArray($item, $dependencyList, $parameters) . ",\n";
+            }
+            $setterString .= "\n])";
+        }
+        return sprintf('\%s::create(\'%s\', %s)%s->getObject()', $builderName, $objectbrick->getFieldname(), $owner, $setterString);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleObjectbrickItem(Objectbrick\Data\AbstractData $abstractData, DependencyList $dependencyList, array $parameters): string
+    {
+        $fields = array_keys($abstractData->getDefinition()->getFieldDefinitions());
+        $values = [];
+        foreach ($fields as $field) {
+            $values[$field] = $abstractData->get($field);
+        }
+
+        $setter = [];
+        foreach ($values as $field => $value) {
+            $setter[] = sprintf('->set(\'%s\', %s)', $field, $this->valueToString($value, $dependencyList, $parameters));
+        }
+
+        $setterString = '';
+        if (!empty($setter)) {
+            $setterString = "\n" . implode("\n", $setter) . "\n";
+        }
+
+        $builderName = ObjectbrickItemBuilder::class;
+        $owner = '$builder->getObject()';
+        if (array_key_exists('owner', $parameters) &&
+            is_string($parameters['owner'])) {
+            $owner = $parameters['owner'];
+        }
+        return sprintf('\%s::create(\%s::class, %s)%s->getObject()', $builderName, $abstractData::class, $owner, $setterString);
+    }
+
+    private function handleBlockElement(BlockElement $value, DependencyList $dependencyList, array $parameters)
+    {
+        // TODO
+        return '\'TODO: BlockElement\'';
     }
 }
