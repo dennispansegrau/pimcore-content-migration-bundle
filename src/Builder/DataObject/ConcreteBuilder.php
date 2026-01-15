@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Builder\DataObject;
 
 use Exception;
 
+use Pimcore\Model\DataObject\Localizedfield;
 use function get_class;
 
 use LogicException;
@@ -51,6 +52,30 @@ class ConcreteBuilder extends DataObjectBuilder
 
         if (method_exists($this->getObject(), $setter)) {
             $this->getObject()->$setter($objectBrick);
+        } else {
+            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $items
+     * @throws Exception
+     */
+    public function setLocalizedfield(string $property, array $items): static
+    {
+        $localizedField = new Localizedfield();
+        $localizedField->setObject($this->getObject());
+        foreach ($items as $language => $translations) {
+            foreach ($translations as $name => $value) {
+                $localizedField->setLocalizedValue($name, $value, $language);
+            }
+        }
+
+        $setter = 'set' . ucfirst($property);
+        if (method_exists($this->getObject(), $setter)) {
+            $this->getObject()->$setter($localizedField);
         } else {
             throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
         }

@@ -24,6 +24,10 @@ private function {{ methodName }}(): {{ classname }}
                 ->setData({{ pcmb_value_to_string(setter.value.data, dependencies, {'indent': 16}) }})
                 ->getObject()
             )
+{% elseif setter.isVideo %}
+            ->setVideo('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
+{% elseif setter.isLocalizedfield %}
+            ->setLocalizedfield('{{ setter.name }}', {{ pcmb_value_to_string(setter.value.items, dependencies) }})
 {% elseif setter.isObjectMetadataList %}
             ->set('{{ setter.name }}', [
 {% for objectMetadata in setter.value %}

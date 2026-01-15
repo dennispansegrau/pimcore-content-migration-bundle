@@ -2,7 +2,10 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Data\Video;
+use Pimcore\Model\DataObject\Localizedfield;
 use function basename;
 use function dirname;
 
@@ -78,6 +81,45 @@ class DataObjectBuilder extends AbstractElementBuilder
 
         if (method_exists($this->getObject(), $setter)) {
             $this->getObject()->$setter($value);
+        } else {
+            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $property
+     * @param array{
+     *     type: string,
+     *     data: int|string|Asset,
+     *     poster: int|string|Asset,
+     *     title: string,
+     *     description: string
+     * } $videoData
+     * @return $this
+     * @throws \Exception
+     */
+    public function setVideo(string $property, array $videoData): static
+    {
+        $setter = 'set' . ucfirst($property);
+        [
+            'type' => $type,
+            'data' => $data,
+            'poster' => $poster,
+            'title' => $title,
+            'description' => $description,
+        ] = $videoData;
+
+        $video = new Video();
+        $video->setType($type);
+        $video->setData($data);
+        $video->setPoster($poster);
+        $video->setTitle($title);
+        $video->setDescription($description);
+
+        if (method_exists($this->getObject(), $setter)) {
+            $this->getObject()->$setter($video);
         } else {
             throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
         }

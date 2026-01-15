@@ -3,6 +3,8 @@
 namespace PimcoreContentMigration\Generator\Setter;
 
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Data\Video;
+use Pimcore\Model\DataObject\Localizedfield;
 use function array_key_first;
 use function get_resource_type;
 use function is_array;
@@ -123,5 +125,15 @@ readonly class Setter
     public function isObjectMetadata(): bool
     {
         return $this->value instanceof ObjectMetadata;
+    }
+
+    public function isVideo(): bool
+    {
+        return $this->value instanceof Video;
+    }
+
+    public function isLocalizedfield(): bool
+    {
+        return $this->value instanceof Localizedfield;
     }
 }

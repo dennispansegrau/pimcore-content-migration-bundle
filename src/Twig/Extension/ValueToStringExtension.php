@@ -3,6 +3,7 @@
 namespace PimcoreContentMigration\Twig\Extension;
 
 use Carbon\Carbon;
+use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use function array_keys;
@@ -92,10 +93,6 @@ class ValueToStringExtension extends AbstractExtension
             return $this->handleVideo($value, $dependencyList, $parameters);
         }
 
-        if ($value instanceof Localizedfield) {
-            return $this->handleLocalizedfield($value, $dependencyList, $parameters);
-        }
-
         if ($value instanceof ImageGallery) {
             return $this->handleImageGallery($value, $dependencyList, $parameters);
         }
@@ -134,6 +131,10 @@ class ValueToStringExtension extends AbstractExtension
 
         if ($value instanceof Carbon) {
             return $this->handleCarbon($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof \Pimcore\Model\DataObject\Data\Video) {
+            return $this->handleDataVideo($value, $dependencyList, $parameters);
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -398,22 +399,12 @@ class ValueToStringExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $parameters
      */
-    private function handleLocalizedfield(Localizedfield $localizedfield, DependencyList $dependencyList, array $parameters): string
-    {
-        $items = $localizedfield->getItems();
-
-        return sprintf('new \DataObject\Localizedfield(%s)', $this->renderArray($items, $dependencyList, $parameters));
-    }
-
-    /**
-     * @param array<string, mixed> $parameters
-     */
     private function handleImageGallery(ImageGallery $imageGallery, DependencyList $dependencyList, array $parameters): string
     {
         $items = $imageGallery->getItems();
 
         return sprintf(
-            'new \DataObject\Data\ImageGallery(%s)',
+            'new \Pimcore\Model\DataObject\Data\ImageGallery(%s)',
             empty($items) ?
                 '[]' :
                 $this->renderArray($items, $dependencyList, $parameters)
@@ -534,5 +525,20 @@ class ValueToStringExtension extends AbstractExtension
         $time = $carbon->toDateTimeString();
         $timezone = $carbon->getTimezone()->getName();
         return sprintf('new \Carbon\Carbon(\'%s\', \'%s\')', $time, $timezone);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleDataVideo(\Pimcore\Model\DataObject\Data\Video $video, DependencyList $dependencyList, array $parameters): string
+    {
+        $data = [
+            'type' => $video->getType() ?? '',
+            'data' => $video->getData(),
+            'poster' => $video->getPoster(),
+            'title' => $video->getTitle() ?? '',
+            'description' => $video->getDescription() ?? '',
+        ];
+        return $this->valueToString($data, $dependencyList, $parameters);
     }
 }
