@@ -8,6 +8,7 @@ use Pimcore\Model\DataObject\Data\Consent;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
+use PimcoreContentMigration\Builder\DataObject\LocalizedfieldBuilder;
 use function array_keys;
 use function get_class;
 use function gettype;
@@ -145,6 +146,10 @@ class ValueToStringExtension extends AbstractExtension
 
         if ($value instanceof AbstractData) {
             return $this->handleFieldcollectionElement($value, $dependencyList, $parameters);
+        }
+
+        if ($value instanceof Localizedfield) {
+            return $this->handleLocalizedfield($value, $dependencyList, $parameters);
         }
 
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
@@ -579,5 +584,20 @@ class ValueToStringExtension extends AbstractExtension
             $values[$field] = $element->get($field);
         }
         return $this->valueToString($values, $dependencyList, $parameters);
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleLocalizedfield(Localizedfield $value, DependencyList $dependencyList, array $parameters): string
+    {
+        $builderName = LocalizedfieldBuilder::class;
+        $owner = '$builder->getObject()';
+        if (array_key_exists('owner', $parameters) &&
+            is_string($parameters['owner'])) {
+            $owner = $parameters['owner'];
+        }
+        $values = $this->valueToString($value->getItems(), $dependencyList, $parameters);
+        return sprintf('\%s::create(%s)->setLocalizedValues(%s)->getObject()', $builderName, $owner, $values);
     }
 }
