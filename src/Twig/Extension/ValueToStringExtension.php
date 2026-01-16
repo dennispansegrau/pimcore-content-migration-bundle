@@ -159,6 +159,10 @@ class ValueToStringExtension extends AbstractExtension
             return $this->handleBlockElement($value, $dependencyList, $parameters);
         }
 
+        if ($value instanceof \Pimcore\Model\DataObject\Data\Link) {
+            return $this->handleDataObjectLink($value, $dependencyList, $parameters);
+        }
+
         return $this->renderScalarOrComplex($value, $dependencyList, $parameters);
     }
 
@@ -166,12 +170,17 @@ class ValueToStringExtension extends AbstractExtension
         string $type,
         int $id,
         DependencyList $dependencyList,
-        bool $fallbackToId = true
+        bool $fallbackToId = true,
+        bool $forceObject = false
     ): string {
         $dependency = $dependencyList->getByTypeAndId($type, $id);
 
         if ($dependency === null) {
             return $fallbackToId ? (string) $id : 'null';
+        }
+
+        if ($forceObject) {
+            return '$' . $dependency->getVariableName();
         }
 
         return '(int) $' . $dependency->getVariableName() . '->getId()';
@@ -280,10 +289,7 @@ class ValueToStringExtension extends AbstractExtension
         };
     }
 
-    private function handleLink(
-        Link $value,
-        DependencyList $dependencyList
-    ): string {
+    private function handleLink(Link $value, DependencyList $dependencyList): string {
         $data = $value->getData();
 
         if (!is_array($data)) {
@@ -638,9 +644,55 @@ class ValueToStringExtension extends AbstractExtension
         return sprintf('\%s::create(\%s::class, %s)%s->getObject()', $builderName, $abstractData::class, $owner, $setterString);
     }
 
-    private function handleBlockElement(BlockElement $value, DependencyList $dependencyList, array $parameters)
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleBlockElement(BlockElement $blockElement, DependencyList $dependencyList, array $parameters): string
     {
-        // TODO
-        return '\'TODO: BlockElement\'';
+        $name = $blockElement->getName();
+        $type = $blockElement->getType();
+        $data = $blockElement->getData();
+        $dataString = $this->valueToString($data, $dependencyList, $parameters);
+
+        return sprintf('new \Pimcore\Model\DataObject\Data\BlockElement(\'%s\', \'%s\', %s)',
+            $name,
+            $type,
+            $dataString
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    private function handleDataObjectLink(\Pimcore\Model\DataObject\Data\Link $link, DependencyList $dependencyList, array $parameters): string
+    {
+        $valuesString = $this->renderArray([
+            'text' => $link->getText(),
+            'internalType' => $link->getInternalType(),
+            'internal' => $link->getInternal(),
+            'direct' => $link->getDirect(),
+            'linktype' => $link->getLinkType(),
+            'target' => $link->getTarget(),
+            'parameters' => $link->getParameters(),
+            'anchor' => $link->getAnchor(),
+            'title' => $link->getTitle(),
+            'accesskey' => $link->getAccesskey(),
+            'rel' => $link->getRel(),
+            'tabindex' => $link->getTabindex(),
+            'class' => $link->getClass(),
+            'attributes' => $link->getAttributes(),
+        ], $dependencyList, $parameters);
+
+        $element = '';
+        $linktype = $link->getLinktype();
+        $internalType = $link->getInternalType();
+        $id = $link->getInternal();
+        if ($linktype === 'internal' && !empty($internalType) && !empty($id)) {
+            if ($dependency = $this->idToDependencyString($internalType, $id, $dependencyList, false, true)) {
+                $element = '->setElement(' . $dependency . ')';
+            }
+        }
+
+        return sprintf('(new \Pimcore\Model\DataObject\Data\Link())->setValues(%s)%s', $valuesString, $element);
     }
 }
