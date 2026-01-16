@@ -12,6 +12,7 @@ use PimcoreContentMigration\Builder\DataObject\FieldcollectionItemBuilder;
 use PimcoreContentMigration\Builder\DataObject\LocalizedfieldBuilder;
 use PimcoreContentMigration\Builder\DataObject\ObjectbrickBuilder;
 use PimcoreContentMigration\Builder\DataObject\ObjectbrickItemBuilder;
+use PimcoreContentMigration\Builder\DataObject\VideoBuilder;
 use function array_keys;
 use function get_class;
 use function gettype;
@@ -531,6 +532,7 @@ class ValueToStringExtension extends AbstractExtension
      */
     private function handleDataVideo(\Pimcore\Model\DataObject\Data\Video $video, DependencyList $dependencyList, array $parameters): string
     {
+        $builderName = VideoBuilder::class;
         $data = [
             'type' => $video->getType() ?? '',
             'data' => $video->getData(),
@@ -538,7 +540,8 @@ class ValueToStringExtension extends AbstractExtension
             'title' => $video->getTitle() ?? '',
             'description' => $video->getDescription() ?? '',
         ];
-        return $this->valueToString($data, $dependencyList, $parameters);
+        $dataString = $this->valueToString($data, $dependencyList, $parameters);
+        return sprintf('\%s::create()->setData(%s)->getObject()', $builderName, $dataString);
     }
 
     /**

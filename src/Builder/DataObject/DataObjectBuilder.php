@@ -87,43 +87,4 @@ class DataObjectBuilder extends AbstractElementBuilder
 
         return $this;
     }
-
-    /**
-     * @param string $property
-     * @param array{
-     *     type: string,
-     *     data: int|string|Asset,
-     *     poster: int|string|Asset,
-     *     title: string,
-     *     description: string
-     * } $videoData
-     * @return $this
-     * @throws \Exception
-     */
-    public function setVideo(string $property, array $videoData): static
-    {
-        $setter = 'set' . ucfirst($property);
-        [
-            'type' => $type,
-            'data' => $data,
-            'poster' => $poster,
-            'title' => $title,
-            'description' => $description,
-        ] = $videoData;
-
-        $video = new Video();
-        $video->setType($type);
-        $video->setData($data);
-        $video->setPoster($poster);
-        $video->setTitle($title);
-        $video->setDescription($description);
-
-        if (method_exists($this->getObject(), $setter)) {
-            $this->getObject()->$setter($video);
-        } else {
-            throw new Exception("Setter $setter not found in " . get_class($this->getObject()));
-        }
-
-        return $this;
-    }
 }
