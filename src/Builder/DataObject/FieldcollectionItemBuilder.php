@@ -2,7 +2,18 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use Exception;
+
+use function get_class;
+
+use LogicException;
+
+use function method_exists;
+
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
+use RuntimeException;
+
+use function ucfirst;
 
 class FieldcollectionItemBuilder
 {
@@ -16,7 +27,7 @@ class FieldcollectionItemBuilder
      * @template T of AbstractData
      * @param class-string<T> $classname
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public static function create(string $classname): static
     {
@@ -28,7 +39,7 @@ class FieldcollectionItemBuilder
     public function getObject(): AbstractData
     {
         if (!$this->item instanceof AbstractData) {
-            throw new \LogicException('AbstractData object has not been set');
+            throw new LogicException('AbstractData object has not been set');
         }
         return $this->item;
     }
@@ -40,7 +51,7 @@ class FieldcollectionItemBuilder
         if (method_exists($this->getObject(), $setter)) {
             $this->getObject()->$setter($value);
         } else {
-            throw new \RuntimeException("Setter $setter not found in " . get_class($this->getObject()));
+            throw new RuntimeException("Setter $setter not found in " . get_class($this->getObject()));
         }
 
         return $this;

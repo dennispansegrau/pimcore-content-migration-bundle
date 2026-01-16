@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use Exception;
+use LogicException;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 
@@ -17,7 +19,7 @@ class FieldcollectionBuilder
      * @param string $property
      * @param AbstractData[] $abstractData
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public static function create(string $property, array $abstractData): static
     {
@@ -29,7 +31,7 @@ class FieldcollectionBuilder
     public function getObject(): Fieldcollection
     {
         if (!$this->fieldcollection instanceof Fieldcollection) {
-            throw new \LogicException('Fieldcollection object has not been set');
+            throw new LogicException('Fieldcollection object has not been set');
         }
         return $this->fieldcollection;
     }

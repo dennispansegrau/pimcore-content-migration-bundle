@@ -2,11 +2,6 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
-use Pimcore\Model\DataObject\Data\ObjectMetadata;
-use Pimcore\Model\DataObject\Data\Video;
-use Pimcore\Model\DataObject\Fieldcollection;
-use Pimcore\Model\DataObject\Localizedfield;
-use Pimcore\Model\DataObject\Objectbrick;
 use function array_key_first;
 use function get_resource_type;
 use function is_array;
@@ -18,6 +13,11 @@ use function is_resource;
 use function is_string;
 
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Data\ObjectMetadata;
+use Pimcore\Model\DataObject\Data\Video;
+use Pimcore\Model\DataObject\Fieldcollection;
+use Pimcore\Model\DataObject\Localizedfield;
+use Pimcore\Model\DataObject\Objectbrick;
 
 use function reset;
 

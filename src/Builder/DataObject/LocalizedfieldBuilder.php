@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use Exception;
+use LogicException;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Localizedfield;
 
@@ -16,7 +18,7 @@ class LocalizedfieldBuilder
     /**
      * @param Concrete $owner
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public static function create(Concrete $owner): static
     {
@@ -29,7 +31,7 @@ class LocalizedfieldBuilder
     public function getObject(): Localizedfield
     {
         if (!$this->localizedfield instanceof Localizedfield) {
-            throw new \LogicException('Localizedfield object has not been set');
+            throw new LogicException('Localizedfield object has not been set');
         }
         return $this->localizedfield;
     }
@@ -37,7 +39,7 @@ class LocalizedfieldBuilder
     /**
      * @param array<string, array<string, string>> $items
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public function setLocalizedValues(array $items): static
     {

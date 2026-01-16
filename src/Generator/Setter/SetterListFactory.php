@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Generator\Setter;
 
+use Exception;
 use Pimcore\Model\DataObject;
 
 use function ucfirst;
@@ -11,7 +12,7 @@ class SetterListFactory
     /**
      * @param DataObject $abstractElement
      * @return SetterList
-     * @throws \Exception
+     * @throws Exception
      */
     public function getList(DataObject $abstractElement): SetterList
     {

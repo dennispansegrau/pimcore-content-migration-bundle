@@ -2,6 +2,10 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use function array_key_exists;
+use function is_string;
+
+use LogicException;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\Data\Video;
 
@@ -23,7 +27,7 @@ class VideoBuilder
     public function getObject(): Video
     {
         if (!$this->video instanceof Video) {
-            throw new \LogicException('Video object has not been set');
+            throw new LogicException('Video object has not been set');
         }
         return $this->video;
     }

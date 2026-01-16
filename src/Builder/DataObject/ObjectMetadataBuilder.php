@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use LogicException;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Data\ObjectMetadata;
 
@@ -29,7 +30,7 @@ class ObjectMetadataBuilder
     public function getObject(): ObjectMetadata
     {
         if (!$this->objectMetadata instanceof ObjectMetadata) {
-            throw new \LogicException('ObjectMetadata object has not been set');
+            throw new LogicException('ObjectMetadata object has not been set');
         }
         return $this->objectMetadata;
     }

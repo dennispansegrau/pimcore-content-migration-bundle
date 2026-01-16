@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use LogicException;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Objectbrick;
 use Pimcore\Model\DataObject\Objectbrick\Data\AbstractData;
@@ -29,7 +30,7 @@ class ObjectbrickBuilder
     public function getObject(): Objectbrick
     {
         if (!$this->objectbrick instanceof Objectbrick) {
-            throw new \LogicException('Objectbrick object has not been set');
+            throw new LogicException('Objectbrick object has not been set');
         }
         return $this->objectbrick;
     }
