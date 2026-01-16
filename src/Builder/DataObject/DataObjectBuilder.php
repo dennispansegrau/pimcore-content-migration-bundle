@@ -2,10 +2,6 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
-use Pimcore\Model\Asset;
-use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\Data\Video;
-use Pimcore\Model\DataObject\Localizedfield;
 use function basename;
 use function dirname;
 

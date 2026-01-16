@@ -580,14 +580,15 @@ class ValueToStringExtension extends AbstractExtension
             $values[$field] = $element->get($field);
         }
 
+        $indent = $this->getIndent($parameters);
         $setter = [];
         foreach ($values as $field => $value) {
-            $setter[] = sprintf('->set(\'%s\', %s)', $field, $this->valueToString($value, $dependencyList, $parameters));
+            $setter[] = sprintf('%s->set(\'%s\', %s)', str_repeat(' ', $indent), $field, $this->valueToString($value, $dependencyList, $parameters));
         }
 
         $setterString = '';
         if (!empty($setter)) {
-            $setterString = "\n" . implode("\n", $setter) . "\n";
+            $setterString = "\n" . implode("\n", $setter);
         }
 
         $builderName = FieldcollectionItemBuilder::class;
@@ -610,6 +611,9 @@ class ValueToStringExtension extends AbstractExtension
         if (!empty($items)) {
             $setterString = "->setItems([\n";
             foreach ($items as $item) {
+                if (!is_array($item)) {
+                    throw new RuntimeException('Invalid objectbrick item.');
+                }
                 $setterString .= $this->renderArray($item, $dependencyList, $parameters) . ",\n";
             }
             $setterString .= "\n])";
@@ -628,9 +632,10 @@ class ValueToStringExtension extends AbstractExtension
             $values[$field] = $abstractData->get($field);
         }
 
+        $indent = $this->getIndent($parameters);
         $setter = [];
         foreach ($values as $field => $value) {
-            $setter[] = sprintf('->set(\'%s\', %s)', $field, $this->valueToString($value, $dependencyList, $parameters));
+            $setter[] = sprintf('%s->set(\'%s\', %s)', str_repeat(' ', $indent), $field, $this->valueToString($value, $dependencyList, $parameters));
         }
 
         $setterString = '';
