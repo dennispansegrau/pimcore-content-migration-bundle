@@ -78,7 +78,7 @@ final class DefaultScalarStringifier implements ValueStringifier
             return '[]';
         }
 
-        $indent = $this->getIndent($parameters);
+        $indent = $this->getAndIncreaseIndent($parameters);
         $result = "[\n";
 
         foreach ($value as $key => $item) {

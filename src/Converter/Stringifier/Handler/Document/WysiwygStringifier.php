@@ -33,7 +33,7 @@ class WysiwygStringifier implements ValueStringifier
             return '[]';
         }
 
-        $indent = $this->getIndent($parameters);
+        $indent = $this->getAndIncreaseIndent($parameters);
         $result = "[\n";
 
         foreach ($dependencies as $data) {

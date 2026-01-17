@@ -36,15 +36,15 @@ final class ObjectbrickAbstractDataStringifier implements ValueStringifier
             $values[$field] = $value->get($field);
         }
 
-        $indent = $this->getIndent($parameters);
+        $indent = $this->getAndIncreaseIndent($parameters);
         $setter = [];
         foreach ($values as $field => $fieldValue) {
-            $setter[] = sprintf('%s->set(\'%s\', %s)', str_repeat(' ', $indent), $field, $this->getConverter()->convertValueToString($fieldValue, $dependencyList, $parameters));
+            $setter[] = sprintf('%s->set(\'%s\', %s)', str_repeat(' ', $indent + 4), $field, $this->getConverter()->convertValueToString($fieldValue, $dependencyList, $parameters));
         }
 
         $setterString = '';
         if (!empty($setter)) {
-            $setterString = "\n" . implode("\n", $setter) . "\n";
+            $setterString = "\n" . implode("\n", $setter) . "\n" . str_repeat(' ', $indent);
         }
 
         $builderName = ObjectbrickItemBuilder::class;

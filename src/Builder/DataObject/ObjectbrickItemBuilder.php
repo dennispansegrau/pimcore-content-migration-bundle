@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Builder\DataObject;
 
 use Exception;
 
+use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
 use function get_class;
 
 use LogicException;
@@ -18,6 +19,8 @@ use function ucfirst;
 
 class ObjectbrickItemBuilder
 {
+    use IndentTrait;
+
     private ?AbstractData $item = null;
 
     final protected function __construct()

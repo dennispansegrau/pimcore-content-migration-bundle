@@ -9,10 +9,14 @@ trait IndentTrait
     /**
      * @param array<string, mixed> $parameters
      */
-    private function getIndent(array $parameters, int $default = 12): int
+    private function getAndIncreaseIndent(array &$parameters, int $default = 12): int
     {
-        return is_numeric($parameters['indent'] ?? null)
+        $indent = is_numeric($parameters['indent'] ?? null)
             ? (int) $parameters['indent']
             : $default;
+
+        $parameters['indent'] = $indent + 4;
+
+        return $indent;
     }
 }

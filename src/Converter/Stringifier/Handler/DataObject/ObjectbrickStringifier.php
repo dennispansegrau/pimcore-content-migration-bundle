@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject;
 
+use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
 use function array_key_exists;
 use function is_array;
 use function is_string;
@@ -11,13 +12,13 @@ use PimcoreContentMigration\Builder\DataObject\ObjectbrickBuilder;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
-use RuntimeException;
 
 use function sprintf;
 
 final class ObjectbrickStringifier implements ValueStringifier
 {
     use ValueToStringConverterTrait;
+    use IndentTrait;
 
     public function supports(mixed $value, array $parameters = []): bool
     {
@@ -35,15 +36,16 @@ final class ObjectbrickStringifier implements ValueStringifier
         }
         $setterString = '';
         $items = $value->getItems();
+        $indent = $this->getAndIncreaseIndent($parameters);
         if (!empty($items)) {
             $setterString = "->setItems([\n";
             foreach ($items as $item) {
-                if (!is_array($item)) {
-                    throw new RuntimeException('Invalid objectbrick item.');
-                }
-                $setterString .= $this->getConverter()->convertValueToString($item, $dependencyList, $parameters) . ",\n";
+                $setterString .= sprintf("%s%s,\n",
+                    str_repeat(' ', $indent + 4),
+                    $this->getConverter()->convertValueToString($item, $dependencyList, $parameters)
+                );
             }
-            $setterString .= "\n])";
+            $setterString .= str_repeat(' ', $indent) . "])";
         }
         return sprintf('\%s::create(\'%s\', %s)%s->getObject()', $builderName, $value->getFieldname(), $owner, $setterString);
     }

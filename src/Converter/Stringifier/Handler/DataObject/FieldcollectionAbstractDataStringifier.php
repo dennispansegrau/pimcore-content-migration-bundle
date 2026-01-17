@@ -34,7 +34,7 @@ final class FieldcollectionAbstractDataStringifier implements ValueStringifier
             $values[$field] = $value->get($field);
         }
 
-        $indent = $this->getIndent($parameters);
+        $indent = $this->getAndIncreaseIndent($parameters);
         $setter = [];
         foreach ($values as $field => $fieldValue) {
             $setter[] = sprintf(
