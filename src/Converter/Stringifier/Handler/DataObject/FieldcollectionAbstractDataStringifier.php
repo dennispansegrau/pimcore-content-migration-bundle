@@ -41,7 +41,7 @@ final class FieldcollectionAbstractDataStringifier implements ValueStringifier
                 '%s->set(\'%s\', %s)',
                 str_repeat(' ', $indent),
                 $field,
-                $this->getConverter()->valueToString($fieldValue, $dependencyList, $parameters)
+                $this->getConverter()->convertValueToString($fieldValue, $dependencyList, $parameters)
             );
         }
 

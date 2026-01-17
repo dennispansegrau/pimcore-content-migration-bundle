@@ -30,7 +30,7 @@ final readonly class VideoStringifier implements ValueStringifier
             'title' => $value->getTitle() ?? '',
             'description' => $value->getDescription() ?? '',
         ];
-        $dataString = $this->getConverter()->valueToString($data, $dependencyList, $parameters);
+        $dataString = $this->getConverter()->convertValueToString($data, $dependencyList, $parameters);
         return sprintf('\%s::create()->setData(%s)->getObject()', $builderName, $dataString);
     }
 }

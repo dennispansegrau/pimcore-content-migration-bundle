@@ -31,7 +31,7 @@ final class LocalizedfieldStringifier implements ValueStringifier
             is_string($parameters['owner'])) {
             $owner = $parameters['owner'];
         }
-        $values = $this->getConverter()->valueToString($value->getItems(), $dependencyList, $parameters);
+        $values = $this->getConverter()->convertValueToString($value->getItems(), $dependencyList, $parameters);
         return sprintf('\%s::create(%s)->setLocalizedValues(%s)->getObject()', $builderName, $owner, $values);
     }
 }

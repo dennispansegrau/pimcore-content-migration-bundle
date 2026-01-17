@@ -23,7 +23,7 @@ final class FieldcollectionStringifier implements ValueStringifier
     {
         /** @var Fieldcollection $value */
         $builderName = FieldcollectionBuilder::class;
-        $fields = $this->getConverter()->valueToString($value->getItems(), $dependencyList, $parameters);
+        $fields = $this->getConverter()->convertValueToString($value->getItems(), $dependencyList, $parameters);
         return sprintf('\%s::create(\'%s\', %s)->getObject()', $builderName, $value->getFieldname(), $fields);
     }
 }

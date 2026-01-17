@@ -44,7 +44,7 @@ class VideoStringifier implements ValueStringifier
         };
 
         if (!is_int($id)) {
-            return $this->getConverter()->valueToString($id, $dependencyList, $parameters);
+            return $this->getConverter()->convertValueToString($id, $dependencyList, $parameters);
         }
 
         return $this->idToDependencyString(

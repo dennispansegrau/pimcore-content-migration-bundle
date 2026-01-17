@@ -27,7 +27,7 @@ final class LinkStringifier implements ValueStringifier
         $internalType = $value->getInternalType();
         $internal = $value->getInternal();
 
-        $valuesString = $this->getConverter()->valueToString([
+        $valuesString = $this->getConverter()->convertValueToString([
             'text' => $value->getText(),
             'internalType' => $internalType,
             'internal' => $internal,

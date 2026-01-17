@@ -24,7 +24,7 @@ final class BlockElementStringifier implements ValueStringifier
         $name = $value->getName();
         $type = $value->getType();
         $data = $value->getData();
-        $dataString = $this->getConverter()->valueToString($data, $dependencyList, $parameters);
+        $dataString = $this->getConverter()->convertValueToString($data, $dependencyList, $parameters);
 
         return sprintf(
             'new \Pimcore\Model\DataObject\Data\BlockElement(\'%s\', \'%s\', %s)',

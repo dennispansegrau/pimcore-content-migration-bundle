@@ -20,7 +20,7 @@ final readonly class ValueToStringConverter
     /**
      * @param array<string, mixed> $parameters
      */
-    public function valueToString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
+    public function convertValueToString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
         foreach ($this->handlers as $handler) {
             if ($handler->supports($value, $parameters)) {

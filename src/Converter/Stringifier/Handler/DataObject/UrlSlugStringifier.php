@@ -24,8 +24,8 @@ final class UrlSlugStringifier implements ValueStringifier
         $slug = $value->getSlug();
         $siteId = $value->getSiteId();
 
-        $slugString = $this->getConverter()->valueToString($slug, $dependencyList, $parameters);
-        $siteIdString = $this->getConverter()->valueToString($siteId, $dependencyList, $parameters);
+        $slugString = $this->getConverter()->convertValueToString($slug, $dependencyList, $parameters);
+        $siteIdString = $this->getConverter()->convertValueToString($siteId, $dependencyList, $parameters);
 
         return sprintf('new \Pimcore\Model\DataObject\Data\UrlSlug(%s, %s)', $slugString, $siteIdString);
     }

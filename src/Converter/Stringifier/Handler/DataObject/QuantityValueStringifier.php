@@ -28,7 +28,7 @@ final readonly class QuantityValueStringifier implements ValueStringifier
             throw new InvalidArgumentException('QuantityValue must have a unit with an id.');
         }
 
-        $quantityValueString = $this->getConverter()->valueToString($quantityValue, $dependencyList, $parameters);
+        $quantityValueString = $this->getConverter()->convertValueToString($quantityValue, $dependencyList, $parameters);
 
         return sprintf('new \Pimcore\Model\DataObject\Data\QuantityValue(%s, \'%s\')', $quantityValueString, $unitId);
     }

@@ -26,7 +26,7 @@ class MarkerHotspotItemStringifier implements ValueStringifier
     {
         /** @var MarkerHotspotItem $value */
         if (!in_array($value->getType(), ['document', 'asset', 'object'], true)) {
-            return $this->getConverter()->valueToString($value->getValue(), $dependencyList);
+            return $this->getConverter()->convertValueToString($value->getValue(), $dependencyList);
         }
 
         $id = $value->getValue();

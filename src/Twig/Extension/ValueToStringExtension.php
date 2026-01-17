@@ -27,6 +27,6 @@ class ValueToStringExtension extends AbstractExtension
      */
     public function valueToString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
-        return $this->converter->valueToString($value, $dependencyList, $parameters);
+        return $this->converter->convertValueToString($value, $dependencyList, $parameters);
     }
 }

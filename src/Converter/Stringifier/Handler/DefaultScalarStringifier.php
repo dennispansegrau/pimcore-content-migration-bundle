@@ -83,7 +83,7 @@ final class DefaultScalarStringifier implements ValueStringifier
 
         foreach ($value as $key => $item) {
             $keyString = is_int($key) ? (string) $key : '\'' . str_replace('\'', '\\\'', (string) $key) . '\'';
-            $itemString = $this->getConverter()->valueToString($item, $dependencyList, ['indent' => $indent + 4]);
+            $itemString = $this->getConverter()->convertValueToString($item, $dependencyList, ['indent' => $indent + 4]);
             $result .= str_repeat(' ', $indent + 4) . $keyString . ' => ' . $itemString . ",\n";
         }
 

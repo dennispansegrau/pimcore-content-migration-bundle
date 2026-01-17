@@ -26,10 +26,10 @@ final class HotspotimageStringifier implements ValueStringifier
         $marker = $value->getMarker();
         $crop = $value->getCrop();
 
-        $imageString = empty($image) ? 'null' : $this->getConverter()->valueToString($image, $dependencyList);
-        $hotspotString = empty($image) ? 'null' : $this->getConverter()->valueToString($hotspot, $dependencyList, $parameters);
-        $markerString = empty($image) ? 'null' : $this->getConverter()->valueToString($marker, $dependencyList, $parameters);
-        $cropString = empty($image) ? 'null' : $this->getConverter()->valueToString($crop, $dependencyList, $parameters);
+        $imageString = empty($image) ? 'null' : $this->getConverter()->convertValueToString($image, $dependencyList);
+        $hotspotString = empty($image) ? 'null' : $this->getConverter()->convertValueToString($hotspot, $dependencyList, $parameters);
+        $markerString = empty($image) ? 'null' : $this->getConverter()->convertValueToString($marker, $dependencyList, $parameters);
+        $cropString = empty($image) ? 'null' : $this->getConverter()->convertValueToString($crop, $dependencyList, $parameters);
 
         return sprintf('new \Pimcore\Model\DataObject\Data\Hotspotimage(%s, %s, %s, %s)', $imageString, $hotspotString, $markerString, $cropString);
     }

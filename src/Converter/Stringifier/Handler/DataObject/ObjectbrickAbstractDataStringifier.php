@@ -39,7 +39,7 @@ final class ObjectbrickAbstractDataStringifier implements ValueStringifier
         $indent = $this->getIndent($parameters);
         $setter = [];
         foreach ($values as $field => $fieldValue) {
-            $setter[] = sprintf('%s->set(\'%s\', %s)', str_repeat(' ', $indent), $field, $this->getConverter()->valueToString($fieldValue, $dependencyList, $parameters));
+            $setter[] = sprintf('%s->set(\'%s\', %s)', str_repeat(' ', $indent), $field, $this->getConverter()->convertValueToString($fieldValue, $dependencyList, $parameters));
         }
 
         $setterString = '';

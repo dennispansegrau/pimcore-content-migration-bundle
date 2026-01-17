@@ -41,7 +41,7 @@ final class ObjectbrickStringifier implements ValueStringifier
                 if (!is_array($item)) {
                     throw new RuntimeException('Invalid objectbrick item.');
                 }
-                $setterString .= $this->getConverter()->valueToString($item, $dependencyList, $parameters) . ",\n";
+                $setterString .= $this->getConverter()->convertValueToString($item, $dependencyList, $parameters) . ",\n";
             }
             $setterString .= "\n])";
         }

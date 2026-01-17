@@ -24,8 +24,8 @@ final class GeoCoordinatesStringifier implements ValueStringifier
         $lat = $value->getLatitude();
         $long = $value->getLongitude();
 
-        $latString = $this->getConverter()->valueToString($lat, $dependencyList, $parameters);
-        $longString = $this->getConverter()->valueToString($long, $dependencyList, $parameters);
+        $latString = $this->getConverter()->convertValueToString($lat, $dependencyList, $parameters);
+        $longString = $this->getConverter()->convertValueToString($long, $dependencyList, $parameters);
 
         return sprintf('new \Pimcore\Model\DataObject\Data\GeoCoordinates(%s, %s)', $latString, $longString);
     }

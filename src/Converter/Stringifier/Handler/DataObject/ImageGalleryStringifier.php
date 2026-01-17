@@ -27,7 +27,7 @@ final class ImageGalleryStringifier implements ValueStringifier
             'new \Pimcore\Model\DataObject\Data\ImageGallery(%s)',
             empty($items) ?
                 '[]' :
-                $this->getConverter()->valueToString($items, $dependencyList, $parameters)
+                $this->getConverter()->convertValueToString($items, $dependencyList, $parameters)
         );
     }
 }
