@@ -3,6 +3,7 @@
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject;
 
 use Pimcore\Model\DataObject\Classificationstore;
+use PimcoreContentMigration\Builder\DataObject\ClassificationstoreBuilder;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
@@ -19,7 +20,13 @@ class ClassificationstoreStringifier implements ValueStringifier
     public function toString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
         /** @var Classificationstore $value */
-        $itemsString = $this->getConverter()->convertValueToString($value->getItems(), $dependencyList, $parameters);
-        return sprintf('new \Pimcore\Model\DataObject\Classificationstore(%s)', $itemsString);
+        $builderName = ClassificationstoreBuilder::class;
+        $owner = '$builder->getObject()';
+        if (array_key_exists('owner', $parameters) &&
+            is_string($parameters['owner'])) {
+            $owner = $parameters['owner'];
+        }
+        $items = $this->getConverter()->convertValueToString($value->getItems(), $dependencyList, $parameters);
+        return sprintf('\%s::create(\'%s\', %s, %s)->getObject()', $builderName, $value->getFieldname(), $owner, $items);
     }
 }
