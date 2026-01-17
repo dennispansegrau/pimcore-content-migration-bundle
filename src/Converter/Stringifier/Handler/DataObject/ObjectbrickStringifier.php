@@ -34,19 +34,18 @@ final class ObjectbrickStringifier implements ValueStringifier
             is_string($parameters['owner'])) {
             $owner = $parameters['owner'];
         }
-        $setterString = '';
-        $items = $value->getItems();
-        $indent = $this->getAndIncreaseIndent($parameters);
-        if (!empty($items)) {
-            $setterString = "->setItems([\n";
-            foreach ($items as $item) {
-                $setterString .= sprintf("%s%s,\n",
-                    str_repeat(' ', $indent + 4),
-                    $this->getConverter()->convertValueToString($item, $dependencyList, $parameters)
-                );
+
+        $brickGetters = $value->getBrickGetters();
+        $items = [];
+        /** @var string $getter */
+        foreach ($brickGetters as $getter) {
+            if (!method_exists($value, $getter)) {
+                throw new \RuntimeException(sprintf('Method %s::%s does not exist.', get_class($value), $getter));
             }
-            $setterString .= str_repeat(' ', $indent) . "])";
+            $property = substr($getter, 3);
+            $items[$property] = $value->$getter();
         }
-        return sprintf('\%s::create(\'%s\', %s)%s->getObject()', $builderName, $value->getFieldname(), $owner, $setterString);
+        $itemString = $this->getConverter()->convertValueToString($items, $dependencyList, $parameters);
+        return sprintf('\%s::create(\'%s\', %s, %s)->getObject()', $builderName, $value->getFieldname(), $owner, $itemString);
     }
 }

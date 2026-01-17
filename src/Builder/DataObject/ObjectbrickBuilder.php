@@ -17,13 +17,23 @@ class ObjectbrickBuilder
 
     /**
      * @param string $fieldName
+     * @param array<string, AbstractData> $items
      * @param Concrete $owner
      * @return static
      */
-    public static function create(string $fieldName, Concrete $owner): static
+    public static function create(string $fieldName, Concrete $owner, array $items): static
     {
         $builder = new static();
-        $builder->objectbrick = new Objectbrick($owner, $fieldName);
+        $getter = 'get' . ucfirst($fieldName);
+        $objectbrick = $owner->$getter();
+        if (!$objectbrick instanceof Objectbrick) {
+            throw new LogicException("Objectbrick $fieldName not found in object");
+        }
+        $builder->objectbrick = $objectbrick;
+        foreach ($items as $property => $abstractData) {
+            $setter = 'set' . $property;
+            $builder->objectbrick->$setter($abstractData);
+        }
         return $builder;
     }
 
@@ -33,15 +43,5 @@ class ObjectbrickBuilder
             throw new LogicException('Objectbrick object has not been set');
         }
         return $this->objectbrick;
-    }
-
-    /**
-     * @param AbstractData[] $items
-     * @return $this
-     */
-    public function setItems(array $items): static
-    {
-        $this->getObject()->setItems($items);
-        return $this;
     }
 }
