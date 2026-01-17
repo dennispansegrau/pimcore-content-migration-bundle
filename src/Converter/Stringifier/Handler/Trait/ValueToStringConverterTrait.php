@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 trait ValueToStringConverterTrait
 {
     public function __construct(
-        #[AutowireLocator('pcmb.converter')]
+        #[AutowireLocator('pcmb.stringifier_converter')]
         private readonly ContainerInterface $locator,
     ) {
     }

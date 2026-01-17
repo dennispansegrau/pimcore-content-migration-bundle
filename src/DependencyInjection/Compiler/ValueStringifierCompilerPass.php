@@ -19,7 +19,7 @@ final class ValueStringifierCompilerPass implements CompilerPassInterface
 
         $definition = $container->findDefinition(ValueToStringConverter::class);
 
-        $services = $this->findAndSortTaggedServices('pcmb.value_stringifier', $container);
+        $services = $this->findAndSortTaggedServices('pcmb.stringifier_handler', $container);
         $definition->setArgument('$handlers', $services);
     }
 }
