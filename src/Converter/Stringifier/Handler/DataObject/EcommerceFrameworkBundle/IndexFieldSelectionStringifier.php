@@ -2,11 +2,14 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject\EcommerceFrameworkBundle;
 
+use function class_exists;
+
 use Pimcore\Bundle\EcommerceFrameworkBundle\CoreExtensions\ObjectData\IndexFieldSelection;
-use Pimcore\Model\DataObject\Data\RgbaColor;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
+
+use function sprintf;
 
 class IndexFieldSelectionStringifier implements ValueStringifier
 {
@@ -28,7 +31,8 @@ class IndexFieldSelectionStringifier implements ValueStringifier
         $tenantString = $this->getConverter()->convertValueToString($tenant, $dependencyList, $parameters);
         $preSelectString = $this->getConverter()->convertValueToString($preSelect, $dependencyList, $parameters);
 
-        return sprintf('new \Pimcore\Bundle\EcommerceFrameworkBundle\CoreExtensions\ObjectData\IndexFieldSelection(%s, \'%s\', %s)',
+        return sprintf(
+            'new \Pimcore\Bundle\EcommerceFrameworkBundle\CoreExtensions\ObjectData\IndexFieldSelection(%s, \'%s\', %s)',
             $tenantString,
             $field,
             $preSelectString

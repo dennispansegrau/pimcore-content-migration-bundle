@@ -4,7 +4,6 @@ namespace PimcoreContentMigration\Builder\DataObject;
 
 use Exception;
 
-use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
 use function get_class;
 
 use LogicException;
@@ -13,6 +12,7 @@ use function method_exists;
 
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Objectbrick\Data\AbstractData;
+use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
 use RuntimeException;
 
 use function ucfirst;

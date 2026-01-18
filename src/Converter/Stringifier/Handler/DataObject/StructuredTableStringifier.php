@@ -7,6 +7,8 @@ use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringCon
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function sprintf;
+
 class StructuredTableStringifier implements ValueStringifier
 {
     use ValueToStringConverterTrait;

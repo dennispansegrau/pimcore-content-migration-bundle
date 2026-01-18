@@ -21,6 +21,7 @@ use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function sprintf;
 use function str_repeat;
 use function str_replace;
 
@@ -62,7 +63,7 @@ final class DefaultScalarStringifier implements ValueStringifier
         }
 
         if (is_object($value)) {
-            throw new InvalidArgumentException(sprintf("Unsupported object of class: %s. Create a custom handler to serialize it.", get_class($value)));
+            throw new InvalidArgumentException(sprintf('Unsupported object of class: %s. Create a custom handler to serialize it.', get_class($value)));
         }
 
         throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));

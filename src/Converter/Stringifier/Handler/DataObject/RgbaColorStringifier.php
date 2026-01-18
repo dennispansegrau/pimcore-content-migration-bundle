@@ -6,6 +6,8 @@ use Pimcore\Model\DataObject\Data\RgbaColor;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function sprintf;
+
 class RgbaColorStringifier implements ValueStringifier
 {
     public function supports(mixed $value, array $parameters = []): bool
@@ -16,7 +18,8 @@ class RgbaColorStringifier implements ValueStringifier
     public function toString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
         /** @var RgbaColor $value */
-        return sprintf('new \Pimcore\Model\DataObject\Data\RgbaColor(%d, %d, %d, %d)',
+        return sprintf(
+            'new \Pimcore\Model\DataObject\Data\RgbaColor(%d, %d, %d, %d)',
             $value->getR(),
             $value->getG(),
             $value->getB(),

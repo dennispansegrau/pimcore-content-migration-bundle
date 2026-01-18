@@ -7,6 +7,8 @@ use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Objectbrick;
 use Pimcore\Model\DataObject\Objectbrick\Data\AbstractData;
 
+use function ucfirst;
+
 class ObjectbrickBuilder
 {
     private ?Objectbrick $objectbrick = null;
