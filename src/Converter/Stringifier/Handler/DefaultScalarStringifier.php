@@ -62,7 +62,7 @@ final class DefaultScalarStringifier implements ValueStringifier
         }
 
         if (is_object($value)) {
-            throw new InvalidArgumentException('Unsupported object of class: ' . get_class($value));
+            throw new InvalidArgumentException(sprintf("Unsupported object of class: %s. Create a custom handler to serialize it.", get_class($value)));
         }
 
         throw new InvalidArgumentException('Unsupported value type: ' . gettype($value));
