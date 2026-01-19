@@ -32,8 +32,7 @@ jobs:
             --user=$(id -u):$(id -g) \
             docker.io/pimcore/pimcore:php8.2-v3 \
               composer create-project \
-                pimcore/demo:@dev \
-                --no-install \
+                pimcore/demo
                 sample-project
 
       - name: Smoke-test compose file
@@ -42,16 +41,13 @@ jobs:
           cd sample-project/
           docker compose -f docker-compose.yaml -f ../bundle/.github/ci/files/docker-compose.yaml config
 
-      - name: Install Pimcore and bundle
+      - name: Install Pimcore
         run: |
           set -ex
           cd sample-project/
           docker compose pull --quiet
           docker compose down -v --remove-orphans
           docker compose -f docker-compose.yaml -f ../bundle/.github/ci/files/docker-compose.yaml up -d
-          docker compose exec -T -- php composer config repositories.bundle path /bundle
-          docker compose exec -T -- php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:@dev
-          docker compose exec -T -- php composer update --no-scripts --ignore-platform-req=ext-amqp
 
           docker compose exec -T -- php bash -c '\
             curl -sfL https://github.com/powerman/dockerize/releases/download/v0.11.5/dockerize-`uname -s`-`uname -m` \
@@ -66,6 +62,13 @@ jobs:
             -e PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore \
             -- \
             php vendor/bin/pimcore-install -n --mysql-host-socket=db --mysql-database=pimcore
+
+      - name: Install bundle
+        run: |
+          set -ex
+            docker compose exec -T -- php composer config repositories.bundle path /bundle
+            docker compose exec -T -- php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:@dev
+            docker compose exec -T -- php composer update --no-scripts --ignore-platform-req=ext-amqp
 
       - name: PHPStan and CS
         run: |
