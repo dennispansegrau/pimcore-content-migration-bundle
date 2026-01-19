@@ -89,6 +89,11 @@ jobs:
             --mysql-port=3306 \
             --no-interaction
 
+      - name: Force database URL
+        run: |
+          cd "$PIMCORE_APP_DIR"
+          printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' > .env.local
+
       - name: Clear cache
         run: |
           cd "$PIMCORE_APP_DIR"

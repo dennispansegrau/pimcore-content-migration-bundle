@@ -61,7 +61,7 @@ jobs:
       - name: Pin platform version
         run: |
           cd "$PIMCORE_APP_DIR"
-          composer require --no-interaction --no-update pimcore/platform-version:2022.0
+          composer require --no-interaction --no-update pimcore/platform-version:2022.0 pimcore/pimcore:^10.6
           composer update --no-interaction --prefer-dist --ignore-platform-req=ext-amqp
 
       - name: Install bundle into Pimcore
@@ -87,6 +87,11 @@ jobs:
             --mysql-host=db \
             --mysql-port=3306 \
             --no-interaction
+
+      - name: Force database URL
+        run: |
+          cd "$PIMCORE_APP_DIR"
+          printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' > .env.local
 
       - name: Clear cache
         run: |
