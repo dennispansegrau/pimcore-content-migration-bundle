@@ -85,7 +85,7 @@ jobs:
                       --volume=${{ github.workspace }}/bundle:/bundle \
                       --workdir=/bundle \
                       docker.io/pimcore/pimcore:php8.3-v3 \
-                        bash -lc 'composer install --no-interaction --prefer-dist && composer phpstan && composer cs'
+                        bash -lc 'git config --global --add safe.directory /bundle && composer install --no-interaction --prefer-dist && composer phpstan && composer cs'
 
             -   name: Compose down
                 if: always()
