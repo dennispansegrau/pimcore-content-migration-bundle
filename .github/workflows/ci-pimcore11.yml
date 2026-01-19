@@ -81,10 +81,8 @@ jobs:
             -   name: PHPStan and CS
                 run: |
                     set -ex
-                    docker run \
-                      --volume=${{ github.workspace }}/bundle:/bundle \
-                      --workdir=/bundle \
-                      docker.io/pimcore/pimcore:php8.3-v3 \
+                    cd sample-project/
+                    docker compose exec -T --workdir /bundle php \
                         bash -lc 'git config --global --add safe.directory /bundle && composer install --no-interaction --prefer-dist && composer phpstan && composer cs'
 
             -   name: Compose down
