@@ -33,6 +33,17 @@ services:
         tags:
             - { name: 'pcmb.stringifier_converter', priority: 0 }
 
+    # Autowire remaining handlers
+    PimcoreContentMigration\Converter\Stringifier\Handler\:
+        resource: '../src/Converter/Stringifier/Handler/*'
+        exclude:
+            - '../src/Converter/Stringifier/Handler/DefaultScalarStringifier.php'
+            - '../src/Converter/Stringifier/Handler/NewExpressionStringifier.php'
+        autowire: true
+        autoconfigure: false
+        tags:
+            - { name: 'pcmb.stringifier_handler', priority: 0 }
+
     # Default handler (must be last)
     PimcoreContentMigration\Converter\Stringifier\Handler\DefaultScalarStringifier:
         tags:
@@ -42,11 +53,3 @@ services:
     PimcoreContentMigration\Converter\Stringifier\Handler\NewExpressionStringifier:
         tags:
             - { name: 'pcmb.stringifier_handler', priority: 1000 }
-
-    # Autowire remaining handlers
-    PimcoreContentMigration\Converter\Stringifier\Handler\:
-        resource: '../src/Converter/Stringifier/Handler/*'
-        autowire: true
-        autoconfigure: false
-        tags:
-            - { name: 'pcmb.stringifier_handler', priority: 0 }
