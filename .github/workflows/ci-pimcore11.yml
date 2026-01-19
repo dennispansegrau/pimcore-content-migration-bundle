@@ -65,14 +65,14 @@ jobs:
                     set -ex
                     cd sample-project/
 
-                    docker compose exec -T --workdir /var/www/html php bin/console pimcore:install \
-                        --mysql-host=db \
-                        --mysql-username=pimcore \
-                        --mysql-password=pimcore \
-                        --mysql-database=pimcore \
-                        --admin-username=pimcore \
-                        --admin-password=pimcore \
-                        --no-interaction
+                    docker compose exec -T --workdir /var/www/html \
+                        -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
+                        -e PIMCORE_INSTALL_ADMIN_PASSWORD=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_USERNAME=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_DATABASE=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_HOST_SOCKET=db \
+                        php vendor/bin/pimcore-install -n
 
                     docker compose exec -T --workdir /var/www/html \
                         -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
