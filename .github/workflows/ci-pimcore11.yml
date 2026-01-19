@@ -52,27 +52,29 @@ jobs:
                     
                     docker compose exec -T -- php dockerize -wait tcp://db:3306 -timeout 5m
 
+            -   name: Install bundle
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /var/www/html php composer config repositories.bundle path /bundle
+                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:@dev
+                    docker compose exec -T --workdir /var/www/html php composer update --no-scripts --ignore-platform-req=ext-amqp
+
             -   name: Install Pimcore
                 run: |
                     set -ex
                     cd sample-project/
-                    
-                    docker compose exec -T php bin/console assets:install --symlink --relative
-                    
-                    docker compose exec -T php vendor/bin/pimcore-install \
-                        --mysql-host-socket=db \
+
+                    docker compose exec -T --workdir /var/www/html php bin/console assets:install --symlink --relative
+
+                    docker compose exec -T --workdir /var/www/html php bin/console pimcore:install \
+                        --mysql-host=db \
                         --mysql-username=pimcore \
                         --mysql-password=pimcore \
-                        --mysql-database=pimcore
-                    
-                    docker compose exec -T php bin/console cache:clear
-
-            -   name: Install bundle
-                run: |
-                    set -ex
-                      docker compose exec -T -- php composer config repositories.bundle path /bundle
-                      docker compose exec -T -- php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:@dev
-                      docker compose exec -T -- php composer update --no-scripts --ignore-platform-req=ext-amqp
+                        --mysql-database=pimcore \
+                        --admin-username=pimcore \
+                        --admin-password=pimcore \
+                        --no-interaction
 
             -   name: PHPStan and CS
                 run: |
