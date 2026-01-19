@@ -12,6 +12,8 @@ on:
 jobs:
   pimcore11:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_DATABASE: mariadb:10.11
     steps:
       - name: Checkout
         uses: actions/checkout@v4
