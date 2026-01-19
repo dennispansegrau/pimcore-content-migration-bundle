@@ -36,7 +36,7 @@ jobs:
       COMPOSER_CACHE_DIR: /tmp/composer-cache
       PIMCORE_APP_DIR: /tmp/pimcore-app
       PIMCORE_PROJECT_PACKAGE: pimcore/demo
-      PIMCORE_PROJECT_VERSION: "2024.4.*"
+      PIMCORE_PROJECT_VERSION: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,13 +55,19 @@ jobs:
 
       - name: Create Pimcore demo project
         run: |
-          COMPOSER_MEMORY_LIMIT=-1 composer create-project --no-interaction --no-scripts \
-            "$PIMCORE_PROJECT_PACKAGE:$PIMCORE_PROJECT_VERSION" "$PIMCORE_APP_DIR"
+          COMPOSER_MEMORY_LIMIT=-1 composer create-project --no-interaction --no-scripts --no-install \
+            "$PIMCORE_PROJECT_PACKAGE" "$PIMCORE_APP_DIR"
+
+      - name: Pin platform version
+        run: |
+          cd "$PIMCORE_APP_DIR"
+          composer require --no-interaction --no-update pimcore/platform-version:2024.4
+          composer update --no-interaction --prefer-dist
 
       - name: Install bundle into Pimcore
         run: |
           cd "$PIMCORE_APP_DIR"
-          composer config repositories.bundle path "$GITHUB_WORKSPACE/pimcore-content-migration-bundle"
+          composer config repositories.bundle path "$GITHUB_WORKSPACE"
           composer require --no-interaction dennis-pansegrau/pimcore-content-migration-bundle:@dev
 
       - name: Install assets
@@ -94,12 +100,12 @@ jobs:
 
       - name: Bundle dependencies
         run: |
-          composer --working-dir="$GITHUB_WORKSPACE/pimcore-content-migration-bundle" install --no-interaction --prefer-dist
+          composer --working-dir="$GITHUB_WORKSPACE" install --no-interaction --prefer-dist
 
       - name: PHPStan
         run: |
-          composer --working-dir="$GITHUB_WORKSPACE/pimcore-content-migration-bundle" phpstan
+          composer --working-dir="$GITHUB_WORKSPACE" phpstan
 
       - name: CS
         run: |
-          composer --working-dir="$GITHUB_WORKSPACE/pimcore-content-migration-bundle" cs
+          composer --working-dir="$GITHUB_WORKSPACE" cs
