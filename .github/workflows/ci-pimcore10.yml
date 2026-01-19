@@ -58,11 +58,23 @@ jobs:
           COMPOSER_MEMORY_LIMIT=-1 composer create-project --no-interaction --no-scripts --no-install \
             "$PIMCORE_PROJECT_PACKAGE" "$PIMCORE_APP_DIR"
 
+      - name: Set database env
+        run: |
+          cd "$PIMCORE_APP_DIR"
+          printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' > .env.local
+          if grep -q '^DATABASE_URL=' .env; then
+            sed -i 's#^DATABASE_URL=.*#DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore#' .env
+          else
+            printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' >> .env
+          fi
+
       - name: Pin platform version
         run: |
           cd "$PIMCORE_APP_DIR"
           composer config --global audit.block-insecure false
           composer remove --no-interaction --no-update pimcore/admin-ui-classic-bundle || true
+          composer remove --no-interaction --no-update pimcore/quill-bundle || true
+          composer require --no-interaction --no-update symfony/dotenv:^5.4
           composer require --no-interaction --no-update pimcore/platform-version:2022.0 pimcore/pimcore:^10.6
           composer update --no-interaction --prefer-dist --ignore-platform-req=ext-amqp --no-audit
 
