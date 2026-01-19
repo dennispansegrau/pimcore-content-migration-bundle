@@ -58,7 +58,7 @@ jobs:
           docker compose exec -T -- php composer remove symfony/amqp-messenger --no-update || true
           docker compose exec -T -- php composer require --no-update symfony/dotenv:^5.4
           docker compose exec -T -- php composer require --no-update pimcore/platform-version:2022.0 pimcore/pimcore:^10.6
-          docker compose exec -T -- php composer config repositories.bundle path /test/bundle
+          docker compose exec -T -- php composer config repositories.bundle path /bundle
           docker compose exec -T -- php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:@dev
           docker compose exec -T -- php composer update --no-scripts --no-audit --ignore-platform-req=ext-amqp
 

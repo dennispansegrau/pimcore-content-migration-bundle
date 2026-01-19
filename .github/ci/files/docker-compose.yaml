@@ -10,6 +10,12 @@ services:
       MYSQL_DATABASE: pimcore
       MYSQL_USER: pimcore
       MYSQL_PASSWORD: pimcore
+  php:
+    volumes:
+      - ../bundle:/bundle
+  supervisord:
+    volumes:
+      - ../bundle:/bundle
 
 volumes:
   pimcore-demo-database:
