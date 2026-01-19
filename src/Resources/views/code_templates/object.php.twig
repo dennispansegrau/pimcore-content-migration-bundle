@@ -18,24 +18,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
-{% if setter.isObjectMetadata %}
-            ->set('{{ setter.name }}', \PimcoreContentMigration\Builder\DataObject\ObjectMetadataBuilder::create('{{ setter.value.fieldname }}', {{ pcmb_value_to_string(setter.value.columns, dependencies, {'indent': 16}) }}, {{ pcmb_value_to_string(setter.value.object, dependencies) }})
-                ->setData({{ pcmb_value_to_string(setter.value.data, dependencies, {'indent': 16}) }})
-                ->getObject()
-            )
-{% elseif setter.isLocalizedfield %}
-            ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies, {'owner': '$builder->getObject()'}) }})
-{% elseif setter.isObjectMetadataList %}
-            ->set('{{ setter.name }}', [
-{% for objectMetadata in setter.value %}
-                \PimcoreContentMigration\Builder\DataObject\ObjectMetadataBuilder::create('{{ objectMetadata.fieldname }}', {{ pcmb_value_to_string(objectMetadata.columns, dependencies, {'indent': 16}) }}, {{ pcmb_value_to_string(objectMetadata.object, dependencies) }})
-                    ->setData({{ pcmb_value_to_string(objectMetadata.data, dependencies, {'indent': 16}) }})
-                    ->getObject(),
-{% endfor %}
-            ])
-{% else %}
             ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})
-{% endif %}
 {% endfor %}
 {% for property in object.getProperties %}
             ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})

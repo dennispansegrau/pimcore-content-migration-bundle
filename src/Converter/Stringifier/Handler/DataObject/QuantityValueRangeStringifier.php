@@ -25,10 +25,10 @@ class QuantityValueRangeStringifier implements ValueStringifier
         $minimum = $value->getMinimum();
         $unit = $value->getUnit();
 
-        $maximumString = $this->getConverter()->convertValueToString($maximum, $dependencyList, $parameters);
         $minimumString = $this->getConverter()->convertValueToString($minimum, $dependencyList, $parameters);
+        $maximumString = $this->getConverter()->convertValueToString($maximum, $dependencyList, $parameters);
         $unitString = $this->getConverter()->convertValueToString($unit, $dependencyList, $parameters);
 
-        return sprintf('new \Pimcore\Model\DataObject\Data\QuantityValueRange(%s, %s, %s)', $maximumString, $minimumString, $unitString);
+        return sprintf('new \Pimcore\Model\DataObject\Data\QuantityValueRange(%s, %s, %s)', $minimumString, $maximumString, $unitString);
     }
 }
