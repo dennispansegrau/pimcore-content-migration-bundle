@@ -56,7 +56,7 @@ jobs:
 
           docker compose exec -T -- php dockerize -wait tcp://db:3306 -timeout 5m
 
-          docker compose exec -T \
+          docker compose exec -T --workdir /var/www/html \
             -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
             -e PIMCORE_INSTALL_ADMIN_PASSWORD=pimcore \
             -e PIMCORE_INSTALL_MYSQL_USERNAME=pimcore \
