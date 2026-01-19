@@ -35,11 +35,15 @@ jobs:
       COMPOSER_ALLOW_SUPERUSER: "1"
       COMPOSER_CACHE_DIR: /tmp/composer-cache
       PIMCORE_APP_DIR: /tmp/pimcore-app
-      PIMCORE_PROJECT_PACKAGE: pimcore/demo
+      PIMCORE_PROJECT_PACKAGE: pimcore/skeleton
       PIMCORE_PROJECT_VERSION: "2022.0.*"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Allow git safe directory
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Composer cache
         uses: actions/cache@v4
@@ -49,7 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      - name: Create Pimcore demo project
+      - name: Create Pimcore project
         run: |
           COMPOSER_MEMORY_LIMIT=-1 composer create-project --no-interaction --no-scripts \
             "$PIMCORE_PROJECT_PACKAGE:$PIMCORE_PROJECT_VERSION" "$PIMCORE_APP_DIR"
@@ -65,7 +69,7 @@ jobs:
           cd "$PIMCORE_APP_DIR"
           bin/console assets:install --symlink --relative
 
-      - name: Install Pimcore (with demo data)
+      - name: Install Pimcore
         run: |
           cd "$PIMCORE_APP_DIR"
           vendor/bin/pimcore-install \

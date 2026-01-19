@@ -36,10 +36,14 @@ jobs:
       COMPOSER_CACHE_DIR: /tmp/composer-cache
       PIMCORE_APP_DIR: /tmp/pimcore-app
       PIMCORE_PROJECT_PACKAGE: pimcore/demo
-      PIMCORE_PROJECT_VERSION: "2023.1.*"
+      PIMCORE_PROJECT_VERSION: "2024.4.*"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Allow git safe directory
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Composer cache
         uses: actions/cache@v4
