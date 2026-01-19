@@ -3,7 +3,10 @@
 namespace PimcoreContentMigration\Generator;
 
 use function date;
+use function dirname;
 use function file_put_contents;
+use function is_dir;
+use function mkdir;
 
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
@@ -37,6 +40,10 @@ class MigrationGenerator implements MigrationGeneratorInterface
         $filename = $classname . '.php';
         $path = $this->namespaceResolver->resolve($namespace);
         $fullPath = $path . '/' . $filename;
+        $directory = dirname($fullPath);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
 
         $description = sprintf(
             'Creates or updates the %s %s%s',
