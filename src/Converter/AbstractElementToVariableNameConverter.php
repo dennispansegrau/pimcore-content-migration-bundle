@@ -2,6 +2,9 @@
 
 namespace PimcoreContentMigration\Converter;
 
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\Document;
 use function array_map;
 use function implode;
 use function lcfirst;
@@ -34,6 +37,16 @@ class AbstractElementToVariableNameConverter
         if (empty($name)) {
             $name = 'Root';
         }
-        return lcfirst($name);
+
+        $path = lcfirst($name);
+        if ($abstractElement instanceof Document) {
+            return 'document' . $path;
+        } elseif ($abstractElement instanceof Asset) {
+            return 'asset' . $path;
+        } elseif ($abstractElement instanceof DataObject) {
+            return 'object' . $path;
+        } else {
+            throw new LogicException('Unknown element type: ' . $abstractElement->getType());
+        }
     }
 }

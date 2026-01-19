@@ -72,6 +72,17 @@ class DocumentCodeGenerator implements CodeGeneratorInterface
 
     private function getBuilderClass(Document $document): ?string
     {
+        if (class_exists(Printpage::class) && $document instanceof Printpage) {
+            return '\\' . PrintPageBuilder::class;
+        }
+
+        if (class_exists(Printcontainer::class) && $document instanceof Printcontainer) {
+            return '\\' . PrintContainerBuilder::class;
+        }
+
+        if (class_exists(Newsletter::class) && $document instanceof Newsletter) {
+            return '\\' . NewsletterBuilder::class;
+        }
         if (class_exists(Page::class) && $document instanceof Page) {
             return '\\' . \PimcoreContentMigration\Builder\Document\Personalization\PageBuilder::class;
         }
@@ -106,18 +117,6 @@ class DocumentCodeGenerator implements CodeGeneratorInterface
 
         if (get_class($document) === Document::class) {
             return '\\' . DocumentBuilder::class;
-        }
-
-        if (class_exists(Printpage::class) && $document instanceof Printpage) {
-            return '\\' . PrintPageBuilder::class;
-        }
-
-        if (class_exists(Printcontainer::class) && $document instanceof Printpage) {
-            return '\\' . PrintContainerBuilder::class;
-        }
-
-        if (class_exists(Newsletter::class) && $document instanceof Printpage) {
-            return '\\' . NewsletterBuilder::class;
         }
 
         return null;
