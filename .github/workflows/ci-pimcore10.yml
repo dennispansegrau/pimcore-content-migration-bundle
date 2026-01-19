@@ -36,6 +36,7 @@ jobs:
       COMPOSER_CACHE_DIR: /tmp/composer-cache
       PIMCORE_APP_DIR: /tmp/pimcore-app
       PIMCORE_PROJECT_PACKAGE: pimcore/skeleton
+      DATABASE_URL: mysql://pimcore:pimcore@db:3306/pimcore
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,7 +62,7 @@ jobs:
         run: |
           cd "$PIMCORE_APP_DIR"
           composer require --no-interaction --no-update pimcore/platform-version:2022.0
-          composer update --no-interaction --prefer-dist
+          composer update --no-interaction --prefer-dist --ignore-platform-req=ext-amqp
 
       - name: Install bundle into Pimcore
         run: |
@@ -83,7 +84,7 @@ jobs:
             --mysql-username=pimcore \
             --mysql-password=pimcore \
             --mysql-database=pimcore \
-            --mysql-host-socket=db \
+            --mysql-host=db \
             --mysql-port=3306 \
             --no-interaction
 
