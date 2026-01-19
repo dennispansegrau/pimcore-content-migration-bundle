@@ -32,8 +32,9 @@ jobs:
             --user=$(id -u):$(id -g) \
             docker.io/pimcore/pimcore:php8.2-v3 \
               composer create-project \
-                pimcore/demo
-                sample-project
+              pimcore/demo \
+              --no-install \
+              sample-project
 
       - name: Smoke-test compose file
         run: |
