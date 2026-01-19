@@ -44,6 +44,12 @@ jobs:
           cd sample-project/
           sed -i 's#image: pimcore/pimcore:.*#image: pimcore/pimcore:php8.1-v1#' docker-compose.yaml
 
+      - name: Remove Pimcore 11 installer subscriber
+        run: |
+          set -ex
+          cd sample-project/
+          rm -f src/EventSubscriber/BundleSetupSubscriber.php
+
       - name: Smoke-test compose file
         run: |
           set -ex
