@@ -97,7 +97,7 @@ jobs:
       - name: Clear cache
         run: |
           cd "$PIMCORE_APP_DIR"
-          bin/console cache:clear
+          DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore bin/console cache:clear
 
       - name: Enable bundle
         run: |
