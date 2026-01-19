@@ -12,8 +12,6 @@ on:
 jobs:
   pimcore11:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_DATABASE: mariadb:10.11
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,9 +50,9 @@ jobs:
           docker compose down -v --remove-orphans
           docker compose -f docker-compose.yaml -f ../bundle/.github/ci/files/docker-compose.yaml up -d
 
-          docker compose exec -T -- php composer require --no-update pimcore/platform-version:2024.4
-          docker compose exec -T -- php composer remove pimcore/payment-provider-paypal-smart-payment-button --no-update || true
-          docker compose exec -T -- php bash -lc "sed -i '/Pimcore\\\\\\Bundle\\\\\\EcommerceFrameworkBundle\\\\\\PimcorePaymentProviderPayPalSmartPaymentButtonBundle/d' config/bundles.php"
+#          docker compose exec -T -- php composer require --no-update pimcore/platform-version:2024.4
+#          docker compose exec -T -- php composer remove pimcore/payment-provider-paypal-smart-payment-button --no-update || true
+#          docker compose exec -T -- php bash -lc "sed -i '/Pimcore\\\\\\Bundle\\\\\\EcommerceFrameworkBundle\\\\\\PimcorePaymentProviderPayPalSmartPaymentButtonBundle/d' config/bundles.php"
           docker compose exec -T -- php composer config repositories.bundle path /bundle
           docker compose exec -T -- php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:@dev
           docker compose exec -T -- php composer update --no-scripts --ignore-platform-req=ext-amqp
