@@ -41,25 +41,6 @@ readonly class Setter
         return $this->value;
     }
 
-    public function isObjectOrListOfObjects(): bool
-    {
-        if (is_object($this->value)) {
-            return true;
-        }
-
-        if (!is_array($this->value) || $this->value === []) {
-            return false;
-        }
-
-        foreach ($this->value as $item) {
-            if (!is_object($item)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public function getType(int $level = 1): string
     {
         $value = $this->value;
@@ -115,37 +96,5 @@ readonly class Setter
     public function isConcrete(): bool
     {
         return $this->value instanceof Concrete;
-    }
-
-    public function isObjectMetadataList(): bool
-    {
-        return is_array($this->value)
-            && $this->value !== []
-            && $this->value[array_key_first($this->value)] instanceof ObjectMetadata;
-    }
-
-    public function isObjectMetadata(): bool
-    {
-        return $this->value instanceof ObjectMetadata;
-    }
-
-    public function isVideo(): bool
-    {
-        return $this->value instanceof Video;
-    }
-
-    public function isLocalizedfield(): bool
-    {
-        return $this->value instanceof Localizedfield;
-    }
-
-    public function isObjectbrick(): bool
-    {
-        return $this->value instanceof Objectbrick;
-    }
-
-    public function isFieldcollection(): bool
-    {
-        return $this->value instanceof Fieldcollection;
     }
 }
