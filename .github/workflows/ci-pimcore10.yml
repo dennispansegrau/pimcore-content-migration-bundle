@@ -4,123 +4,87 @@ on:
   push:
     branches: [main]
     paths:
-      - "pimcore-content-migration-bundle/**"
-      - ".github/workflows/ci-pimcore10.yml"
+      - "**"
   pull_request:
     paths:
-      - "pimcore-content-migration-bundle/**"
-      - ".github/workflows/ci-pimcore10.yml"
+      - "**"
 
 jobs:
   pimcore10:
     runs-on: ubuntu-latest
-    container:
-      image: pimcore/pimcore:php8.1-v1
-    services:
-      db:
-        image: mariadb:10.11
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: pimcore
-          MYSQL_USER: pimcore
-          MYSQL_PASSWORD: pimcore
-        options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-      redis:
-        image: redis:alpine
-    env:
-      COMPOSER_ALLOW_SUPERUSER: "1"
-      COMPOSER_CACHE_DIR: /tmp/composer-cache
-      PIMCORE_APP_DIR: /tmp/pimcore-app
-      PIMCORE_PROJECT_PACKAGE: pimcore/skeleton
-      DATABASE_URL: mysql://pimcore:pimcore@db:3306/pimcore
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Allow git safe directory
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-      - name: Composer cache
-        uses: actions/cache@v4
         with:
-          path: /tmp/composer-cache
-          key: ${{ runner.os }}-composer-${{ hashFiles('pimcore-content-migration-bundle/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          path: bundle
+
+      - name: Pull Pimcore image
+        run: |
+          set -ex
+          docker pull docker.io/pimcore/pimcore:php8.1-v1
 
       - name: Create Pimcore project
         run: |
-          COMPOSER_MEMORY_LIMIT=-1 composer create-project --no-interaction --no-scripts --no-install \
-            "$PIMCORE_PROJECT_PACKAGE" "$PIMCORE_APP_DIR"
+          set -ex
+          docker run \
+            --volume=${{ github.workspace }}/:/test/ \
+            --workdir=/test/ \
+            --user=$(id -u):$(id -g) \
+            docker.io/pimcore/pimcore:php8.1-v1 \
+              composer create-project \
+                pimcore/skeleton:@dev \
+                --no-install \
+                sample-project
 
-      - name: Set database env
+      - name: Smoke-test compose file
         run: |
-          cd "$PIMCORE_APP_DIR"
-          printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' > .env.local
-          if grep -q '^DATABASE_URL=' .env; then
-            sed -i 's#^DATABASE_URL=.*#DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore#' .env
-          else
-            printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' >> .env
-          fi
+          set -ex
+          cd sample-project/
+          docker compose -f docker-compose.yaml -f ../bundle/.github/ci/files/docker-compose.yaml config
 
-      - name: Pin platform version
+      - name: Install Pimcore and bundle
         run: |
-          cd "$PIMCORE_APP_DIR"
-          composer config --global audit.block-insecure false
-          composer remove --no-interaction --no-update pimcore/admin-ui-classic-bundle || true
-          composer remove --no-interaction --no-update pimcore/quill-bundle || true
-          composer remove --no-interaction --no-update symfony/amqp-messenger || true
-          composer require --no-interaction --no-update symfony/dotenv:^5.4
-          composer require --no-interaction --no-update pimcore/platform-version:2022.0 pimcore/pimcore:^10.6
-          composer update --no-interaction --prefer-dist --ignore-platform-req=ext-amqp --no-audit
+          set -ex
+          cd sample-project/
+          docker compose pull --quiet
+          docker compose down -v --remove-orphans
+          docker compose -f docker-compose.yaml -f ../bundle/.github/ci/files/docker-compose.yaml up -d
 
-      - name: Install bundle into Pimcore
-        run: |
-          cd "$PIMCORE_APP_DIR"
-          composer config repositories.bundle path "$GITHUB_WORKSPACE"
-          composer require --no-interaction dennis-pansegrau/pimcore-content-migration-bundle:@dev
+          docker compose exec -T -- php composer config --global audit.block-insecure false
+          docker compose exec -T -- php composer remove pimcore/admin-ui-classic-bundle --no-update || true
+          docker compose exec -T -- php composer remove pimcore/quill-bundle --no-update || true
+          docker compose exec -T -- php composer remove symfony/amqp-messenger --no-update || true
+          docker compose exec -T -- php composer require --no-update symfony/dotenv:^5.4
+          docker compose exec -T -- php composer require --no-update pimcore/platform-version:2022.0 pimcore/pimcore:^10.6
+          docker compose exec -T -- php composer config repositories.bundle path /test/bundle
+          docker compose exec -T -- php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:@dev
+          docker compose exec -T -- php composer update --no-scripts --no-audit --ignore-platform-req=ext-amqp
 
-      - name: Install assets
-        run: |
-          cd "$PIMCORE_APP_DIR"
-          bin/console assets:install --symlink --relative
+          docker compose exec -T -- php bash -c '\
+            curl -sfL https://github.com/powerman/dockerize/releases/download/v0.11.5/dockerize-`uname -s`-`uname -m` \
+            | install /dev/stdin /usr/local/bin/dockerize'
 
-      - name: Install Pimcore
-        run: |
-          cd "$PIMCORE_APP_DIR"
-          vendor/bin/pimcore-install \
-            --admin-username=admin \
-            --admin-password=admin \
-            --mysql-username=pimcore \
-            --mysql-password=pimcore \
-            --mysql-database=pimcore \
-            --mysql-host=db \
-            --mysql-port=3306 \
-            --no-interaction
+          docker compose exec -T -- php dockerize -wait tcp://db:3306 -timeout 5m
 
-      - name: Force database URL
-        run: |
-          cd "$PIMCORE_APP_DIR"
-          printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' > .env.local
+          docker compose exec -T \
+            -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
+            -e PIMCORE_INSTALL_ADMIN_PASSWORD=pimcore \
+            -e PIMCORE_INSTALL_MYSQL_USERNAME=pimcore \
+            -e PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore \
+            -- \
+            php vendor/bin/pimcore-install -n --mysql-host-socket=db --mysql-database=pimcore
 
-      - name: Enable bundle
+      - name: PHPStan and CS
         run: |
-          cd "$PIMCORE_APP_DIR"
-          bin/console pimcore:bundle:install PimcoreContentMigrationBundle --no-interaction
+          set -ex
+          docker run \
+            --volume=${{ github.workspace }}/bundle:/bundle \
+            --workdir=/bundle \
+            docker.io/pimcore/pimcore:php8.1-v1 \
+              bash -lc 'composer install --no-interaction --prefer-dist && composer phpstan && composer cs'
 
-      - name: Bundle dependencies
+      - name: Compose down
+        if: always()
         run: |
-          composer --working-dir="$GITHUB_WORKSPACE" install --no-interaction --prefer-dist
-
-      - name: PHPStan
-        run: |
-          composer --working-dir="$GITHUB_WORKSPACE" phpstan
-
-      - name: CS
-        run: |
-          composer --working-dir="$GITHUB_WORKSPACE" cs
+          cd sample-project/
+          docker compose down -v --remove-orphans
