@@ -1,4 +1,4 @@
-name: CI Pimcore 11
+name: CI Pimcore 11 - PHP 8.2
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       - name: Pull Pimcore image
         run: |
           set -ex
-          docker pull docker.io/pimcore/pimcore:php8.3-v3
+          docker pull docker.io/pimcore/pimcore:php8.2-v3
 
       - name: Create Pimcore project
         run: |
@@ -30,7 +30,7 @@ jobs:
             --volume=${{ github.workspace }}/:/test/ \
             --workdir=/test/ \
             --user=$(id -u):$(id -g) \
-            docker.io/pimcore/pimcore:php8.3-v3 \
+            docker.io/pimcore/pimcore:php8.2-v3 \
               composer create-project \
                 pimcore/demo:@dev \
                 --no-install \
