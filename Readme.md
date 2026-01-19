@@ -6,6 +6,19 @@ The generated migrations create only dummy dependencies — documents, assets, a
 
 ---
 
+## 📚 Table of Contents
+- [✨ Features](#-features)
+- [⚙️ Installation](#️-installation)
+- [🧩 CLI Command](#-cli-command)
+- [💻 Example](#-example)
+- [🧰 Configuration](#-configuration)
+- [🧩 Custom DataType handlers](#-custom-datatype-handlers)
+- [🎨 Custom Twig templates](#-custom-twig-templates)
+- [🧠 Notes](#-notes)
+- [🧾 License](#-license)
+
+---
+
 ## ✨ Features
 
 - Generates migration scripts for Pimcore Documents, Assets, and Data Objects
@@ -114,6 +127,29 @@ services:
     App\ContentMigration\Stringifier\MyCustomDataTypeStringifier:
         tags:
             - { name: 'pcmb.stringifier_handler', priority: 100 }
+```
+
+---
+
+## 🎨 Custom Twig templates
+You can override the bundled Twig templates to adapt the generated migration code to your own style.
+The bundle reads template paths from configuration, so you can point to your own templates.
+
+Example configuration:
+```yaml
+# config/config.yaml
+pimcore_content_migration:
+    templates:
+        migration_template: '@App/content_migration/migration.php.twig'
+        document_template: '@App/content_migration/document.php.twig'
+        asset_template: '@App/content_migration/asset.php.twig'
+        object_template: '@App/content_migration/object.php.twig'
+```
+
+When customizing templates, use the Twig helper `pcmb_value_to_string` to safely serialize Pimcore
+objects and complex values into PHP code:
+```twig
+{{ pcmb_value_to_string(myValue, dependencies) }}
 ```
 
 ---
