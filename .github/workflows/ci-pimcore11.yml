@@ -104,11 +104,6 @@ jobs:
           cd "$PIMCORE_APP_DIR"
           printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' > .env.local
 
-      - name: Clear cache
-        run: |
-          cd "$PIMCORE_APP_DIR"
-          DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore bin/console cache:clear
-
       - name: Enable bundle
         run: |
           cd "$PIMCORE_APP_DIR"

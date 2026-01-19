@@ -74,6 +74,7 @@ jobs:
           composer config --global audit.block-insecure false
           composer remove --no-interaction --no-update pimcore/admin-ui-classic-bundle || true
           composer remove --no-interaction --no-update pimcore/quill-bundle || true
+          composer remove --no-interaction --no-update symfony/amqp-messenger || true
           composer require --no-interaction --no-update symfony/dotenv:^5.4
           composer require --no-interaction --no-update pimcore/platform-version:2022.0 pimcore/pimcore:^10.6
           composer update --no-interaction --prefer-dist --ignore-platform-req=ext-amqp --no-audit
@@ -106,11 +107,6 @@ jobs:
         run: |
           cd "$PIMCORE_APP_DIR"
           printf '%s\n' 'DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore' > .env.local
-
-      - name: Clear cache
-        run: |
-          cd "$PIMCORE_APP_DIR"
-          DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore bin/console cache:clear
 
       - name: Enable bundle
         run: |
