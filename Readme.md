@@ -71,6 +71,53 @@ This defines where generated content migration files are stored.
 
 ---
 
+## 🧩 Custom DataType handlers
+If you use custom DataTypes (or hit "Unsupported object of class" errors), you can register your own
+stringifier handler to control how values are serialized in migrations.
+
+Example handler:
+```php
+<?php
+
+namespace App\ContentMigration\Stringifier;
+
+use App\Model\DataObject\Data\MyCustomDataType;
+use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
+use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
+use PimcoreContentMigration\Generator\Dependency\DependencyList;
+
+final class MyCustomDataTypeStringifier implements ValueStringifier
+{
+    use ValueToStringConverterTrait;
+
+    public function supports(mixed $value, array $parameters = []): bool
+    {
+        return $value instanceof MyCustomDataType;
+    }
+
+    public function toString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
+    {
+        $data = $this->getConverter()->convertValueToString($value->getData(), $dependencyList, $parameters);
+
+        return sprintf(
+            'new \\App\\Model\\DataObject\\Data\\MyCustomDataType(%s)',
+            $data
+        );
+    }
+}
+```
+
+Register it as a service (priority can be adjusted to run before the default handler):
+```yaml
+# config/services.yaml
+services:
+    App\ContentMigration\Stringifier\MyCustomDataTypeStringifier:
+        tags:
+            - { name: 'pcmb.stringifier_handler', priority: 100 }
+```
+
+---
+
 ## 🧠 Notes
 
 - Migrations are executable PHP scripts — they can be committed to your VCS and deployed alongside your code.
