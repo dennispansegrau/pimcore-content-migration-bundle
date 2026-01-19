@@ -38,13 +38,12 @@ class AbstractElementToVariableNameConverter
             $name = 'Root';
         }
 
-        $path = lcfirst($name);
         if ($abstractElement instanceof Document) {
-            return 'document' . $path;
+            return 'document' . $name;
         } elseif ($abstractElement instanceof Asset) {
-            return 'asset' . $path;
+            return 'asset' . $name;
         } elseif ($abstractElement instanceof DataObject) {
-            return 'object' . $path;
+            return 'object' . $name;
         } else {
             throw new LogicException('Unknown element type: ' . $abstractElement->getType());
         }
