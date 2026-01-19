@@ -65,8 +65,6 @@ jobs:
                     set -ex
                     cd sample-project/
 
-                    docker compose exec -T --workdir /var/www/html php bin/console assets:install --symlink --relative
-
                     docker compose exec -T --workdir /var/www/html php bin/console pimcore:install \
                         --mysql-host=db \
                         --mysql-username=pimcore \
@@ -75,6 +73,10 @@ jobs:
                         --admin-username=pimcore \
                         --admin-password=pimcore \
                         --no-interaction
+
+                    docker compose exec -T --workdir /var/www/html \
+                        -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
+                        php bin/console assets:install --symlink --relative
 
             -   name: PHPStan and CS
                 run: |
