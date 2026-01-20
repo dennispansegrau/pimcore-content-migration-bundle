@@ -48,17 +48,17 @@ bin/console cache:clear
 ## 🧩 CLI Command
 
 ```
-bin/console content:migration:create [TYPE] [ID] [NAMESPACE] [--with-children] [--no-dependencies] [--inline-wysiwyg]
+bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-children] [--no-dependencies] [--inline-wysiwyg]
 ```
 
 | Name          | Description                                                                                                 |
 | ------------- | ----------------------------------------------------------------------------------------------------------- |
 | **TYPE**      | The Pimcore element type (`document`, `asset`, or `object`)                                                 |
 | **ID**        | The ID of the Pimcore element to export                                                                     |
-| **NAMESPACE** | The namespace for the generated migration class, as configured under `doctrine_migrations.migrations_paths` |
 
 | Option              | Description                                                                                           |
 | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `--namespace`       | The namespace for the generated migration class (falls back to `pimcore_content_migration.default_namespace` if set) |
 | `--with-children`   | Include all child elements (e.g., sub-documents or child objects) in the migration file               |
 | `--no-dependencies` | Exclude related dependencies (e.g., linked assets or objects) from the migration                      |
 | `--inline-wysiwyg`  | Inline WYSIWYG field content directly into the migration instead of saving it in a separate HTML file |
@@ -81,6 +81,13 @@ doctrine_migrations:
         'App\Migrations\Content': '%kernel.project_dir%/migrations/content'
 ```
 This defines where generated content migration files are stored.
+
+You can also set a default namespace to avoid passing it every time:
+```
+pimcore_content_migration:
+    default_namespace: 'App\Migrations\Content'
+```
+When set, `content:migration:create` uses this namespace if none is provided.
 
 ---
 
