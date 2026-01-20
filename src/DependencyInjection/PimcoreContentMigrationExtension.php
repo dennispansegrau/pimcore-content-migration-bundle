@@ -31,6 +31,13 @@ class PimcoreContentMigrationExtension extends Extension
         }
         $container->setParameter('pimcore_content_migration.templates', $value);
 
+        // Register default namespace as a parameter
+        $defaultNamespace = null;
+        if (isset($config['default_namespace']) && is_string($config['default_namespace'])) {
+            $defaultNamespace = $config['default_namespace'];
+        }
+        $container->setParameter('pimcore_content_migration.default_namespace', $defaultNamespace);
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');
     }

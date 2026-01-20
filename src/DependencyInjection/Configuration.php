@@ -31,6 +31,10 @@ class Configuration implements ConfigurationInterface
             'object_template' => '@PimcoreContentMigration/code_templates/object.php.twig',
         ]);
         $templatesNode->end();
+        $childrenNode
+            ->scalarNode('default_namespace')
+            ->defaultValue(null)
+            ->cannotBeEmpty();
         $childrenNode->end();
 
         return $treeBuilder;

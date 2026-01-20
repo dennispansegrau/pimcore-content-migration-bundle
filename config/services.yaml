@@ -15,6 +15,10 @@ services:
         arguments:
             $templates: '%pimcore_content_migration.templates%'
 
+    PimcoreContentMigration\Factory\SettingsFactory:
+        arguments:
+            $defaultNamespace: '%pimcore_content_migration.default_namespace%'
+
     PimcoreContentMigration\Builder\:
         resource: '../src/Builder/*'
         public: true

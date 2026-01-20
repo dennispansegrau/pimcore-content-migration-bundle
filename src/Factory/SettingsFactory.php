@@ -16,8 +16,13 @@ use function sprintf;
 
 use Symfony\Component\Console\Input\InputInterface;
 
-final class SettingsFactory implements SettingsFactoryInterface
+final readonly class SettingsFactory implements SettingsFactoryInterface
 {
+    public function __construct(
+        private ?string $defaultNamespace,
+    ) {
+    }
+
     public function createSettings(InputInterface $input): Settings
     {
         $type = $this->getInputType($input);
@@ -29,6 +34,14 @@ final class SettingsFactory implements SettingsFactoryInterface
 
         if (!is_string($namespace) && $namespace !== null) {
             throw new InvalidArgumentException(sprintf('Option "namespace" must be a string, "%s" given.', gettype($namespace)));
+        }
+
+        if (empty($namespace)) {
+            $namespace = $this->defaultNamespace;
+        }
+
+        if (empty($namespace)) {
+            throw new InvalidArgumentException('Please provide a namespace using the --namespace option or configure a default namespace for the bundle.');
         }
 
         return new Settings($type, $id, $namespace, $inlineWysiwyg, !$noDependencies, $withChildren);
