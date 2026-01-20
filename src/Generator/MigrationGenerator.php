@@ -31,11 +31,17 @@ class MigrationGenerator implements MigrationGeneratorInterface
     public function generateMigrationFile(AbstractElement $object, string $methodCode, Settings $settings): string
     {
         $namespace = $settings->getNamespace();
-        $classname = self::PREFIX . date('YmdHis');
-        if ($classname === self::$lastClassname) {
-            sleep(1);
-            $classname = self::PREFIX . date('YmdHis');
-        };
+
+        do {
+            $now = new \DateTimeImmutable();
+            $timestamp = $now->format('YmdHisv');
+            $classname = self::PREFIX . $timestamp;
+
+            if ($classname === self::$lastClassname) {
+                usleep(1000); // 1 ms
+            }
+        } while ($classname === self::$lastClassname);
+
         self::$lastClassname = $classname;
         $filename = $classname . '.php';
         $path = $this->namespaceResolver->resolve($namespace);
