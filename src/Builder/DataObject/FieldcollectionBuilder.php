@@ -7,8 +7,14 @@ use LogicException;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 
+/**
+ * @template TItem of AbstractData
+ */
 class FieldcollectionBuilder
 {
+    /**
+     * @var Fieldcollection<TItem>|null
+     */
     private ?Fieldcollection $fieldcollection = null;
 
     final protected function __construct()
@@ -16,18 +22,24 @@ class FieldcollectionBuilder
     }
 
     /**
+     * @template TCreateItem of AbstractData
      * @param string $property
-     * @param AbstractData[] $abstractData
-     * @return static
+     * @param array<int, TCreateItem> $abstractData
+     * @return FieldcollectionBuilder<TCreateItem>
      * @throws Exception
      */
-    public static function create(string $property, array $abstractData): static
+    public static function create(string $property, array $abstractData): self
     {
         $builder = new static();
-        $builder->fieldcollection = new Fieldcollection($abstractData, $property);
+        /** @var Fieldcollection<TItem> $fieldcollection */
+        $fieldcollection = new Fieldcollection($abstractData, $property);
+        $builder->fieldcollection = $fieldcollection;
         return $builder;
     }
 
+    /**
+     * @return Fieldcollection<TItem>
+     */
     public function getObject(): Fieldcollection
     {
         if (!$this->fieldcollection instanceof Fieldcollection) {

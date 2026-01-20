@@ -19,12 +19,12 @@ class PdfStringifier implements ValueStringifier
     public function toString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
         /** @var Pdf $value */
-        $asset = $value->getElement();
+        $elementId = $value->getId();
 
-        if ($asset === null) {
-            return (string) $value->getId();
+        if ($elementId === null) {
+            return 'null';
         }
 
-        return $this->idToDependencyString('asset', $asset->getId(), $dependencyList);
+        return $this->idToDependencyString('asset', $elementId, $dependencyList);
     }
 }

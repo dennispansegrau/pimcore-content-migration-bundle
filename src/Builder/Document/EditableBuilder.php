@@ -15,7 +15,7 @@ class EditableBuilder
      */
     public static function createImage(
         string $name,
-        Asset\Image $image,
+        ?Asset\Image $image,
         string $alt,
         bool $cropPercent,
         float $cropWidth,
@@ -101,16 +101,21 @@ class EditableBuilder
 
     public static function createPdf(
         string $name,
-        int $assetId,
+        ?int $assetId,
     ): Editable\Pdf {
         $editable = new Editable\Pdf();
         $editable->setName($name);
-        $editable->setDataFromResource([
-            'id' => $assetId,
-        ]);
+        if ($assetId !== null) {
+            $editable->setDataFromResource([
+                'id' => $assetId,
+            ]);
+        }
         return $editable;
     }
 
+    /**
+     * @param array<int, array<int|string, string|int|float|bool|null>> $data
+     */
     public static function createTable(
         string $name,
         array $data,
@@ -150,7 +155,7 @@ class EditableBuilder
 
     public static function createVideo(
         string $name,
-        int|string $videoId,
+        null|int|string $videoId,
         string $type,
         string $title,
         string $description,
@@ -158,29 +163,33 @@ class EditableBuilder
     ): Editable\Video {
         $editable = new Editable\Video();
         $editable->setName($name);
-        $editable->setDataFromResource([
-            'id' => $videoId,
-            'type' => $type,
-            'title' => $title,
-            'description' => $description,
-            'poster' => $posterAssetId,
-        ]);
+        if ($videoId !== null) {
+            $editable->setDataFromResource([
+                'id' => $videoId,
+                'type' => $type,
+                'title' => $title,
+                'description' => $description,
+                'poster' => $posterAssetId,
+            ]);
+        }
         return $editable;
     }
 
     public static function createRelation(
         string $name,
-        int $id,
-        string $type,
-        string $subType,
+        ?int $id,
+        ?string $type,
+        ?string $subType,
     ): Editable\Relation {
         $editable = new Editable\Relation();
         $editable->setName($name);
-        $editable->setDataFromResource([
-            'id' => $id,
-            'type' => $type,
-            'subtype' => $subType,
-        ]);
+        if ($id !== null) {
+            $editable->setDataFromResource([
+                'id' => $id,
+                'type' => $type,
+                'subtype' => $subType,
+            ]);
+        }
         return $editable;
     }
 
@@ -249,17 +258,19 @@ class EditableBuilder
 
     public static function createRenderlet(
         string $name,
-        int $id,
-        string $type,
-        string $subType,
+        ?int $id,
+        ?string $type,
+        ?string $subType,
     ): Editable\Renderlet {
         $editable = new Editable\Renderlet();
         $editable->setName($name);
-        $editable->setDataFromResource([
-            'id' => $id,
-            'type' => $type,
-            'subtype' => $subType,
-        ]);
+        if ($id !== null) {
+            $editable->setDataFromResource([
+                'id' => $id,
+                'type' => $type,
+                'subtype' => $subType,
+            ]);
+        }
         return $editable;
     }
 
@@ -277,7 +288,7 @@ class EditableBuilder
     }
 
     /**
-     * @param array<string, string> $data
+     * @param array<int, array<string, mixed>> $data
      */
     public static function createScheduledBlock(
         string $name,

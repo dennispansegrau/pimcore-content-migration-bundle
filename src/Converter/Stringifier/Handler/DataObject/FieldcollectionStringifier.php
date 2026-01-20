@@ -21,7 +21,7 @@ final class FieldcollectionStringifier implements ValueStringifier
 
     public function toString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
     {
-        /** @var Fieldcollection $value */
+        /** @var Fieldcollection<\Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData> $value */
         $builderName = FieldcollectionBuilder::class;
         $fields = $this->getConverter()->convertValueToString($value->getItems(), $dependencyList, $parameters);
         return sprintf('\%s::create(\'%s\', %s)->getObject()', $builderName, $value->getFieldname(), $fields);

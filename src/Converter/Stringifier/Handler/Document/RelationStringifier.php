@@ -27,11 +27,11 @@ class RelationStringifier implements ValueStringifier
         $data = $value->getData();
 
         if (!is_array($data) || !isset($data['type'], $data['id'])) {
-            throw new LogicException('Invalid data.');
+            return 'null';
         }
 
         if (!is_string($data['type']) || !is_int($data['id'])) {
-            throw new LogicException('Invalid data.');
+            return 'null';
         }
 
         return $this->idToDependencyString($data['type'], $data['id'], $dependencyList);
