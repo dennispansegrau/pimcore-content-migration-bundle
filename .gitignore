@@ -18,3 +18,7 @@ vendor
 # phpunit
 .phpunit.cache
 build
+
+# phpstan
+phpstan.neon.dist
+
