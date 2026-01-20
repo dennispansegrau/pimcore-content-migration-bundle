@@ -13,7 +13,7 @@ final class NewExpressionStringifier implements ValueStringifier
 {
     public function supports(mixed $value, array $parameters = []): bool
     {
-        return is_string($value) && str_starts_with($value, 'new ');
+        return is_string($value) && str_starts_with($value, 'new \\');
     }
 
     public function toString(mixed $value, DependencyList $dependencyList, array $parameters = []): string
