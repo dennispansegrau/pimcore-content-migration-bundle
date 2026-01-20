@@ -50,8 +50,10 @@ final class DefaultScalarStringifier implements ValueStringifier
         }
 
         if (is_string($value)) {
-            $escaped = str_replace('\'', '\\\'', $value);
-            return '\'' . $escaped . '\'';
+            $escaped = str_replace('"', '\"', $value);
+            $escaped = str_replace("\n", '\n', $escaped);
+            $escaped = str_replace("$", '\$', $escaped);
+            return '"' . $escaped . '"';
         }
 
         if (is_array($value)) {
