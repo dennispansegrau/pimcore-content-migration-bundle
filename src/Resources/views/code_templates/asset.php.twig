@@ -17,7 +17,7 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {% if settings.withDependencies() %}
     # Create {{ type }} {{ asset.getFullPath() }}
-    return {{ builder }}::findOrCreate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
+    return {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
 {# BUILDER SPECIFIC SETTER #}
 {% if type == 'archive' %}
 {% elseif type == 'audio' %}
@@ -33,13 +33,13 @@ private function {{ methodName }}(): {{ classname }}
     ->setType('{{ asset.getType() }}')
     ->setMimeType('{{ asset.getMimeType()}}')
 {% for key, value in asset.getCustomSettings() %}
-    ->setCustomSetting('{{ key }}', {{ pcmb_value_to_string(value, dependencies) }})
+    ->setCustomSetting({{ pcmb_value_to_string(key, dependencies) }}, {{ pcmb_value_to_string(value, dependencies) }})
 {% endfor %}
 {% for meta in asset.getMetaData() %}
-    ->addMetadata('{{ meta.name }}', '{{ meta.type }}', '{{ meta.data }}', '{{ meta.language }}')
+    ->addMetadata({{ pcmb_value_to_string(meta.name, dependencies) }}, {{ pcmb_value_to_string(meta.type, dependencies) }}, {{ pcmb_value_to_string(meta.data, dependencies) }}, {{ pcmb_value_to_string(meta.language, dependencies) }})
 {% endfor %}
 {% for property in asset.getProperties %}
-    ->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }})
+    ->setProperty({{ pcmb_value_to_string(property.getName(), dependencies) }}, {{ pcmb_value_to_string(property.getType(), dependencies) }}, {{ pcmb_value_to_string(property.getData(), dependencies) }}, {{ pcmb_value_to_string(property.getInherited(), dependencies) }}, {{ pcmb_value_to_string(property.getInheritable(), dependencies) }})
 {% endfor %}
     ->save()
     ->getObject();
@@ -49,7 +49,7 @@ private function {{ methodName }}(): {{ classname }}
     {{ dependency.code }}
 {%- endfor %}
 {% else %}
-        return {{ builder }}::findOrCreate('{{ asset.getFullPath() }}'{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
+        return {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
             ->getObject();
     }
 {% endif %}
