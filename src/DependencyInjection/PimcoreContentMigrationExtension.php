@@ -5,6 +5,7 @@ namespace PimcoreContentMigration\DependencyInjection;
 use Exception;
 
 use function is_array;
+use function is_string;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

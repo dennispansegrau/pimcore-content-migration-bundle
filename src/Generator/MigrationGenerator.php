@@ -2,7 +2,8 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use function date;
+use DateTimeImmutable;
+
 use function dirname;
 use function file_put_contents;
 use function is_dir;
@@ -12,8 +13,8 @@ use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Writer\NamespaceResolver;
 
-use function sleep;
 use function sprintf;
+use function usleep;
 
 class MigrationGenerator implements MigrationGeneratorInterface
 {
@@ -33,7 +34,7 @@ class MigrationGenerator implements MigrationGeneratorInterface
         $namespace = $settings->getNamespace();
 
         do {
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             $timestamp = $now->format('YmdHisv');
             $classname = self::PREFIX . $timestamp;
 
