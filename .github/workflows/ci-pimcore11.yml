@@ -83,7 +83,7 @@ jobs:
                     set -ex
                     cd sample-project/
                     docker compose exec -T --workdir /bundle php \
-                        bash -lc 'git config --global --add safe.directory /bundle && composer install --no-interaction --prefer-dist && composer phpstan && composer cs'
+                        bash -lc 'git config --global --add safe.directory /bundle && composer install --no-interaction --prefer-dist && php -d memory_limit=1G vendor/bin/phpstan analyse -a /var/www/html/vendor/autoload.php && composer cs'
 
             -   name: Compose down
                 if: always()
