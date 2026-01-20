@@ -2,14 +2,13 @@
 
 namespace PimcoreContentMigration\Converter;
 
+use function array_map;
+use function implode;
+
+use LogicException;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
-use function array_map;
-use function implode;
-use function lcfirst;
-
-use LogicException;
 use Pimcore\Model\Element\AbstractElement;
 
 use function preg_replace;

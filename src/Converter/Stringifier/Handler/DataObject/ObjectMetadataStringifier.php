@@ -33,7 +33,8 @@ class ObjectMetadataStringifier implements ValueStringifier
         $objectString = $this->getConverter()->convertValueToString($object, $dependencyList, $parameters);
         $dataString = $this->getConverter()->convertValueToString($data, $dependencyList, $parameters);
 
-        return sprintf('\%s::create(%s, %s, %s)->setData(%s)->getObject()',
+        return sprintf(
+            '\%s::create(%s, %s, %s)->setData(%s)->getObject()',
             $builderName,
             $fieldNameString,
             $columnsString,

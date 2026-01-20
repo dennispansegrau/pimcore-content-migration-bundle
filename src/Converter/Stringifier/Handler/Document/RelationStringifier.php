@@ -6,7 +6,6 @@ use function is_array;
 use function is_int;
 use function is_string;
 
-use LogicException;
 use Pimcore\Model\Document\Editable\Relation;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IdToDependencyStringTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;

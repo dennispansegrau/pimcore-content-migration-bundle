@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use Exception;
 use LogicException;
 use Pimcore\Model\DataObject\Data\ElementMetadata;
 use Pimcore\Model\Element\ElementInterface;
@@ -19,7 +20,7 @@ class ElementMetadataBuilder
      * @param array<int, string> $columns
      * @param ElementInterface $element
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public static function create(string $fieldName, array $columns, ElementInterface $element): static
     {
