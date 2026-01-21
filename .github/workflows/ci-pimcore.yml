@@ -1,4 +1,4 @@
-name: CI Pimcore 10 - PHP 8.2
+name: CI Pimcore (10/11) - PHP 8.2
 
 on:
     push:
@@ -13,8 +13,19 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    pimcore10:
+    pimcore:
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - name: pimcore10
+                      image: docker.io/pimcore/pimcore:php8.2-v1
+                      demo_package: pimcore/demo:^10
+                    - name: pimcore11
+                      image: docker.io/pimcore/pimcore:php8.2-v3
+                      demo_package: pimcore/demo
+        name: ${{ matrix.name }}
         steps:
             -   name: Checkout
                 uses: actions/checkout@v4
@@ -22,7 +33,7 @@ jobs:
             -   name: Pull Pimcore image
                 run: |
                     set -ex
-                    docker pull docker.io/pimcore/pimcore:php8.2-v1
+                    docker pull ${{ matrix.image }}
 
             -   name: Create Pimcore project
                 run: |
@@ -31,9 +42,9 @@ jobs:
                       --volume=${{ github.workspace }}/:/test/ \
                       --workdir=/test/ \
                       --user=$(id -u):$(id -g) \
-                      docker.io/pimcore/pimcore:php8.2-v1 \
+                      ${{ matrix.image }} \
                         composer create-project \
-                        pimcore/demo:^10 \
+                        ${{ matrix.demo_package }} \
                         --no-install \
                         sample-project
 
