@@ -21,7 +21,7 @@ jobs:
             -   name: Pull Pimcore image
                 run: |
                     set -ex
-                    docker pull docker.io/pimcore/pimcore:php8.2
+                    docker pull docker.io/pimcore/pimcore:php8.2-latest
 
             -   name: Create Pimcore project
                 run: |
@@ -30,7 +30,7 @@ jobs:
                       --volume=${{ github.workspace }}/:/test/ \
                       --workdir=/test/ \
                       --user=$(id -u):$(id -g) \
-                      docker.io/pimcore/pimcore:php8.2 \
+                      docker.io/pimcore/pimcore:php8.2-latest \
                         composer create-project \
                         pimcore/demo:^10 \
                         --no-install \
