@@ -9,7 +9,7 @@ class NewsletterBuilder extends EmailBuilder
 {
     protected static function getDocumentClass(): string
     {
-        return Newsletter::class;
+        return class_exists(Newsletter::class) ? Newsletter::class : '\Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter';
     }
 
     public function setPlaintext(string $plaintext): static
