@@ -2,7 +2,7 @@ name: CI Pimcore 10 - PHP 8.2
 
 on:
     push:
-        branches: [ main, develop ]
+        branches: [ main ]
         paths:
             - "**"
     pull_request:
@@ -51,42 +51,41 @@ jobs:
                     | install /dev/stdin /usr/local/bin/dockerize'
 
                     docker compose exec -T -- php dockerize -wait tcp://db:3306 -timeout 5m
-#
-#            -   name: Install bundle
-#                run: |
-#                    set -ex
-#                    cd sample-project/
-#                    docker compose exec -T --workdir /var/www/html php composer config repositories.bundle path /bundle
-#                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migrations-bundle:0.1.0
-#                    docker compose exec -T --workdir /var/www/html php composer update --no-scripts --ignore-platform-req=ext-amqp
-#
-#            -   name: Install Pimcore
-#                run: |
-#                    set -ex
-#                    cd sample-project/
-#
-#                    docker compose exec -T --workdir /var/www/html \
-#                        -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
-#                        -e PIMCORE_INSTALL_ADMIN_PASSWORD=pimcore \
-#                        -e PIMCORE_INSTALL_MYSQL_USERNAME=pimcore \
-#                        -e PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore \
-#                        -e PIMCORE_INSTALL_MYSQL_DATABASE=pimcore \
-#                        -e PIMCORE_INSTALL_MYSQL_HOST_SOCKET=db \
-#                        php vendor/bin/pimcore-install -n
-#
-#                    docker compose exec -T --workdir /var/www/html \
-#                        -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
-#                        php bin/console assets:install --symlink --relative
-#
-#            -   name: PHPStan and CS
-#                run: |
-#                    set -ex
-#                    cd sample-project/
-#                    docker compose exec -T --workdir /bundle php \
-#                        bash -lc 'git config --global --add safe.directory /bundle && composer install --no-interaction --prefer-dist && php -d memory_limit=1G vendor/bin/phpstan analyse -a /var/www/html/vendor/autoload.php && composer cs'
-#
-#            -   name: Compose down
-#                if: always()
-#                run: |
-#                    cd sample-project/
-#                    docker compose down -v --remove-orphans
+
+            -   name: Install bundle
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migrations-bundle:dev-develop
+                    docker compose exec -T --workdir /var/www/html php composer update --no-scripts --ignore-platform-req=ext-amqp
+
+            -   name: Install Pimcore
+                run: |
+                    set -ex
+                    cd sample-project/
+
+                    docker compose exec -T --workdir /var/www/html \
+                        -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
+                        -e PIMCORE_INSTALL_ADMIN_PASSWORD=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_USERNAME=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_DATABASE=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_HOST_SOCKET=db \
+                        php vendor/bin/pimcore-install -n
+
+                    docker compose exec -T --workdir /var/www/html \
+                        -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
+                        php bin/console assets:install --symlink --relative
+
+            -   name: PHPStan and CS
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /bundle php \
+                        bash -lc 'git config --global --add safe.directory /bundle && composer install --no-interaction --prefer-dist && php -d memory_limit=1G vendor/bin/phpstan analyse -a /var/www/html/vendor/autoload.php && composer cs'
+
+            -   name: Compose down
+                if: always()
+                run: |
+                    cd sample-project/
+                    docker compose down -v --remove-orphans
