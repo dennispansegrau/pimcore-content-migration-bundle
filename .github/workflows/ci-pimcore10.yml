@@ -18,8 +18,6 @@ jobs:
         steps:
             -   name: Checkout
                 uses: actions/checkout@v4
-                with:
-                    path: bundle
 
             -   name: Pull Pimcore image
                 run: |
@@ -43,11 +41,11 @@ jobs:
                 run: |
                     set -ex
                     cd sample-project/
-                    docker compose -f docker-compose.yaml -f ../bundle/.github/ci/files/docker-compose.yaml config
+                    docker compose -f docker-compose.yaml config
 
                     docker compose pull --quiet
                     docker compose down -v --remove-orphans
-                    docker compose -f docker-compose.yaml -f ../bundle/.github/ci/files/docker-compose.yaml up -d
+                    docker compose -f docker-compose.yaml up -d
 
                     docker compose exec -T -- php bash -c '\
                     curl -sfL https://github.com/powerman/dockerize/releases/download/v0.11.5/dockerize-`uname -s`-`uname -m` \
@@ -59,8 +57,8 @@ jobs:
                 run: |
                     set -ex
                     cd sample-project/
-                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migration-bundle:dev-develop
-                    docker compose exec -T --workdir /var/www/html php composer update --no-scripts --ignore-platform-req=ext-amqp
+                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migration-bundle:0.1.0
+                    docker compose exec -T --workdir /var/www/html php composer update dennispansegrau/pimcore-content-migration-bundle --no-scripts --ignore-platform-req=ext-amqp
 
             -   name: Install Pimcore
                 run: |
@@ -80,12 +78,12 @@ jobs:
                         -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
                         php bin/console assets:install --symlink --relative
 
-            -   name: PHPStan and CS
+            -   name: PHPStan and CS (vendor bundle)
                 run: |
                     set -ex
                     cd sample-project/
-                    docker compose exec -T --workdir /bundle php \
-                        bash -lc 'git config --global --add safe.directory /bundle && composer install --no-interaction --prefer-dist && php -d memory_limit=1G vendor/bin/phpstan analyse -a /var/www/html/vendor/autoload.php && composer cs'
+                    docker compose exec -T --workdir /var/www/html php \
+                        bash -lc 'composer require --dev --no-interaction --prefer-dist phpstan/phpstan friendsofphp/php-cs-fixer && php -d memory_limit=1G vendor/bin/phpstan analyse -c vendor/dennispansegrau/pimcore-content-migration-bundle/phpstan.neon.dist -a /var/www/html/vendor/autoload.php vendor/dennispansegrau/pimcore-content-migration-bundle/src && vendor/bin/php-cs-fixer check --config=vendor/dennispansegrau/pimcore-content-migration-bundle/.php-cs-fixer.php'
 
             -   name: Compose down
                 if: always()
