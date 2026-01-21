@@ -13,7 +13,10 @@ class SnippetBuilder extends DocumentSnippetBuilder
         return Snippet::class;
     }
 
-    public function getObject(): Snippet
+    /**
+     * @return Snippet
+     */
+    public function getObject(): \Pimcore\Model\Document\Snippet
     {
         if (!$this->document instanceof Snippet) {
             throw new LogicException('Snippet object has not been set');

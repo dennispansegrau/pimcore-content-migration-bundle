@@ -2,13 +2,7 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use function class_exists;
-use function get_class;
-
 use InvalidArgumentException;
-
-use function is_string;
-
 use LogicException;
 use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
 use Pimcore\Bundle\PersonalizationBundle\Model\Document\Page;
@@ -24,15 +18,18 @@ use PimcoreContentMigration\Builder\Document\EmailBuilder;
 use PimcoreContentMigration\Builder\Document\FolderBuilder;
 use PimcoreContentMigration\Builder\Document\HardLinkBuilder;
 use PimcoreContentMigration\Builder\Document\LinkBuilder;
-use PimcoreContentMigration\Builder\Document\NewsletterBuilder;
+use PimcoreContentMigration\Builder\Document\Newsletter\NewsletterBuilder;
 use PimcoreContentMigration\Builder\Document\PageBuilder;
-use PimcoreContentMigration\Builder\Document\PrintContainerBuilder;
-use PimcoreContentMigration\Builder\Document\PrintPageBuilder;
 use PimcoreContentMigration\Builder\Document\SnippetBuilder;
+use PimcoreContentMigration\Builder\Document\WebToPrint\PrintContainerBuilder;
+use PimcoreContentMigration\Builder\Document\WebToPrint\PrintPageBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
 use PimcoreContentMigration\Writer\HtmlWriter;
 use PimcoreContentMigration\Writer\RelativePath;
+use function class_exists;
+use function get_class;
+use function is_string;
 
 class DocumentCodeGenerator implements CodeGeneratorInterface
 {

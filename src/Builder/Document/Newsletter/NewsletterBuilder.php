@@ -1,15 +1,16 @@
 <?php
 
-namespace PimcoreContentMigration\Builder\Document;
+namespace PimcoreContentMigration\Builder\Document\Newsletter;
 
 use LogicException;
 use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
+use PimcoreContentMigration\Builder\Document\EmailBuilder;
 
 class NewsletterBuilder extends EmailBuilder
 {
     protected static function getDocumentClass(): string
     {
-        return class_exists(Newsletter::class) ? Newsletter::class : '\Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter';
+        return Newsletter::class;
     }
 
     public function setPlaintext(string $plaintext): static
