@@ -4,6 +4,7 @@ namespace PimcoreContentMigration\Builder\Document\Newsletter;
 
 use LogicException;
 use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
+use Pimcore\Model\Document\Email;
 use PimcoreContentMigration\Builder\Document\EmailBuilder;
 
 class NewsletterBuilder extends EmailBuilder
@@ -49,7 +50,10 @@ class NewsletterBuilder extends EmailBuilder
         return $this;
     }
 
-    public function getObject(): Newsletter
+    /**
+     * @return Newsletter
+     */
+    public function getObject(): Email
     {
         if (!$this->document instanceof Newsletter) {
             throw new LogicException('Newsletter object has not been set');
