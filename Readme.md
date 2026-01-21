@@ -8,7 +8,7 @@ The generated migrations create only dummy dependencies — documents, assets, a
 
 ## 📚 Table of Contents
 - [✨ Features](#-features)
-- [⚙️ Installation](#️-installation)
+- [⚙️ Installation](#-installation)
 - [🧩 CLI Command](#-cli-command)
 - [💻 Example](#-example)
 - [🧰 Configuration](#-configuration)
