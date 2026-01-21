@@ -56,7 +56,7 @@ jobs:
                 run: |
                     set -ex
                     cd sample-project/
-                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennis-pansegrau/pimcore-content-migration-bundle:dev-develop
+                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migrations-bundle:dev-develop
                     docker compose exec -T --workdir /var/www/html php composer update --no-scripts --ignore-platform-req=ext-amqp
 
             -   name: Install Pimcore
