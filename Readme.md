@@ -1,3 +1,5 @@
+### ⚠️ This bundle is under active development and not production-ready.
+
 # Pimcore Content Migrations Bundle
 
 The **Pimcore Content Migrations Bundle** introduces a migration system — similar to Doctrine Migrations — for **Documents**, **Assets**, and **Data Objects** in Pimcore.  
