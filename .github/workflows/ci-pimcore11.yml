@@ -2,12 +2,15 @@ name: CI Pimcore 11 - PHP 8.2
 
 on:
     push:
-        branches: [ main ]
+        branches: [ main, develop ]
         paths:
             - "**"
     pull_request:
-        paths:
-            - "**"
+        branches: [ main, develop ]
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
     pimcore11:
@@ -56,7 +59,7 @@ jobs:
                 run: |
                     set -ex
                     cd sample-project/
-                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migrations-bundle:dev-develop
+                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migration-bundle:dev-develop
                     docker compose exec -T --workdir /var/www/html php composer update --no-scripts --ignore-platform-req=ext-amqp
 
             -   name: Install Pimcore
