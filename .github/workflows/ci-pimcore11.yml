@@ -83,7 +83,7 @@ jobs:
                     set -ex
                     cd sample-project/
                     docker compose exec -T --workdir /var/www/html php \
-                        bash -lc 'composer require --dev --no-interaction --prefer-dist phpstan/phpstan friendsofphp/php-cs-fixer && php -d memory_limit=1G vendor/bin/phpstan analyse -c vendor/dennispansegrau/pimcore-content-migration-bundle/phpstan.neon.dist -a /var/www/html/vendor/autoload.php vendor/dennispansegrau/pimcore-content-migration-bundle/src && vendor/bin/php-cs-fixer check --config=vendor/dennispansegrau/pimcore-content-migration-bundle/.php-cs-fixer.php'
+                        bash -lc 'composer require --dev --no-interaction --prefer-dist phpstan/phpstan friendsofphp/php-cs-fixer && php -d memory_limit=1G vendor/bin/phpstan analyse -c vendor/dennispansegrau/pimcore-content-migration-bundle/phpstan.dist.neon -a /var/www/html/vendor/autoload.php vendor/dennispansegrau/pimcore-content-migration-bundle/src && vendor/bin/php-cs-fixer check --config=vendor/dennispansegrau/pimcore-content-migration-bundle/.php-cs-fixer.php'
 
             -   name: Compose down
                 if: always()
