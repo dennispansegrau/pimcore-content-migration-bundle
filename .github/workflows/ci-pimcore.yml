@@ -21,7 +21,7 @@ jobs:
                 include:
                     - name: pimcore11-php8.2
                       image: docker.io/pimcore/pimcore:php8.2-v3
-                      demo_package: pimcore/demo:^11
+                      demo_package: pimcore/demo
                     - name: v2023.3-php8.3
                       image: docker.io/pimcore/pimcore:php8.3-v3
                       demo_package: pimcore/demo:^v2024.4
