@@ -95,7 +95,7 @@ jobs:
                     set -ex
                     cd sample-project/
                     docker compose exec -T --workdir /var/www/html php \
-                        bash -lc 'BUNDLE_DIR=/var/www/html/vendor/dennispansegrau/pimcore-content-migration-bundle; composer require --dev --no-interaction --prefer-dist phpstan/phpstan:^1.11 friendsofphp/php-cs-fixer:^3.89; php -d memory_limit=1G vendor/bin/phpstan analyse -c "$BUNDLE_DIR/phpstan.dist.neon" -a /var/www/html/vendor/autoload.php "$BUNDLE_DIR/src"; vendor/bin/php-cs-fixer check --config="$BUNDLE_DIR/.php-cs-fixer.php"'
+                        bash -lc 'BUNDLE_DIR=/var/www/html/vendor/dennispansegrau/pimcore-content-migration-bundle; composer require --dev --no-interaction --prefer-dist --ignore-platform-req=ext-amqp phpstan/phpstan:^1.11 friendsofphp/php-cs-fixer:^3.89; php -d memory_limit=1G vendor/bin/phpstan analyse -c "$BUNDLE_DIR/phpstan.dist.neon" -a /var/www/html/vendor/autoload.php "$BUNDLE_DIR/src"; vendor/bin/php-cs-fixer check --config="$BUNDLE_DIR/.php-cs-fixer.php"'
 
             -   name: Compose down
                 if: always()
