@@ -1,4 +1,4 @@
-name: CI Pimcore (10/11) - PHP 8.2
+name: CI Pimcore
 
 on:
     push:
