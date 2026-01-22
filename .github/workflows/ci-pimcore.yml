@@ -29,7 +29,7 @@ jobs:
                       image: docker.io/pimcore/pimcore:php8.3-v3
                       demo_package: pimcore/demo:^v2024.4
                     - name: v2025.x-php8.3
-                      image: docker.io/pimcore/pimcore:php8.3-v4
+                      image: docker.io/pimcore/pimcore:php8.4-v4
                       demo_package: pimcore/demo:^v2024.4
         name: ${{ matrix.name }}
         steps:
