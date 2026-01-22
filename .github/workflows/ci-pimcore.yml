@@ -98,6 +98,8 @@ jobs:
                     docker compose exec -T --workdir /var/www/html \
                         -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
                         php bin/console assets:install --symlink --relative
+                    
+                    docker compose exec -T --workdir /var/www/html php -v
 
             -   name: Install bundle dev dependencies
                 run: |
