@@ -77,7 +77,7 @@ jobs:
                 run: |
                     set -ex
                     cd sample-project/
-                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migration-bundle:0.1.0
+                    docker compose exec -T --workdir /var/www/html php composer require --no-update dennispansegrau/pimcore-content-migration-bundle:dev-develop
                     docker compose exec -T --workdir /var/www/html php composer config audit.block-insecure false
                     docker compose exec -T --workdir /var/www/html php bash -lc 'COMPOSER_AUDIT=0 composer update --no-scripts --ignore-platform-req=ext-amqp'
 
