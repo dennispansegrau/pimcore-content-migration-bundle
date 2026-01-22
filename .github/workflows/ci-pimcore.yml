@@ -75,7 +75,7 @@ jobs:
                     set -ex
                     cd sample-project/
 
-                    docker compose exec -T --workdir /var/www/html php composer install
+                    docker compose exec -T --workdir /var/www/html php composer install --no-scripts
                     
                     docker compose exec -T --workdir /var/www/html \
                         -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
