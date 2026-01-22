@@ -1,6 +1,6 @@
 <?php
 
-namespace PimcoreContentMigration\Builder\Document;
+namespace PimcoreContentMigration\Builder\Document\WebToPrint;
 
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\Printpage;
 

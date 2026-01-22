@@ -1,10 +1,12 @@
 <?php
 
-namespace PimcoreContentMigration\Builder\Document;
+namespace PimcoreContentMigration\Builder\Document\WebToPrint;
 
 use DateTime;
 use LogicException;
 use Pimcore\Bundle\WebToPrintBundle\Model\Document\PrintAbstract;
+use Pimcore\Model\Document\PageSnippet;
+use PimcoreContentMigration\Builder\Document\PageSnippetBuilder;
 
 abstract class PrintAbstractBuilder extends PageSnippetBuilder
 {
@@ -26,7 +28,10 @@ abstract class PrintAbstractBuilder extends PageSnippetBuilder
         return $this;
     }
 
-    public function getObject(): PrintAbstract
+    /**
+     * @return PrintAbstract
+     */
+    public function getObject(): PageSnippet
     {
         if (!$this->document instanceof PrintAbstract) {
             throw new LogicException('PrintAbstract object has not been set');

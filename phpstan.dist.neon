@@ -9,4 +9,4 @@ parameters:
     reportUnmatchedIgnoredErrors: true
 
     scanDirectories:
-        - vendor
+        - /var/www/html/vendor/

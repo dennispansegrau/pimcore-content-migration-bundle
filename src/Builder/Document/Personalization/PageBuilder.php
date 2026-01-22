@@ -12,7 +12,10 @@ class PageBuilder extends \PimcoreContentMigration\Builder\Document\PageBuilder
         return Page::class;
     }
 
-    public function getObject(): Page
+    /**
+     * @return Page
+     */
+    public function getObject(): \Pimcore\Model\Document\Page
     {
         if (!$this->document instanceof Page) {
             throw new LogicException('Page object has not been set');

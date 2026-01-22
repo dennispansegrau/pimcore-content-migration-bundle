@@ -1,0 +1,133 @@
+name: CI Pimcore
+
+on:
+    push:
+        branches: [ main, develop ]
+        paths:
+            - "**"
+    pull_request:
+        branches: [ main, develop ]
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    pimcore:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - name: pimcore11-php8.2
+                      image: docker.io/pimcore/pimcore:php8.2-v3
+                      demo_package: pimcore/demo
+                    - name: v2023.3-php8.3
+                      image: docker.io/pimcore/pimcore:php8.3-v3
+                      demo_package: pimcore/demo:^v2024.4
+                    - name: v2024.4-php8.3
+                      image: docker.io/pimcore/pimcore:php8.3-v3
+                      demo_package: pimcore/demo:^v2024.4
+                    - name: v2025.x-php8.3
+                      image: docker.io/pimcore/pimcore:php8.4-v4
+                      demo_package: pimcore/demo:^v2024.4
+        name: ${{ matrix.name }}
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Pull Pimcore image
+                run: |
+                    set -ex
+                    docker pull ${{ matrix.image }}
+
+            -   name: Create Pimcore project
+                run: |
+                    set -ex
+                    docker run \
+                      --volume=${{ github.workspace }}/:/test/ \
+                      --workdir=/test/ \
+                      --user=$(id -u):$(id -g) \
+                      ${{ matrix.image }} \
+                        composer create-project \
+                        ${{ matrix.demo_package }} \
+                        --no-install \
+                        sample-project
+
+            -   name: Docker and Database Setup
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose -f docker-compose.yaml config
+
+                    docker compose pull --quiet
+                    docker compose down -v --remove-orphans
+                    docker compose -f docker-compose.yaml up -d
+
+                    docker compose exec -T -- php bash -c '\
+                    curl -sfL https://github.com/powerman/dockerize/releases/download/v0.11.5/dockerize-`uname -s`-`uname -m` \
+                    | install /dev/stdin /usr/local/bin/dockerize'
+
+                    docker compose exec -T -- php dockerize -wait tcp://db:3306 -timeout 5m
+
+            -   name: Install Pimcore
+                run: |
+                    set -ex
+                    cd sample-project/
+
+                    docker compose exec -T --workdir /var/www/html php composer install --no-scripts
+                    
+                    docker compose exec -T --workdir /var/www/html \
+                        -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
+                        -e PIMCORE_INSTALL_ADMIN_PASSWORD=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_USERNAME=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_DATABASE=pimcore \
+                        -e PIMCORE_INSTALL_MYSQL_HOST_SOCKET=db \
+                        php vendor/bin/pimcore-install -n
+
+                    docker compose exec -T --workdir /var/www/html \
+                        -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
+                        php bin/console assets:install --symlink --relative
+                    
+                    docker compose exec -T --workdir /var/www/html php php -v
+
+            -   name: Install bundle
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /var/www/html php composer require dennispansegrau/pimcore-content-migration-bundle:dev-develop
+
+            -   name: Install bundle dependencies
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /var/www/html/vendor/dennispansegrau/pimcore-content-migration-bundle php \
+                        bash -lc 'composer install --no-interaction --prefer-dist;'
+
+            -   name: PHPStan Test
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /var/www/html/vendor/dennispansegrau/pimcore-content-migration-bundle php \
+                        bash -lc 'composer phpstan'
+
+            -   name: CS Test
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /var/www/html/vendor/dennispansegrau/pimcore-content-migration-bundle php \
+                        bash -lc 'composer cs'
+
+            -   name: PHPUnit Tests
+                run: |
+                    set -ex
+                    cd sample-project/
+                    docker compose exec -T --workdir /var/www/html/vendor/dennispansegrau/pimcore-content-migration-bundle php \
+                        bash -lc 'composer test'
+
+            -   name: Compose down
+                if: always()
+                run: |
+                    cd sample-project/
+                    docker compose down -v --remove-orphans
