@@ -34,7 +34,7 @@ The generated migrations create only dummy dependencies — documents, assets, a
 Install the bundle via Composer:
 
 ```bash
-composer require dennispansegrau/pimcore-content-migrations-bundle
+composer require dennispansegrau/pimcore-content-migration-bundle
 ```
 Then enable it in your Pimcore project:
 ```bash
