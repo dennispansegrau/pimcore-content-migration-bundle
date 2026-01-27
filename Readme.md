@@ -1,4 +1,5 @@
 ### ⚠️ This bundle is under active development and not production-ready.
+Compatibility: Pimcore 11 and above.
 
 # Pimcore Content Migrations Bundle
 
