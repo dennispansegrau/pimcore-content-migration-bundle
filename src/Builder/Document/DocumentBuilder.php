@@ -29,17 +29,14 @@ class DocumentBuilder extends AbstractElementBuilder
         /** @var class-string<Document> $documentClass */
         $documentClass = static::getDocumentClass();
 
-        $builder->document = $documentClass::getByPath($path);
+        $builder->document = Document::getByPath($path);
         if (!$builder->document instanceof $documentClass) {
             $builder->document = new $documentClass();
             $key = basename($path);
             $builder->document->setKey($key);
             $parentPath = dirname($path);
-            $parent = Document::getByPath($parentPath);
-            if (!$parent instanceof Document) {
-                throw new Exception("Parent document not found for path: $parentPath");
-            }
-            $builder->document->setParentId($parent->getId());
+            $parent = $builder->getParentByPath($parentPath);
+            $builder->document->setParent($parent);
             $builder->document->save(); // must be already saved for some actions
         }
         return $builder;
@@ -80,5 +77,26 @@ class DocumentBuilder extends AbstractElementBuilder
             throw new LogicException('Document object has not been set');
         }
         return $this->document;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getParentByPath(string $parentPath): Document
+    {
+        $parent = null;
+        if (Document\Service::pathExists($parentPath)) {
+            $parent = Document::getByPath($parentPath);
+        }
+
+        if ($parent === null) {
+            $parent = Document\Service::createFolderByPath($parentPath);
+        }
+
+        if (!$parent instanceof Document) {
+            throw new Exception("Parent document not found for path: $parentPath");
+        }
+
+        return $parent;
     }
 }

@@ -28,23 +28,25 @@ class DataObjectBuilder extends AbstractElementBuilder
      * @param class-string<DataObject> $dataObjectClass
      * @return static
      * @throws DuplicateFullPathException
+     * @throws Exception
      */
     public static function findOrCreate(string $path, string $dataObjectClass): static
     {
         $builder = new static();
 
-        $builder->dataObject = $dataObjectClass::getByPath($path);
-        if (!$builder->dataObject instanceof $dataObjectClass) {
+        $builder->dataObject = DataObject::getByPath($path);
+        if (!$builder->dataObject instanceof DataObject) {
             $builder->dataObject = new $dataObjectClass();
             $key = basename($path);
             $builder->dataObject->setKey($key);
-
             $parentPath = dirname($path);
-            $parent = DataObject::getByPath($parentPath);
-            if (!$parent instanceof DataObject) {
-                throw new Exception("Parent data object not found for path: $parentPath");
-            }
-            $builder->dataObject->setParentId($parent->getId());
+            $parent = $builder->getParentByPath($parentPath);
+            $builder->dataObject->setParent($parent);
+        }
+
+        if (!$builder->dataObject instanceof $dataObjectClass) {
+            //TODO
+            $t = 1;
         }
 
         $builder->dataObject->save(); // must be already saved for some actions
@@ -82,5 +84,26 @@ class DataObjectBuilder extends AbstractElementBuilder
         }
 
         return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getParentByPath(string $parentPath): DataObject
+    {
+        $parent = null;
+        if (DataObject\Service::pathExists($parentPath)) {
+            $parent = DataObject::getByPath($parentPath);
+        }
+
+        if ($parent === null) {
+            $parent = DataObject\Service::createFolderByPath($parentPath);
+        }
+
+        if (!$parent instanceof DataObject) {
+            throw new Exception("Parent data object not found for path: $parentPath");
+        }
+
+        return $parent;
     }
 }

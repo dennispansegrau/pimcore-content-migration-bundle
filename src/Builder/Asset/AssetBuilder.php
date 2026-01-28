@@ -33,17 +33,14 @@ class AssetBuilder extends AbstractElementBuilder
         /** @var class-string<Asset> $assetClass */
         $assetClass = static::getAssetClass();
 
-        $builder->asset = $assetClass::getByPath($path);
+        $builder->asset = Asset::getByPath($path);
         if (!$builder->asset instanceof $assetClass) {
             $builder->asset = new $assetClass();
             $filename = basename($path);
-            $parentPath = dirname($path);
             $builder->asset->setFilename($filename);
-            $parent = Asset::getByPath($parentPath);
-            if (!$parent instanceof Asset) {
-                throw new Exception("Parent asset not found for path: $parentPath");
-            }
-            $builder->asset->setParentId($parent->getId());
+            $parentPath = dirname($path);
+            $parent = $builder->getParentByPath($parentPath);
+            $builder->asset->setParent($parent);
         }
         if ($dataPath !== null) {
             $data = file_get_contents($dataPath);
@@ -128,5 +125,26 @@ class AssetBuilder extends AbstractElementBuilder
     {
         $this->getObject()->setType($type);
         return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getParentByPath(string $parentPath): Asset
+    {
+        $parent = null;
+        if (Asset\Service::pathExists($parentPath)) {
+            $parent = Asset::getByPath($parentPath);
+        }
+
+        if ($parent === null) {
+            $parent = Asset\Service::createFolderByPath($parentPath);
+        }
+
+        if (!$parent instanceof Asset) {
+            throw new Exception("Parent asset not found for path: $parentPath");
+        }
+
+        return $parent;
     }
 }
