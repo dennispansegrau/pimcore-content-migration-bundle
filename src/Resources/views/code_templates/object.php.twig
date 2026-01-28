@@ -1,14 +1,8 @@
 {% autoescape false %}
 private function {{ methodName }}(): {{ classname }}
     {
-{% if dependencies is not empty %}
-        # Find or create dependency dummies (without content)
-{% for dependency in dependencies %}
-        ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
-{% endfor %}
-
-{% endif %}
 {% if settings.withDependencies() %}
+{% include('@PimcoreContentMigration/code_templates/shared/_dependency_headers.php.twig') %}
         # Create {{ type }} {{ object.getFullPath() }}
         $builder = {{ builder }}::findOrCreate('{{ object.getFullPath() }}', {{ classname }}::class);
         $builder
@@ -26,10 +20,7 @@ private function {{ methodName }}(): {{ classname }}
             ->save();
         return $builder->getObject();
     }
-{% for dependency in dependencies %}
-
-    {{ dependency.code }}
-{%- endfor %}
+{% include('@PimcoreContentMigration/code_templates/shared/_dependency_bodies.php.twig') %}
 {% else %}
         return {{ builder }}::findOrCreate('{{ object.getFullPath() }}', {{ classname }}::class)
             ->getObject();

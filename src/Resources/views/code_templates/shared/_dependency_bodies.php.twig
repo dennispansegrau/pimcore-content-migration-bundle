@@ -1,0 +1,6 @@
+{% autoescape false %}
+
+{% for dependency in dependencies %}
+    {{ dependency.code }}
+{%- endfor %}
+{% endautoescape %}

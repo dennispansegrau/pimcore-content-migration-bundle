@@ -1,0 +1,9 @@
+{% autoescape false %}
+{% if dependencies is not empty %}
+        # Find or create dependency dummies (without content)
+    {% for dependency in dependencies %}
+    ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
+    {% endfor %}
+
+{% endif %}
+{% endautoescape %}

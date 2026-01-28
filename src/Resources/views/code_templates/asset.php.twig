@@ -8,14 +8,8 @@ private function {{ methodName }}(): {{ classname }}
 
 {% set builder = '[YOUR-BUILDER]' %}
 {% endif %}
-{% if dependencies is not empty %}
-        # Find or create dependency dummies (without content)
-{% for dependency in dependencies %}
-        ${{ dependency.variableName }} = $this->{{ dependency.methodName }}();
-{% endfor %}
-
-{% endif %}
 {% if settings.withDependencies() %}
+{% include('@PimcoreContentMigration/code_templates/shared/_dependency_headers.php.twig') %}
     # Create {{ type }} {{ asset.getFullPath() }}
     return {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
 {# BUILDER SPECIFIC SETTER #}
@@ -44,10 +38,7 @@ private function {{ methodName }}(): {{ classname }}
     ->save()
     ->getObject();
 }
-{% for dependency in dependencies %}
-
-    {{ dependency.code }}
-{%- endfor %}
+{% include('@PimcoreContentMigration/code_templates/shared/_dependency_bodies.php.twig') %}
 {% else %}
         return {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
             ->getObject();
