@@ -25,6 +25,9 @@ class SetterListFactory
 
         $setters = [];
         foreach ($fieldDefinitions as $fieldName => $fieldDefinition) {
+            if ($fieldDefinition instanceof DataObject\Data\CalculatedValue) {
+                continue;   // no setters for calculated values needed
+            }
             $getterName = 'get' . ucfirst($fieldName);
             $setters[$fieldName] = new Setter(
                 $fieldName,
