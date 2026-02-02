@@ -23,8 +23,8 @@ private function {{ methodName }}(): {{ classname }}
 {% elseif type == 'folder' %}
 {% elseif type == 'hardlink' %}
             ->setSourceId({% if document.getSourceId() %}{{ document.getSourceId() }}{% else %}null{% endif %})
-            ->setPropertiesFromSource('{{ document.getPropertiesFromSource() ? 'true' : 'false' }}')
-            ->setChildrenFromSource('{{ document.getChildrenFromSource() ? 'true' : 'false' }}')
+            ->setPropertiesFromSource({{ document.getPropertiesFromSource() ? 'true' : 'false' }})
+            ->setChildrenFromSource({{ document.getChildrenFromSource() ? 'true' : 'false' }})
 {% elseif type == 'link' %}
             ->setDirect('{{ document.getDirect() }}')
             ->setLinktype('{{ document.getLinktype() }}')
@@ -37,7 +37,7 @@ private function {{ methodName }}(): {{ classname }}
 {% elseif type == 'printcontainer' %}
 {% elseif type == 'newsletter' %}
             ->setPlaintext('{{ document.getPlaintext() }}')
-            ->setEnableTrackingParameters('{{ document.getEnableTrackingParameters() ? 'true' : 'false' }}')
+            ->setEnableTrackingParameters({{ document.getEnableTrackingParameters() ? 'true' : 'false' }})
             ->setTrackingParameterSource('{{ document.getTrackingParameterSource() }}')
             ->setTrackingParameterMedium('{{ document.getTrackingParameterMedium() }}')
             ->setTrackingParameterName('{{ document.getTrackingParameterName() }}')
