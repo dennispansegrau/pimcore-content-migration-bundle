@@ -37,9 +37,12 @@ Install the bundle via Composer:
 ```bash
 composer require dennispansegrau/pimcore-content-migration-bundle
 ```
-Then enable it in your Pimcore project:
-```bash
-bin/console pimcore:bundle:enable PimcoreContentMigrationBundle
+(Optional) Add the bundle to your config/bundles.php:
+```php
+return [
+    // ...
+    \PimcoreContentMigrationBundle\PimcoreContentMigrationBundle::class => ['all' => true],
+];
 ```
 (Optional) Clear and rebuild your cache:
 ```bash
