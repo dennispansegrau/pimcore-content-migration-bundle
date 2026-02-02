@@ -36,20 +36,23 @@ class DataObjectBuilder extends AbstractElementBuilder
 
         $builder->dataObject = DataObject::getByPath($path);
         if (!$builder->dataObject instanceof DataObject) {
-            $builder->dataObject = new $dataObjectClass();
-            $key = basename($path);
-            $builder->dataObject->setKey($key);
             $parentPath = dirname($path);
-            $parent = $builder->getParentByPath($parentPath);
-            $builder->dataObject->setParent($parent);
+            $key = basename($path);
+            $builder->dataObject = $builder->createDataObject($dataObjectClass, $parentPath, $key);
         }
 
+        // the object already exists but is not of the correct type
         if (!$builder->dataObject instanceof $dataObjectClass) {
-            //TODO
-            $t = 1;
+            $parentPath = dirname($path);
+            $tempKey = 'temp_'. basename($path) . '_' . random_int(1000, 9999);
+            try {
+                $tempObject = $builder->createDataObject($dataObjectClass, $parentPath, $tempKey);
+                $builder->replaceObject($builder->dataObject, $tempObject);
+            } catch (Exception $exception) {
+                $tempObject = DataObject::getByPath($parentPath . '/' . $tempKey);
+                $tempObject?->delete();
+            }
         }
-
-        $builder->dataObject->save(); // must be already saved for some actions
 
         return $builder;
     }
@@ -105,5 +108,48 @@ class DataObjectBuilder extends AbstractElementBuilder
         }
 
         return $parent;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createDataObject(string $dataObjectClass, string $parentPath, string $key): DataObject
+    {
+        $object = new $dataObjectClass();
+        if (!$object instanceof DataObject) {
+            throw new Exception("Class $dataObjectClass is not a DataObject");
+        }
+        $object->setKey(DataObject\Service::getValidKey($key, 'object'));
+        $parent = $this->getParentByPath($parentPath);
+        $object->setParent($parent);
+        $object->save();
+        return $object;
+    }
+
+    /**
+     * @throws DuplicateFullPathException
+     * @throws Exception
+     */
+    private function replaceObject(DataObject $oldObject, DataObject $newObject): void
+    {
+        $children = $oldObject->getChildren();
+        foreach ($children as $child) {
+            if (!$child instanceof DataObject) {
+                continue;
+            }
+            $child->setParent($newObject);
+            $child->save();
+        }
+
+        $oldKey = $oldObject->getKey();
+        $oldObject->delete();
+
+        if ($oldKey === null) {
+            throw new LogicException('Old object has no key');
+        }
+        $newObject->setKey($oldKey);
+        $newObject->save();
+
+        $this->dataObject = $newObject;
     }
 }

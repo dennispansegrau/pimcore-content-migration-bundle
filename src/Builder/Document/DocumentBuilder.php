@@ -30,15 +30,25 @@ class DocumentBuilder extends AbstractElementBuilder
         $documentClass = static::getDocumentClass();
 
         $builder->document = Document::getByPath($path);
-        if (!$builder->document instanceof $documentClass) {
-            $builder->document = new $documentClass();
-            $key = basename($path);
-            $builder->document->setKey($key);
+        if (!$builder->document instanceof Document) {
             $parentPath = dirname($path);
-            $parent = $builder->getParentByPath($parentPath);
-            $builder->document->setParent($parent);
-            $builder->document->save(); // must be already saved for some actions
+            $key = basename($path);
+            $builder->document = $builder->createDocument($documentClass, $parentPath, $key);
         }
+
+        // document already exists but is not of the correct type
+        if (!$builder->document instanceof $documentClass) {
+            $parentPath = dirname($path);
+            $tempKey = 'temp_'. basename($path) . '_' . random_int(1000, 9999);
+            try {
+                $tempObject = $builder->createDocument($documentClass, $parentPath, $tempKey);
+                $builder->replaceDocument($builder->document, $tempObject);
+            } catch (Exception $exception) {
+                $tempObject = Document::getByPath($parentPath . '/' . $tempKey);
+                $tempObject?->delete();
+            }
+        }
+
         return $builder;
     }
 
@@ -98,5 +108,48 @@ class DocumentBuilder extends AbstractElementBuilder
         }
 
         return $parent;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createDocument(string $documentClass, string $parentPath, string $key): Document
+    {
+        $document = new $documentClass();
+        if (!$document instanceof Document) {
+            throw new Exception("Class $documentClass is not a Document");
+        }
+        $document->setKey(Document\Service::getValidKey($key, 'document'));
+        $parent = $this->getParentByPath($parentPath);
+        $document->setParent($parent);
+        $document->save();
+        return $document;
+    }
+
+    /**
+     * @throws DuplicateFullPathException
+     * @throws Exception
+     */
+    private function replaceDocument(Document $oldDocument, Document $newDocument): void
+    {
+        $children = $oldDocument->getChildren();
+        foreach ($children as $child) {
+            if (!$child instanceof Document) {
+                continue;
+            }
+            $child->setParent($newDocument);
+            $child->save();
+        }
+
+        $oldKey = $oldDocument->getKey();
+        $oldDocument->delete();
+
+        if ($oldKey === null) {
+            throw new LogicException('Old document has no key');
+        }
+        $oldDocument->setKey($oldKey);
+        $newDocument->save();
+
+        $this->document = $newDocument;
     }
 }

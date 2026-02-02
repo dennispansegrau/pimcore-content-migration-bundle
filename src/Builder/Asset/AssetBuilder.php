@@ -34,22 +34,24 @@ class AssetBuilder extends AbstractElementBuilder
         $assetClass = static::getAssetClass();
 
         $builder->asset = Asset::getByPath($path);
-        if (!$builder->asset instanceof $assetClass) {
-            $builder->asset = new $assetClass();
-            $filename = basename($path);
-            $builder->asset->setFilename($filename);
+        if (!$builder->asset instanceof Asset) {
             $parentPath = dirname($path);
-            $parent = $builder->getParentByPath($parentPath);
-            $builder->asset->setParent($parent);
+            $filename = basename($path);
+            $builder->asset = $builder->createAsset($assetClass, $parentPath, $filename, $dataPath);
         }
-        if ($dataPath !== null) {
-            $data = file_get_contents($dataPath);
-            if ($data === false) {
-                throw new RuntimeException("Could not read file: $path");
+
+        // the object already exists but is not of the correct type
+        if (!$builder->asset instanceof $assetClass) {
+            $parentPath = dirname($path);
+            $tempFilename = 'temp_'. basename($path) . '_' . random_int(1000, 9999);
+            try {
+                $tempObject = $builder->createAsset($assetClass, $parentPath, $tempFilename, $dataPath);
+                $builder->replaceAsset($builder->asset, $tempObject);
+            } catch (Exception $exception) {
+                $tempObject = Asset::getByPath($parentPath . '/' . $tempFilename);
+                $tempObject?->delete();
             }
-            $builder->asset->setData($data);
         }
-        $builder->asset->save(); // must be already saved for some actions
 
         return $builder;
     }
@@ -146,5 +148,57 @@ class AssetBuilder extends AbstractElementBuilder
         }
 
         return $parent;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createAsset(string $assetClass, string $parentPath, string $filename, ?string $dataPath): Asset
+    {
+        $asset = new $assetClass();
+        if (!$asset instanceof Asset) {
+            throw new Exception("Class $assetClass is not an Asset");
+        }
+        $asset->setFilename($filename);
+        $parent = $this->getParentByPath($parentPath);
+        $asset->setParent($parent);
+
+        if ($dataPath !== null) {
+            $data = file_get_contents($dataPath);
+            if ($data === false) {
+                throw new RuntimeException("Could not read file: $dataPath");
+            }
+            $asset->setData($data);
+        }
+
+        $asset->save();
+        return $asset;
+    }
+
+    /**
+     * @throws DuplicateFullPathException
+     * @throws Exception
+     */
+    private function replaceAsset(Asset $oldAsset, Asset $newAsset): void
+    {
+        $children = $oldAsset->getChildren();
+        foreach ($children as $child) {
+            if (!$child instanceof Asset) {
+                continue;
+            }
+            $child->setParent($newAsset);
+            $child->save();
+        }
+
+        $oldKey = $oldAsset->getKey();
+        $oldAsset->delete();
+
+        if ($oldKey === null) {
+            throw new LogicException('Old asset has no key');
+        }
+        $newAsset->setKey($oldKey);
+        $newAsset->save();
+
+        $this->asset = $newAsset;
     }
 }
