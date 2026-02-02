@@ -1,4 +1,5 @@
 ### ⚠️ This bundle is under active development and not production-ready.
+Compatibility: Pimcore 11 and above.
 
 # Pimcore Content Migrations Bundle
 
@@ -34,11 +35,14 @@ The generated migrations create only dummy dependencies — documents, assets, a
 Install the bundle via Composer:
 
 ```bash
-composer require dennispansegrau/pimcore-content-migrations-bundle
+composer require dennispansegrau/pimcore-content-migration-bundle
 ```
-Then enable it in your Pimcore project:
-```bash
-bin/console pimcore:bundle:enable PimcoreContentMigrationBundle
+(Optional) Add the bundle to your config/bundles.php:
+```php
+return [
+    // ...
+    \PimcoreContentMigrationBundle\PimcoreContentMigrationBundle::class => ['all' => true],
+];
 ```
 (Optional) Clear and rebuild your cache:
 ```bash

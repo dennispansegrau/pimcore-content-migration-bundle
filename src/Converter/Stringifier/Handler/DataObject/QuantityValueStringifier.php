@@ -2,7 +2,6 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject;
 
-use InvalidArgumentException;
 use Pimcore\Model\DataObject\Data\QuantityValue;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
@@ -24,9 +23,6 @@ final readonly class QuantityValueStringifier implements ValueStringifier
         /** @var QuantityValue $value */
         $quantityValue = $value->getValue();
         $unitId = $value->getUnit()?->getId();
-        if ($unitId === null) {
-            throw new InvalidArgumentException('QuantityValue must have a unit with an id.');
-        }
 
         $quantityValueString = $this->getConverter()->convertValueToString($quantityValue, $dependencyList, $parameters);
 

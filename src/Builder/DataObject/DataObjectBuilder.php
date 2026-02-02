@@ -17,6 +17,7 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
 
+use function random_int;
 use function ucfirst;
 
 class DataObjectBuilder extends AbstractElementBuilder
@@ -28,26 +29,31 @@ class DataObjectBuilder extends AbstractElementBuilder
      * @param class-string<DataObject> $dataObjectClass
      * @return static
      * @throws DuplicateFullPathException
+     * @throws Exception
      */
     public static function findOrCreate(string $path, string $dataObjectClass): static
     {
         $builder = new static();
 
-        $builder->dataObject = $dataObjectClass::getByPath($path);
-        if (!$builder->dataObject instanceof $dataObjectClass) {
-            $builder->dataObject = new $dataObjectClass();
-            $key = basename($path);
-            $builder->dataObject->setKey($key);
-
+        $builder->dataObject = DataObject::getByPath($path);
+        if (!$builder->dataObject instanceof DataObject) {
             $parentPath = dirname($path);
-            $parent = DataObject::getByPath($parentPath);
-            if (!$parent instanceof DataObject) {
-                throw new Exception("Parent data object not found for path: $parentPath");
-            }
-            $builder->dataObject->setParentId($parent->getId());
+            $key = basename($path);
+            $builder->dataObject = $builder->createDataObject($dataObjectClass, $parentPath, $key);
         }
 
-        $builder->dataObject->save(); // must be already saved for some actions
+        // the object already exists but is not of the correct type
+        if (!$builder->dataObject instanceof $dataObjectClass) {
+            $parentPath = dirname($path);
+            $tempKey = 'temp_' . basename($path) . '_' . random_int(1000, 9999);
+            try {
+                $tempObject = $builder->createDataObject($dataObjectClass, $parentPath, $tempKey);
+                $builder->replaceObject($builder->dataObject, $tempObject);
+            } catch (Exception $exception) {
+                $tempObject = DataObject::getByPath($parentPath . '/' . $tempKey);
+                $tempObject?->delete();
+            }
+        }
 
         return $builder;
     }
@@ -82,5 +88,69 @@ class DataObjectBuilder extends AbstractElementBuilder
         }
 
         return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getParentByPath(string $parentPath): DataObject
+    {
+        $parent = null;
+        if (DataObject\Service::pathExists($parentPath)) {
+            $parent = DataObject::getByPath($parentPath);
+        }
+
+        if ($parent === null) {
+            $parent = DataObject\Service::createFolderByPath($parentPath);
+        }
+
+        if (!$parent instanceof DataObject) {
+            throw new Exception("Parent data object not found for path: $parentPath");
+        }
+
+        return $parent;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createDataObject(string $dataObjectClass, string $parentPath, string $key): DataObject
+    {
+        $object = new $dataObjectClass();
+        if (!$object instanceof DataObject) {
+            throw new Exception("Class $dataObjectClass is not a DataObject");
+        }
+        $object->setKey(DataObject\Service::getValidKey($key, 'object'));
+        $parent = $this->getParentByPath($parentPath);
+        $object->setParent($parent);
+        $object->save();
+        return $object;
+    }
+
+    /**
+     * @throws DuplicateFullPathException
+     * @throws Exception
+     */
+    private function replaceObject(DataObject $oldObject, DataObject $newObject): void
+    {
+        $children = $oldObject->getChildren();
+        foreach ($children as $child) {
+            if (!$child instanceof DataObject) {
+                continue;
+            }
+            $child->setParent($newObject);
+            $child->save();
+        }
+
+        $oldKey = $oldObject->getKey();
+        $oldObject->delete();
+
+        if ($oldKey === null) {
+            throw new LogicException('Old object has no key');
+        }
+        $newObject->setKey($oldKey);
+        $newObject->save();
+
+        $this->dataObject = $newObject;
     }
 }

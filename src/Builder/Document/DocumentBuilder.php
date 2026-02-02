@@ -11,6 +11,8 @@ use Pimcore\Model\Document;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
 
+use function random_int;
+
 class DocumentBuilder extends AbstractElementBuilder
 {
     protected ?Document $document = null;
@@ -29,19 +31,26 @@ class DocumentBuilder extends AbstractElementBuilder
         /** @var class-string<Document> $documentClass */
         $documentClass = static::getDocumentClass();
 
-        $builder->document = $documentClass::getByPath($path);
-        if (!$builder->document instanceof $documentClass) {
-            $builder->document = new $documentClass();
-            $key = basename($path);
-            $builder->document->setKey($key);
+        $builder->document = Document::getByPath($path);
+        if (!$builder->document instanceof Document) {
             $parentPath = dirname($path);
-            $parent = Document::getByPath($parentPath);
-            if (!$parent instanceof Document) {
-                throw new Exception("Parent document not found for path: $parentPath");
-            }
-            $builder->document->setParentId($parent->getId());
-            $builder->document->save(); // must be already saved for some actions
+            $key = basename($path);
+            $builder->document = $builder->createDocument($documentClass, $parentPath, $key);
         }
+
+        // document already exists but is not of the correct type
+        if (!$builder->document instanceof $documentClass) {
+            $parentPath = dirname($path);
+            $tempKey = 'temp_' . basename($path) . '_' . random_int(1000, 9999);
+            try {
+                $tempObject = $builder->createDocument($documentClass, $parentPath, $tempKey);
+                $builder->replaceDocument($builder->document, $tempObject);
+            } catch (Exception $exception) {
+                $tempObject = Document::getByPath($parentPath . '/' . $tempKey);
+                $tempObject?->delete();
+            }
+        }
+
         return $builder;
     }
 
@@ -80,5 +89,69 @@ class DocumentBuilder extends AbstractElementBuilder
             throw new LogicException('Document object has not been set');
         }
         return $this->document;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getParentByPath(string $parentPath): Document
+    {
+        $parent = null;
+        if (Document\Service::pathExists($parentPath)) {
+            $parent = Document::getByPath($parentPath);
+        }
+
+        if ($parent === null) {
+            $parent = Document\Service::createFolderByPath($parentPath);
+        }
+
+        if (!$parent instanceof Document) {
+            throw new Exception("Parent document not found for path: $parentPath");
+        }
+
+        return $parent;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createDocument(string $documentClass, string $parentPath, string $key): Document
+    {
+        $document = new $documentClass();
+        if (!$document instanceof Document) {
+            throw new Exception("Class $documentClass is not a Document");
+        }
+        $document->setKey(Document\Service::getValidKey($key, 'document'));
+        $parent = $this->getParentByPath($parentPath);
+        $document->setParent($parent);
+        $document->save();
+        return $document;
+    }
+
+    /**
+     * @throws DuplicateFullPathException
+     * @throws Exception
+     */
+    private function replaceDocument(Document $oldDocument, Document $newDocument): void
+    {
+        $children = $oldDocument->getChildren();
+        foreach ($children as $child) {
+            if (!$child instanceof Document) {
+                continue;
+            }
+            $child->setParent($newDocument);
+            $child->save();
+        }
+
+        $oldKey = $oldDocument->getKey();
+        $oldDocument->delete();
+
+        if ($oldKey === null) {
+            throw new LogicException('Old document has no key');
+        }
+        $oldDocument->setKey($oldKey);
+        $newDocument->save();
+
+        $this->document = $newDocument;
     }
 }
