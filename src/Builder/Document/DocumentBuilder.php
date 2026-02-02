@@ -11,6 +11,8 @@ use Pimcore\Model\Document;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
 
+use function random_int;
+
 class DocumentBuilder extends AbstractElementBuilder
 {
     protected ?Document $document = null;
@@ -39,7 +41,7 @@ class DocumentBuilder extends AbstractElementBuilder
         // document already exists but is not of the correct type
         if (!$builder->document instanceof $documentClass) {
             $parentPath = dirname($path);
-            $tempKey = 'temp_'. basename($path) . '_' . random_int(1000, 9999);
+            $tempKey = 'temp_' . basename($path) . '_' . random_int(1000, 9999);
             try {
                 $tempObject = $builder->createDocument($documentClass, $parentPath, $tempKey);
                 $builder->replaceDocument($builder->document, $tempObject);

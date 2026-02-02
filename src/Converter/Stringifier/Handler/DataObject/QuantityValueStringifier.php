@@ -2,7 +2,6 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject;
 
-use InvalidArgumentException;
 use Pimcore\Model\DataObject\Data\QuantityValue;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;

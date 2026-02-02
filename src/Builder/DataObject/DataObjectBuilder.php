@@ -17,6 +17,7 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
 
+use function random_int;
 use function ucfirst;
 
 class DataObjectBuilder extends AbstractElementBuilder
@@ -44,7 +45,7 @@ class DataObjectBuilder extends AbstractElementBuilder
         // the object already exists but is not of the correct type
         if (!$builder->dataObject instanceof $dataObjectClass) {
             $parentPath = dirname($path);
-            $tempKey = 'temp_'. basename($path) . '_' . random_int(1000, 9999);
+            $tempKey = 'temp_' . basename($path) . '_' . random_int(1000, 9999);
             try {
                 $tempObject = $builder->createDataObject($dataObjectClass, $parentPath, $tempKey);
                 $builder->replaceObject($builder->dataObject, $tempObject);

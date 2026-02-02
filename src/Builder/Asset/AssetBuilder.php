@@ -13,6 +13,9 @@ use LogicException;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
+
+use function random_int;
+
 use RuntimeException;
 
 class AssetBuilder extends AbstractElementBuilder
@@ -43,7 +46,7 @@ class AssetBuilder extends AbstractElementBuilder
         // the object already exists but is not of the correct type
         if (!$builder->asset instanceof $assetClass) {
             $parentPath = dirname($path);
-            $tempFilename = 'temp_'. basename($path) . '_' . random_int(1000, 9999);
+            $tempFilename = 'temp_' . basename($path) . '_' . random_int(1000, 9999);
             try {
                 $tempObject = $builder->createAsset($assetClass, $parentPath, $tempFilename, $dataPath);
                 $builder->replaceAsset($builder->asset, $tempObject);
