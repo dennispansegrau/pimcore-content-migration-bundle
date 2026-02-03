@@ -10,6 +10,9 @@ private function {{ methodName }}(): {{ classname }}
 {% if isConcrete %}
             ->setPublished({{ object.getPublished() ? 'true' : 'false' }})
 {% endif %}
+{% if object.isLocked %}
+            ->setLocked({{ pcmb_value_to_string(object.getLocked(), dependencies) }})
+{% endif %}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
             ->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }})

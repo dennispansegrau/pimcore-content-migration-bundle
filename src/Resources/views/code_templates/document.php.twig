@@ -67,6 +67,9 @@ private function {{ methodName }}(): {{ classname }}
             ->setUseTargetGroup({{ pcmb_value_to_string(document.getUseTargetGroup(), dependencies) }})
 {% endif %}
 {# DOCUMENT BUILDER SETTER #}
+{% if document.isLocked %}
+            ->setLocked({{ pcmb_value_to_string(document.getLocked(), dependencies) }})
+{% endif %}
             ->setIndex({{ document.getIndex() }})
             ->setType('{{ document.getType() }}')
             ->setPublished({{ document.getPublished() ? 'true' : 'false' }})

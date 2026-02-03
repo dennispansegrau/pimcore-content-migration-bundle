@@ -22,4 +22,14 @@ abstract class AbstractElementBuilder
         $this->getObject()->setProperty($name, $type, $data, $inherited, $inheritable);
         return $this;
     }
+
+    /**
+     * @param string|null $locked
+     * @return $this
+     */
+    public function setLocked(?string $locked): static
+    {
+        $this->getObject()->setLocked($locked);
+        return $this;
+    }
 }
