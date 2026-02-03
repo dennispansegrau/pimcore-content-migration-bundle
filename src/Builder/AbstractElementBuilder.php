@@ -24,7 +24,7 @@ abstract class AbstractElementBuilder
     }
 
     /**
-     * @param string|null $locked
+     * @param 'self'|'propagate'|null $locked
      * @return $this
      */
     public function setLocked(?string $locked): static
