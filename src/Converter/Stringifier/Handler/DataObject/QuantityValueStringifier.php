@@ -22,10 +22,11 @@ final readonly class QuantityValueStringifier implements ValueStringifier
     {
         /** @var QuantityValue $value */
         $quantityValue = $value->getValue();
-        $unitId = $value->getUnit()?->getId();
+        $unit = $value->getUnit();
 
         $quantityValueString = $this->getConverter()->convertValueToString($quantityValue, $dependencyList, $parameters);
+        $unitString = $this->getConverter()->convertValueToString($unit, $dependencyList, $parameters);
 
-        return sprintf('new \Pimcore\Model\DataObject\Data\QuantityValue(%s, \'%s\')', $quantityValueString, $unitId);
+        return sprintf('new \Pimcore\Model\DataObject\Data\QuantityValue(%s, %s)', $quantityValueString, $unitString);
     }
 }
