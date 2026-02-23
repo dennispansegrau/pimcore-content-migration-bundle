@@ -79,6 +79,10 @@ class DataObjectBuilder extends AbstractElementBuilder
 
     public function set(string $property, mixed $value): static
     {
+        if ($value === null) {
+            return $this;
+        }
+
         $setter = 'set' . ucfirst($property);
 
         if (method_exists($this->getObject(), $setter)) {
