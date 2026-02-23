@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use function class_exists;
+
 use Exception;
 
 use function get_class;
