@@ -41,7 +41,7 @@ Add the bundle to your config/bundles.php:
 ```php
 return [
     // ...
-    \PimcoreContentMigrationBundle\PimcoreContentMigrationBundle::class => ['all' => true],
+    \PimcoreContentMigration\PimcoreContentMigrationBundle::class => ['all' => true],
 ];
 ```
 ---
