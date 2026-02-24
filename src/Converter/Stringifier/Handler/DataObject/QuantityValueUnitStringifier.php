@@ -28,6 +28,9 @@ class QuantityValueUnitStringifier implements ValueStringifier
         $abbreviation = $value->getAbbreviation();
         $longName = $value->getLongName();
         $baseUnit = $value->getBaseunit();
+        if ($baseUnit === $value) {
+            $baseUnit = null;
+        }
         $factor = $value->getFactor();
         $converterOffset = $value->getConversionOffset();
         $converter = $value->getConverter();
