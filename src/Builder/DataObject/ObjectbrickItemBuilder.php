@@ -2,6 +2,8 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
+use function class_exists;
+
 use Exception;
 
 use function get_class;
@@ -36,6 +38,9 @@ class ObjectbrickItemBuilder
     public static function create(string $classname, Concrete $concrete): static
     {
         $builder = new static();
+        if (!class_exists($classname)) {
+            throw new Exception("Class $classname not found. You must transfer the var/classes and var/config directories before running the migration.");
+        }
         $builder->item = new $classname($concrete);
         return $builder;
     }

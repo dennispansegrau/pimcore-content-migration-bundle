@@ -37,17 +37,30 @@ Install the bundle via Composer:
 ```bash
 composer require dennispansegrau/pimcore-content-migration-bundle
 ```
-(Optional) Add the bundle to your config/bundles.php:
+Add the bundle to your config/bundles.php:
 ```php
 return [
     // ...
     \PimcoreContentMigrationBundle\PimcoreContentMigrationBundle::class => ['all' => true],
 ];
 ```
-(Optional) Clear and rebuild your cache:
-```bash
-bin/console cache:clear
+---
+
+## 🧰 Configuration
+If you do not use doctrine migrations in your project yet, please add following to your config/config.yaml:
 ```
+doctrine_migrations:
+    migrations_paths:
+        'App\Migrations\Content': '%kernel.project_dir%/migrations/content'
+```
+This defines where generated content migration files are stored.
+
+You can also set a default namespace to avoid passing it every time:
+```
+pimcore_content_migration:
+    default_namespace: 'App\Migrations\Content'
+```
+When set, `content:migration:create` uses this namespace if none is provided.
 
 ---
 
@@ -69,31 +82,11 @@ bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-child
 | `--no-dependencies` | Exclude related dependencies (e.g., linked assets or objects) from the migration                      |
 | `--inline-wysiwyg`  | Inline WYSIWYG field content directly into the migration instead of saving it in a separate HTML file |
 
----
-
 ## 💻 Example
 ```bash
 bin/console content:migration:create document 1 --namespace=App\\Migrations\\Content
 ```
 This command creates a migration for the document with ID 1 and stores it in the namespace App\Migrations\Content.
-
----
-
-## 🧰 Configuration
-If you do not use doctrine migrations in your project yet, please add following to your config/config.yaml:
-```
-doctrine_migrations:
-    migrations_paths:
-        'App\Migrations\Content': '%kernel.project_dir%/migrations/content'
-```
-This defines where generated content migration files are stored.
-
-You can also set a default namespace to avoid passing it every time:
-```
-pimcore_content_migration:
-    default_namespace: 'App\Migrations\Content'
-```
-When set, `content:migration:create` uses this namespace if none is provided.
 
 ---
 
