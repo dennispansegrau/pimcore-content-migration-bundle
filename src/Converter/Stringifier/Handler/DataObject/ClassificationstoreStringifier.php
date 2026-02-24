@@ -66,6 +66,8 @@ class ClassificationstoreStringifier implements ValueStringifier
         $activeGroupString = $this->getConverter()->convertValueToString($this->getActiveGroups($value), $dependencyList, $parameters);
         $groupCollectionMappingString = $this->getConverter()->convertValueToString($this->getGroupCollectionMapping($value), $dependencyList, $parameters);
 
+        $this->cleanUp();
+
         return sprintf(
             "\\%s::createOrUpdate('%s', %s, '%s', '%s')\n" .
                 "%s->updateKeys(%s)\n" .
@@ -289,5 +291,12 @@ class ClassificationstoreStringifier implements ValueStringifier
             throw new LogicException(sprintf('StoreConfig with id %d not found', $storeId));
         }
         return $storeConfig;
+    }
+
+    private function cleanUp(): void
+    {
+        $this->keysIdNameMapping = [];
+        $this->groupIdNameMapping = [];
+        $this->collectionIdNameMapping = [];
     }
 }
