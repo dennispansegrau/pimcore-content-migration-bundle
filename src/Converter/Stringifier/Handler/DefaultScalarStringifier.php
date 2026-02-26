@@ -2,6 +2,7 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler;
 
+use function array_key_exists;
 use function get_class;
 use function gettype;
 
@@ -11,10 +12,12 @@ use function is_array;
 use function is_bool;
 use function is_float;
 use function is_int;
+use function is_numeric;
 use function is_object;
 use function is_string;
 
 use Pimcore\Model\Element\AbstractElement;
+use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IdToDependencyStringTrait;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
@@ -29,6 +32,7 @@ final class DefaultScalarStringifier implements ValueStringifier
 {
     use IndentTrait;
     use ValueToStringConverterTrait;
+    use IdToDependencyStringTrait;
 
     public function supports(mixed $value, array $parameters = []): bool
     {
@@ -83,9 +87,16 @@ final class DefaultScalarStringifier implements ValueStringifier
         $indent = $this->getAndIncreaseIndent($parameters);
         $result = "[\n";
 
+        $containsArrayNameId = array_key_exists('id', $value);
+        $containsArrayNameType = array_key_exists('type', $value);
+
         foreach ($value as $key => $item) {
             $keyString = is_int($key) ? (string) $key : '\'' . str_replace('\'', '\\\'', (string) $key) . '\'';
-            $itemString = $this->getConverter()->convertValueToString($item, $dependencyList, ['indent' => $indent + 4]);
+            if ($containsArrayNameId && $containsArrayNameType && $key === 'id' && is_numeric($value['id']) && is_string($value['type'])) {
+                $itemString = $this->idToDependencyString($value['type'], (int) $value['id'], $dependencyList, false);
+            } else {
+                $itemString = $this->getConverter()->convertValueToString($item, $dependencyList, ['indent' => $indent + 4]);
+            }
             $result .= str_repeat(' ', $indent + 4) . $keyString . ' => ' . $itemString . ",\n";
         }
 
