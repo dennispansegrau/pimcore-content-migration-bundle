@@ -54,9 +54,13 @@ private function {{ methodName }}(): {{ classname }}
 {% include('@PimcoreContentMigration/code_templates/document/_editables.php.twig') %}
 {% endif %}
 {# PRINT ABSTRACT BUILDER SETTER #}
-{% if isPrintAbstract %}
+{% if isPrintAbstract and document.getLastGeneratedDate() %}
             ->setLastGeneratedDate(new \DateTime('{{ document.getLastGeneratedDate()|date(constant('DateTime::ATOM')) }}'))
+{% endif %}
+{% if isPrintAbstract and document.getLastGenerated() %}
             ->setLastGenerated({{ document.getLastGenerated() }})
+{% endif %}
+{% if isPrintAbstract and document.getLastGenerateMessage() %}
             ->setLastGenerateMessage('{{ document.getLastGenerateMessage() }}')
 {% endif %}
 {# Personalization Bundle Interface SETTER #}
@@ -79,6 +83,12 @@ private function {{ methodName }}(): {{ classname }}
 {% include('@PimcoreContentMigration/code_templates/shared/_dependency_bodies.php.twig') %}
 {% else %}
         return {{ builder }}::findOrCreate('{{ document.getFullPath() }}')
+{# PAGE SNIPPET BUILDER SETTER #}
+{% if isPageSnippet %}
+            ->setController({% if document.getController() %}'{{ document.getController() }}'{% else %}null{% endif %})
+            ->setContentMainDocument({{ pcmb_value_to_string(document.getContentMainDocument(), dependencies) }})
+            ->setTemplate({% if document.getTemplate() %}'{{ document.getTemplate() }}'{% else %}null{% endif %})
+{% endif %}
             ->getObject();
     }
 {% endif %}
