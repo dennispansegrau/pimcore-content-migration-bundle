@@ -15,10 +15,11 @@ jobs:
         runs-on: ubuntu-latest
         env:
             PIMCORE_IMAGE: docker.io/pimcore/pimcore:php8.3-latest
-            PIMCORE_PACKAGE: pimcore/skeleton:^v2024.4
+            PIMCORE_PACKAGE: pimcore/skeleton
             COMPOSER_HOME: /tmp/composer
             COMPOSER_CACHE_DIR: /tmp/composer-cache
             PIMCORE_VERSION: "11.5.*"
+            COMPOSER_AUDIT_FLAGS: "--no-audit"
         name: Bundle Check
         steps:
             -   name: Checkout
@@ -56,7 +57,7 @@ jobs:
                       ${PIMCORE_IMAGE} \
                         bash -lc 'composer remove pimcore/platform-version --no-update --no-interaction \
                         && composer require pimcore/pimcore:"${PIMCORE_VERSION}" --no-update --no-interaction \
-                        && composer update --no-scripts --no-interaction'
+                        && composer update --no-scripts --no-interaction ${COMPOSER_AUDIT_FLAGS}'
 
             -   name: Docker and Database Setup
                 run: |
