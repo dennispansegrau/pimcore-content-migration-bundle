@@ -46,6 +46,7 @@ jobs:
                         ${{ matrix.demo_package }} \
                         --no-install \
                         --no-scripts \
+                        --no-interaction \
                         sample-project
 
             -   name: Docker and Database Setup
@@ -69,7 +70,14 @@ jobs:
                     set -ex
                     cd sample-project/
 
-                    docker compose exec -T --workdir /var/www/html php composer install --no-scripts
+                    docker compose exec -T --workdir /var/www/html php composer remove \
+                        pimcore/payment-provider-paypal-smart-payment-button \
+                        pimcore/newsletter-bundle \
+                        pimcore/ecommerce-framework-bundle \
+                        --no-update \
+                        --no-interaction
+
+                    docker compose exec -T --workdir /var/www/html php composer update --no-scripts --no-interaction
                     
                     docker compose exec -T --workdir /var/www/html \
                         -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
