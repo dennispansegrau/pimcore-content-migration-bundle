@@ -1,10 +1,6 @@
 name: CI Pimcore
 
 on:
-    push:
-        branches: [ main, develop ]
-        paths:
-            - "**"
     pull_request:
         branches: [ main, develop ]
     schedule:
