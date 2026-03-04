@@ -20,7 +20,11 @@ return (new Config())
         '@DoctrineAnnotation' => true,
 
         // Import & Namespace
-        'ordered_imports' => ['sort_algorithm' => 'alpha'],
+        'ordered_imports' => [
+            'imports_order' => ['class', 'function', 'const'],
+            'sort_algorithm' => 'alpha',
+        ],
+        'blank_line_between_import_groups' => true,
         'no_unused_imports' => true,
         'global_namespace_import' => [
             'import_classes' => true,
