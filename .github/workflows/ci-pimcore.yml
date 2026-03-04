@@ -13,14 +13,12 @@ concurrency:
 jobs:
     pimcore:
         runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - name: v2024.4-php8.3
-                      image: docker.io/pimcore/pimcore:php8.3-latest
-                      demo_package: pimcore/demo:^v2024.4
-        name: ${{ matrix.name }}
+        env:
+            PIMCORE_IMAGE: docker.io/pimcore/pimcore:php8.3-latest
+            PIMCORE_PACKAGE: pimcore/demo:^v2024.4
+            COMPOSER_HOME: /tmp/composer
+            COMPOSER_CACHE_DIR: /tmp/composer-cache
+        name: Bundle Check
         steps:
             -   name: Checkout
                 uses: actions/checkout@v4
@@ -28,27 +26,32 @@ jobs:
             -   name: Pull Pimcore image
                 run: |
                     set -ex
-                    docker pull ${{ matrix.image }}
+                    docker pull ${PIMCORE_IMAGE}
 
             -   name: Create Pimcore project
                 run: |
                     set -ex
+                    echo "Using demo_package=${PIMCORE_PACKAGE}"
                     docker run \
-                      --volume=${{ github.workspace }}/:/test/ \
-                      --workdir=/test/ \
+                      -e COMPOSER_HOME=${COMPOSER_HOME} \
+                      -e COMPOSER_CACHE_DIR=${COMPOSER_CACHE_DIR} \
+                      --volume=${{ github.workspace }}/:/var/www/html \
+                      --workdir=/var/www/html \
                       --user=$(id -u):$(id -g) \
-                      ${{ matrix.image }} \
+                      ${PIMCORE_IMAGE} \
                         composer create-project \
-                        ${{ matrix.demo_package }} \
+                        ${PIMCORE_PACKAGE} \
                         --no-install \
                         --no-scripts \
                         --no-interaction \
                         sample-project
                     docker run \
-                      --volume=${{ github.workspace }}/:/test/ \
-                      --workdir=/test/sample-project \
+                      -e COMPOSER_HOME=${COMPOSER_HOME} \
+                      -e COMPOSER_CACHE_DIR=${COMPOSER_CACHE_DIR} \
+                      --volume=${{ github.workspace }}/:/var/www/html \
+                      --workdir=/var/www/html/sample-project \
                       --user=$(id -u):$(id -g) \
-                      ${{ matrix.image }} \
+                      ${PIMCORE_IMAGE} \
                         composer install \
                         --no-scripts \
                         --no-interaction
@@ -77,13 +80,14 @@ jobs:
                     docker compose exec -T --workdir /var/www/html php composer install --no-scripts --no-interaction
                     
                     docker compose exec -T --workdir /var/www/html \
-                        -e PIMCORE_INSTALL_ADMIN_USERNAME=pimcore \
-                        -e PIMCORE_INSTALL_ADMIN_PASSWORD=pimcore \
-                        -e PIMCORE_INSTALL_MYSQL_USERNAME=pimcore \
-                        -e PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore \
-                        -e PIMCORE_INSTALL_MYSQL_DATABASE=pimcore \
-                        -e PIMCORE_INSTALL_MYSQL_HOST_SOCKET=db \
-                        php vendor/bin/pimcore-install -n
+                        php vendor/bin/pimcore-install \
+                        --mysql-host-socket=db \
+                        --mysql-username=pimcore \
+                        --mysql-password=pimcore \
+                        --mysql-database=pimcore \
+                        --admin-username=admin \
+                        --admin-password=admin \
+                        -n
 
                     docker compose exec -T --workdir /var/www/html \
                         -e DATABASE_URL=mysql://pimcore:pimcore@db:3306/pimcore \
