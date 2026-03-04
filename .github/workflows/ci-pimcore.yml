@@ -58,6 +58,7 @@ jobs:
                       ${{ matrix.image }} \
                         composer remove \
                         pimcore/payment-provider-paypal-smart-payment-button \
+                        pimcore/newsletter-bundle \
                         --no-update \
                         --no-interaction
                     docker run \
