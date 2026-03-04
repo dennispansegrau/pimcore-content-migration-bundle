@@ -47,7 +47,8 @@ jobs:
                       ${{ matrix.image }} \
                         composer create-project \
                         ${{ matrix.demo_package }} \
-                        --no-install \
+                        --no-scripts \
+                        --no-interaction \
                         sample-project
 
             -   name: Docker and Database Setup
