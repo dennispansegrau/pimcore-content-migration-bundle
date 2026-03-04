@@ -48,6 +48,7 @@ jobs:
                         composer create-project \
                         ${{ matrix.demo_package }} \
                         --no-install \
+                        --no-scripts \
                         --no-interaction \
                         sample-project
                     docker run \
@@ -65,7 +66,6 @@ jobs:
                       --user=$(id -u):$(id -g) \
                       ${{ matrix.image }} \
                         composer update \
-                        --lock \
                         --no-scripts \
                         --no-interaction
 
