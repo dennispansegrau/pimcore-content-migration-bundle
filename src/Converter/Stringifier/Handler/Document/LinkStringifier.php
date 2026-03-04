@@ -2,14 +2,14 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\Document;
 
-use function is_array;
-use function is_int;
-use function is_string;
-
 use Pimcore\Model\Document\Editable\Link;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IdToDependencyStringTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
+
+use function is_array;
+use function is_int;
+use function is_string;
 
 class LinkStringifier implements ValueStringifier
 {

@@ -2,19 +2,15 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
-use function class_exists;
-
 use Exception;
-
-use function get_class;
-
 use LogicException;
-
-use function method_exists;
-
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 use RuntimeException;
 
+use function class_exists;
+use function get_class;
+use function method_exists;
 use function ucfirst;
 
 class FieldcollectionItemBuilder
@@ -28,16 +24,18 @@ class FieldcollectionItemBuilder
     /**
      * @template T of AbstractData
      * @param class-string<T> $classname
+     * @param Concrete $owner
      * @return static
      * @throws Exception
      */
-    public static function create(string $classname): static
+    public static function create(string $classname, Concrete $owner): static
     {
         $builder = new static();
         if (!class_exists($classname)) {
             throw new Exception("Class $classname not found. You must transfer the var/classes and var/config directories before running the migration.");
         }
         $builder->item = new $classname();
+        $builder->item->setObject($owner);
         return $builder;
     }
 

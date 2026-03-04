@@ -19,7 +19,7 @@ class ObjectbrickBuilder
 
     /**
      * @param string $fieldName
-     * @param array<string, AbstractData> $items
+     * @param array<string, AbstractData|null> $items
      * @param Concrete $owner
      * @return static
      */
@@ -33,6 +33,9 @@ class ObjectbrickBuilder
         }
         $builder->objectbrick = $objectbrick;
         foreach ($items as $property => $abstractData) {
+            if ($abstractData === null) {
+                continue;
+            }
             $setter = 'set' . $property;
             $builder->objectbrick->$setter($abstractData);
         }

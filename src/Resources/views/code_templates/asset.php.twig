@@ -11,7 +11,7 @@ private function {{ methodName }}(): {{ classname }}
 {% if settings.withDependencies() %}
 {% include('@PimcoreContentMigration/code_templates/shared/_dependency_headers.php.twig') %}
         # Create {{ type }} {{ asset.getFullPath() }}
-        return {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
+        $builder = {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %});
 {# BUILDER SPECIFIC SETTER #}
 {% if type == 'archive' %}
 {% elseif type == 'audio' %}
@@ -24,27 +24,27 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {# ASSET BUILDER SETTER #}
 {% if asset.isLocked %}
-        ->setLocked({{ pcmb_value_to_string(asset.getLocked(), dependencies) }})
+        $builder->setLocked({{ pcmb_value_to_string(asset.getLocked(), dependencies) }});
 {% endif %}
-        ->setDataChanged(true)
-        ->setType('{{ asset.getType() }}')
-        ->setMimeType('{{ asset.getMimeType()}}')
+        $builder->setDataChanged(true);
+        $builder->setType('{{ asset.getType() }}');
+        $builder->setMimeType('{{ asset.getMimeType()}}');
 {% for key, value in asset.getCustomSettings() %}
-        ->setCustomSetting({{ pcmb_value_to_string(key, dependencies) }}, {{ pcmb_value_to_string(value, dependencies) }})
+        $builder->setCustomSetting({{ pcmb_value_to_string(key, dependencies) }}, {{ pcmb_value_to_string(value, dependencies) }});
 {% endfor %}
 {% for meta in asset.getMetaData() %}
-        ->addMetadata({{ pcmb_value_to_string(meta.name, dependencies) }}, {{ pcmb_value_to_string(meta.type, dependencies) }}, {{ pcmb_value_to_string(meta.data, dependencies) }}, {{ pcmb_value_to_string(meta.language, dependencies) }})
+        $builder->addMetadata({{ pcmb_value_to_string(meta.name, dependencies) }}, {{ pcmb_value_to_string(meta.type, dependencies) }}, {{ pcmb_value_to_string(meta.data, dependencies) }}, {{ pcmb_value_to_string(meta.language, dependencies) }});
 {% endfor %}
 {% for property in asset.getProperties %}
-        ->setProperty({{ pcmb_value_to_string(property.getName(), dependencies) }}, {{ pcmb_value_to_string(property.getType(), dependencies) }}, {{ pcmb_value_to_string(property.getData(), dependencies) }}, {{ pcmb_value_to_string(property.getInherited(), dependencies) }}, {{ pcmb_value_to_string(property.getInheritable(), dependencies) }})
+        $builder->setProperty({{ pcmb_value_to_string(property.getName(), dependencies) }}, {{ pcmb_value_to_string(property.getType(), dependencies) }}, {{ pcmb_value_to_string(property.getData(), dependencies) }}, {{ pcmb_value_to_string(property.getInherited(), dependencies) }}, {{ pcmb_value_to_string(property.getInheritable(), dependencies) }});
 {% endfor %}
-        ->save()
-        ->getObject();
+        $builder->save();
+        return $builder->getObject();
     }
 {% include('@PimcoreContentMigration/code_templates/shared/_dependency_bodies.php.twig') %}
 {% else %}
-        return {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %})
-            ->getObject();
+        $builder = {{ builder }}::findOrCreate({{ pcmb_value_to_string(asset.getFullPath(), dependencies) }}{% if dataPath is not null %}, __DIR__ . '{{ dataPath.getRelativePath() }}'{% endif %});
+        return $builder->getObject();
     }
 {% endif %}
 {% endautoescape %}

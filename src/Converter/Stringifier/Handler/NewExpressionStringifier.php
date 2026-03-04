@@ -2,11 +2,10 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler;
 
-use function is_string;
-
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function is_string;
 use function str_starts_with;
 
 final class NewExpressionStringifier implements ValueStringifier

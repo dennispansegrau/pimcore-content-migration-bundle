@@ -5,7 +5,10 @@ namespace PimcoreContentMigration\Builder\DataObject;
 use Exception;
 use LogicException;
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 use Pimcore\Model\DataObject\Localizedfield;
+
+use function method_exists;
 
 class LocalizedfieldBuilder
 {
@@ -16,15 +19,21 @@ class LocalizedfieldBuilder
     }
 
     /**
-     * @param Concrete $owner
+     * @param Concrete|AbstractData $owner
      * @return static
      * @throws Exception
      */
-    public static function create(Concrete $owner): static
+    public static function create(Concrete|AbstractData $owner): static
     {
         $builder = new static();
-        $builder->localizedfield = new Localizedfield();
-        $builder->localizedfield->setObject($owner);
+        if (!method_exists($owner, 'getLocalizedfields')) {
+            throw new Exception('Localizedfield not found in owner object');
+        }
+        $localizedField = $owner->getLocalizedfields();
+        if (!$localizedField instanceof Localizedfield) {
+            throw new Exception('Localizedfield not found in owner object');
+        }
+        $builder->localizedfield = $localizedField;
         return $builder;
     }
 
@@ -37,7 +46,7 @@ class LocalizedfieldBuilder
     }
 
     /**
-     * @param array<string, array<string, string>> $items
+     * @param array<string, array<string, string|null>> $items
      * @return static
      * @throws Exception
      */
@@ -45,6 +54,9 @@ class LocalizedfieldBuilder
     {
         foreach ($items as $language => $translations) {
             foreach ($translations as $name => $value) {
+                if ($value === null) {
+                    continue;
+                }
                 $this->getObject()->setLocalizedValue($name, $value, $language);
             }
         }

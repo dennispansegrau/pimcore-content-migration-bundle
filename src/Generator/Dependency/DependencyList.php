@@ -3,13 +3,12 @@
 namespace PimcoreContentMigration\Generator\Dependency;
 
 use ArrayIterator;
-
-use function count;
-
 use Countable;
 use IteratorAggregate;
 use Pimcore\Model\Element\AbstractElement;
 use Traversable;
+
+use function count;
 
 /**
  * @implements IteratorAggregate<Dependency>

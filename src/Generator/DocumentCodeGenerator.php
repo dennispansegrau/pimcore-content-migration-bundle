@@ -2,13 +2,7 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use function class_exists;
-use function get_class;
-
 use InvalidArgumentException;
-
-use function is_string;
-
 use LogicException;
 use Pimcore\Bundle\NewsletterBundle\Model\Document\Newsletter;
 use Pimcore\Bundle\PersonalizationBundle\Model\Document\Page;
@@ -33,6 +27,10 @@ use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
 use PimcoreContentMigration\Writer\HtmlWriter;
 use PimcoreContentMigration\Writer\RelativePath;
+
+use function class_exists;
+use function get_class;
+use function is_string;
 
 class DocumentCodeGenerator implements CodeGeneratorInterface
 {

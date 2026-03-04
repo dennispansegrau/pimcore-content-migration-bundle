@@ -2,10 +2,6 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\Document;
 
-use function is_array;
-use function is_int;
-use function is_string;
-
 use LogicException;
 use Pimcore\Model\Document\Editable\Wysiwyg;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IdToDependencyStringTrait;
@@ -13,6 +9,9 @@ use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function is_array;
+use function is_int;
+use function is_string;
 use function str_repeat;
 
 class WysiwygStringifier implements ValueStringifier

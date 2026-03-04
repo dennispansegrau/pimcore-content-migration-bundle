@@ -2,11 +2,6 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject;
 
-use function array_key_exists;
-use function array_map;
-use function in_array;
-use function is_string;
-
 use LogicException;
 use Pimcore\Model\DataObject\Classificationstore;
 use Pimcore\Model\DataObject\Classificationstore\CollectionConfig;
@@ -21,6 +16,10 @@ use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringCon
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function array_key_exists;
+use function array_map;
+use function in_array;
+use function is_string;
 use function sprintf;
 use function str_repeat;
 

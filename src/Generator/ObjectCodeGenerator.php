@@ -2,8 +2,6 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use function get_class;
-
 use InvalidArgumentException;
 use Pimcore\Model\DataObject;
 use PimcoreContentMigration\Builder\DataObject\ConcreteBuilder;
@@ -12,6 +10,8 @@ use PimcoreContentMigration\Builder\DataObject\FolderBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
 use PimcoreContentMigration\Generator\Setter\SetterListFactory;
+
+use function get_class;
 
 class ObjectCodeGenerator implements CodeGeneratorInterface
 {

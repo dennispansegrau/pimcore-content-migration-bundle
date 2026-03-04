@@ -2,15 +2,14 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-use function basename;
-use function dirname;
-
 use Exception;
 use LogicException;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
 
+use function basename;
+use function dirname;
 use function random_int;
 
 class DocumentBuilder extends AbstractElementBuilder

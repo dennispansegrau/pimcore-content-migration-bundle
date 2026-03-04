@@ -3,12 +3,11 @@
 namespace PimcoreContentMigration\Generator\Setter;
 
 use ArrayIterator;
-
-use function count;
-
 use Countable;
 use IteratorAggregate;
 use Traversable;
+
+use function count;
 
 /**
  * @implements IteratorAggregate<int, Setter>

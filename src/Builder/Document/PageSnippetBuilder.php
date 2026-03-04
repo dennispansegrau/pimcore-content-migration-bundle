@@ -2,12 +2,12 @@
 
 namespace PimcoreContentMigration\Builder\Document;
 
-use function file_get_contents;
-
 use LogicException;
 use Pimcore\Model\Document\Editable;
 use Pimcore\Model\Document\PageSnippet;
 use RuntimeException;
+
+use function file_get_contents;
 
 abstract class PageSnippetBuilder extends DocumentBuilder
 {

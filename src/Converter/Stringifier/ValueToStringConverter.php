@@ -2,10 +2,10 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier;
 
-use function gettype;
-
 use InvalidArgumentException;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
+
+use function gettype;
 
 final readonly class ValueToStringConverter
 {

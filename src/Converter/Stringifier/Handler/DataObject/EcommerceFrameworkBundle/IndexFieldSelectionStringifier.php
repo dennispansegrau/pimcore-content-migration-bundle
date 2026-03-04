@@ -2,13 +2,12 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject\EcommerceFrameworkBundle;
 
-use function class_exists;
-
 use Pimcore\Bundle\EcommerceFrameworkBundle\CoreExtensions\ObjectData\IndexFieldSelection;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function class_exists;
 use function sprintf;
 
 class IndexFieldSelectionStringifier implements ValueStringifier
