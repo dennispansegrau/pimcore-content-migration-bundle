@@ -2,19 +2,15 @@
 
 namespace PimcoreContentMigration\Factory;
 
-use function gettype;
-
 use InvalidArgumentException;
-
-use function is_numeric;
-use function is_string;
-
 use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\MigrationType;
-
-use function sprintf;
-
 use Symfony\Component\Console\Input\InputInterface;
+
+use function gettype;
+use function is_numeric;
+use function is_string;
+use function sprintf;
 
 final readonly class SettingsFactory implements SettingsFactoryInterface
 {

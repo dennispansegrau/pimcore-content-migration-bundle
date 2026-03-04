@@ -2,11 +2,11 @@
 
 namespace PimcoreContentMigration\Twig\Extension;
 
-use function array_keys;
-
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+
+use function array_keys;
 
 class GetFieldDefinitionsExtension extends AbstractExtension
 {

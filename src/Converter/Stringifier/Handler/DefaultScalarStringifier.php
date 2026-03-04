@@ -2,20 +2,7 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler;
 
-use function array_key_exists;
-use function get_class;
-use function gettype;
-
 use InvalidArgumentException;
-
-use function is_array;
-use function is_bool;
-use function is_float;
-use function is_int;
-use function is_numeric;
-use function is_object;
-use function is_string;
-
 use Pimcore\Model\Element\AbstractElement;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IdToDependencyStringTrait;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
@@ -24,6 +11,16 @@ use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function array_key_exists;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_numeric;
+use function is_object;
+use function is_string;
 use function sprintf;
 use function str_repeat;
 use function str_replace;

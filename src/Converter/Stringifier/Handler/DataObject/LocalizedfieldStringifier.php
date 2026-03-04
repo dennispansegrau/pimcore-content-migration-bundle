@@ -2,15 +2,14 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject;
 
-use function array_key_exists;
-use function is_string;
-
 use Pimcore\Model\DataObject\Localizedfield;
 use PimcoreContentMigration\Builder\DataObject\LocalizedfieldBuilder;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 
+use function array_key_exists;
+use function is_string;
 use function sprintf;
 
 final class LocalizedfieldStringifier implements ValueStringifier

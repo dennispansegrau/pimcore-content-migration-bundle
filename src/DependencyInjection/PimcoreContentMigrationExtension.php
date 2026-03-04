@@ -3,14 +3,13 @@
 namespace PimcoreContentMigration\DependencyInjection;
 
 use Exception;
-
-use function is_array;
-use function is_string;
-
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+use function is_array;
+use function is_string;
 
 class PimcoreContentMigrationExtension extends Extension
 {

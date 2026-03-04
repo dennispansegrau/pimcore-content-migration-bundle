@@ -2,8 +2,6 @@
 
 namespace PimcoreContentMigration\Command;
 
-use function get_class;
-
 use LogicException;
 use Pimcore\Console\AbstractCommand;
 use Pimcore\Model\Asset;
@@ -18,14 +16,14 @@ use PimcoreContentMigration\Generator\MigrationGeneratorInterface;
 use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
-
-use function sprintf;
-use function strtoupper;
-
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function get_class;
+use function sprintf;
+use function strtoupper;
 
 class CreateMigrationCommand extends AbstractCommand
 {

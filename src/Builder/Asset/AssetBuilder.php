@@ -2,21 +2,17 @@
 
 namespace PimcoreContentMigration\Builder\Asset;
 
-use function basename;
-use function dirname;
-
 use Exception;
-
-use function file_get_contents;
-
 use LogicException;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
-
-use function random_int;
-
 use RuntimeException;
+
+use function basename;
+use function dirname;
+use function file_get_contents;
+use function random_int;
 
 class AssetBuilder extends AbstractElementBuilder
 {

@@ -2,12 +2,6 @@
 
 namespace PimcoreContentMigration\Generator\Dependency;
 
-use function in_array;
-use function is_array;
-use function is_int;
-use function is_iterable;
-use function is_string;
-
 use LogicException;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document\Editable\Image;
@@ -23,6 +17,12 @@ use PimcoreContentMigration\Generator\Settings;
 use PimcoreContentMigration\Loader\ObjectLoaderInterface;
 use PimcoreContentMigration\MigrationType;
 use RuntimeException;
+
+use function in_array;
+use function is_array;
+use function is_int;
+use function is_iterable;
+use function is_string;
 
 class DependencyCollector
 {

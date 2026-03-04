@@ -3,13 +3,7 @@
 namespace PimcoreContentMigration\Builder\DataObject;
 
 use Exception;
-
-use function is_string;
-
 use LogicException;
-
-use function method_exists;
-
 use Pimcore\Model\DataObject\Classificationstore;
 use Pimcore\Model\DataObject\Classificationstore\CollectionConfig;
 use Pimcore\Model\DataObject\Classificationstore\CollectionGroupRelation;
@@ -18,6 +12,9 @@ use Pimcore\Model\DataObject\Classificationstore\KeyConfig;
 use Pimcore\Model\DataObject\Classificationstore\KeyGroupRelation;
 use Pimcore\Model\DataObject\Classificationstore\StoreConfig;
 use Pimcore\Model\DataObject\Concrete;
+
+use function is_string;
+use function method_exists;
 
 class ClassificationstoreBuilder
 {

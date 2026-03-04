@@ -3,13 +3,12 @@
 namespace PimcoreContentMigration\Generator;
 
 use InvalidArgumentException;
-
-use function sprintf;
-
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+
+use function sprintf;
 
 readonly class CodeGenerator
 {

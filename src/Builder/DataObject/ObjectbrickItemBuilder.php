@@ -2,21 +2,16 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
-use function class_exists;
-
 use Exception;
-
-use function get_class;
-
 use LogicException;
-
-use function method_exists;
-
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Objectbrick\Data\AbstractData;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
 use RuntimeException;
 
+use function class_exists;
+use function get_class;
+use function method_exists;
 use function ucfirst;
 
 class ObjectbrickItemBuilder

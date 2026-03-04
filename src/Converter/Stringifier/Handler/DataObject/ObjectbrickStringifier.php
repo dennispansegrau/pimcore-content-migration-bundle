@@ -2,11 +2,6 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\DataObject;
 
-use function array_key_exists;
-use function get_class;
-use function is_string;
-use function method_exists;
-
 use Pimcore\Model\DataObject\Objectbrick;
 use PimcoreContentMigration\Builder\DataObject\ObjectbrickBuilder;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IndentTrait;
@@ -15,6 +10,10 @@ use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 use RuntimeException;
 
+use function array_key_exists;
+use function get_class;
+use function is_string;
+use function method_exists;
 use function sprintf;
 use function substr;
 

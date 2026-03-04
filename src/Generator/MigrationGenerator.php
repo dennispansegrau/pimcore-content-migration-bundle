@@ -3,16 +3,14 @@
 namespace PimcoreContentMigration\Generator;
 
 use DateTimeImmutable;
+use Pimcore\Model\Element\AbstractElement;
+use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
+use PimcoreContentMigration\Writer\NamespaceResolver;
 
 use function dirname;
 use function file_put_contents;
 use function is_dir;
 use function mkdir;
-
-use Pimcore\Model\Element\AbstractElement;
-use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
-use PimcoreContentMigration\Writer\NamespaceResolver;
-
 use function sprintf;
 use function usleep;
 

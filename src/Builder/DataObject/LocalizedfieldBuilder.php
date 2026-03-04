@@ -4,12 +4,11 @@ namespace PimcoreContentMigration\Builder\DataObject;
 
 use Exception;
 use LogicException;
-
-use function method_exists;
-
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 use Pimcore\Model\DataObject\Localizedfield;
+
+use function method_exists;
 
 class LocalizedfieldBuilder
 {

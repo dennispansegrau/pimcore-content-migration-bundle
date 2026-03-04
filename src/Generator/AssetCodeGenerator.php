@@ -2,12 +2,7 @@
 
 namespace PimcoreContentMigration\Generator;
 
-use function get_class;
-
 use InvalidArgumentException;
-
-use function is_string;
-
 use Pimcore\Model\Asset;
 use PimcoreContentMigration\Builder\Asset\ArchiveBuilder;
 use PimcoreContentMigration\Builder\Asset\AudioBuilder;
@@ -20,6 +15,9 @@ use PimcoreContentMigration\Builder\Asset\VideoBuilder;
 use PimcoreContentMigration\Converter\AbstractElementToMethodNameConverter;
 use PimcoreContentMigration\Generator\Dependency\DependencyCollector;
 use PimcoreContentMigration\Writer\AssetWriter;
+
+use function get_class;
+use function is_string;
 
 class AssetCodeGenerator implements CodeGeneratorInterface
 {

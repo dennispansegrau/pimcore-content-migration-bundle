@@ -3,11 +3,10 @@
 namespace PimcoreContentMigration\Writer;
 
 use Doctrine\Migrations\DependencyFactory;
+use RuntimeException;
 
 use function is_string;
 use function reset;
-
-use RuntimeException;
 
 readonly class NamespaceResolver
 {

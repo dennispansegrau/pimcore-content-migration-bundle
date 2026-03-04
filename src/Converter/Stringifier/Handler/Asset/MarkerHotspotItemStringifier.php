@@ -2,15 +2,15 @@
 
 namespace PimcoreContentMigration\Converter\Stringifier\Handler\Asset;
 
-use function in_array;
-use function is_int;
-
 use LogicException;
 use Pimcore\Model\Element\Data\MarkerHotspotItem;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\IdToDependencyStringTrait;
 use PimcoreContentMigration\Converter\Stringifier\Handler\Trait\ValueToStringConverterTrait;
 use PimcoreContentMigration\Converter\Stringifier\ValueStringifier;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
+
+use function in_array;
+use function is_int;
 
 class MarkerHotspotItemStringifier implements ValueStringifier
 {

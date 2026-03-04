@@ -2,21 +2,16 @@
 
 namespace PimcoreContentMigration\Builder\DataObject;
 
-use function basename;
-use function dirname;
-
 use Exception;
-
-use function get_class;
-
 use LogicException;
-
-use function method_exists;
-
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\DuplicateFullPathException;
 use PimcoreContentMigration\Builder\AbstractElementBuilder;
 
+use function basename;
+use function dirname;
+use function get_class;
+use function method_exists;
 use function random_int;
 use function ucfirst;
 
