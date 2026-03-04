@@ -18,6 +18,7 @@ jobs:
             PIMCORE_PACKAGE: pimcore/skeleton:^v2024.4
             COMPOSER_HOME: /tmp/composer
             COMPOSER_CACHE_DIR: /tmp/composer-cache
+            PIMCORE_VERSION: "11.5.*"
         name: Bundle Check
         steps:
             -   name: Checkout
@@ -48,13 +49,14 @@ jobs:
                     docker run \
                       -e COMPOSER_HOME=${COMPOSER_HOME} \
                       -e COMPOSER_CACHE_DIR=${COMPOSER_CACHE_DIR} \
+                      -e PIMCORE_VERSION=${PIMCORE_VERSION} \
                       --volume=${{ github.workspace }}/:/var/www/html \
                       --workdir=/var/www/html/sample-project \
                       --user=$(id -u):$(id -g) \
                       ${PIMCORE_IMAGE} \
-                        composer install \
-                        --no-scripts \
-                        --no-interaction
+                        bash -lc 'composer remove pimcore/platform-version --no-update --no-interaction \
+                        && composer require pimcore/pimcore:"${PIMCORE_VERSION}" --no-update --no-interaction \
+                        && composer update --no-scripts --no-interaction'
 
             -   name: Docker and Database Setup
                 run: |
