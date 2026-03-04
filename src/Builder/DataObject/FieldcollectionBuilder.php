@@ -12,29 +12,31 @@ use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
  */
 class FieldcollectionBuilder
 {
-    /**
-     * @var Fieldcollection<TItem>|null
-     */
-    private ?Fieldcollection $fieldcollection = null;
+    /** @var Fieldcollection<TItem>|null */
+    private ?Fieldcollection $fieldCollection = null;
 
     final protected function __construct()
     {
     }
 
     /**
-     * @template TCreateItem of AbstractData
-     * @param string $property
-     * @param array<int, TCreateItem> $abstractData
-     * @return FieldcollectionBuilder<TCreateItem>
      * @throws Exception
+     * @return static<TItem>
      */
-    public static function create(string $property, array $abstractData): self
+    public static function create(): static
     {
+        /** @var static<TItem> $builder */
         $builder = new static();
-        /** @var Fieldcollection<TItem> $fieldcollection */
-        $fieldcollection = new Fieldcollection($abstractData, $property);
-        $builder->fieldcollection = $fieldcollection;
+        /** @var Fieldcollection<TItem> $fieldCollection */
+        $fieldCollection = new Fieldcollection();
+        $builder->fieldCollection = $fieldCollection;
         return $builder;
+    }
+
+    public function addItem(AbstractData $item): static
+    {
+        $this->getObject()->add($item);
+        return $this;
     }
 
     /**
@@ -42,9 +44,9 @@ class FieldcollectionBuilder
      */
     public function getObject(): Fieldcollection
     {
-        if (!$this->fieldcollection instanceof Fieldcollection) {
+        if (!$this->fieldCollection instanceof Fieldcollection) {
             throw new LogicException('Fieldcollection object has not been set');
         }
-        return $this->fieldcollection;
+        return $this->fieldCollection;
     }
 }

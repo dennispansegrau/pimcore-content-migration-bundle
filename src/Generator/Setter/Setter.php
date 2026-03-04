@@ -13,7 +13,10 @@ use function is_resource;
 use function is_string;
 
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\Fieldcollection;
 
+use function preg_match;
+use function preg_replace;
 use function reset;
 
 use RuntimeException;
@@ -91,5 +94,25 @@ readonly class Setter
     public function isConcrete(): bool
     {
         return $this->value instanceof Concrete;
+    }
+
+    public function isFieldcollection(): bool
+    {
+        return $this->value instanceof Fieldcollection;
+    }
+
+    /**
+     * Returns a variable name that is safe to use in PHP code.
+     */
+    public function getSafeVariableName(string $prefix = '$', string $postfix = ''): string
+    {
+        $varName = preg_replace('/[^a-zA-Z0-9_]/', '_', $this->name);
+        if (!is_string($varName)) {
+            throw new RuntimeException('Invalid variable name');
+        }
+        if (!preg_match('/^[a-zA-Z_]/', $varName)) {
+            $varName = '_' . $varName;
+        }
+        return $prefix . $varName . $postfix;
     }
 }

@@ -14,7 +14,19 @@ private function {{ methodName }}(): {{ classname }}
 {% endif %}
 {# DATA OBJECT BUILDER SETTER #}
 {% for setter in setters %}
+{% if setter.isFieldcollection %}
+        {{ setter.getSafeVariableName('$', 'Builder') }} = {{ pcmb_value_to_string(setter.value, dependencies) }};
+{% for key, item in setter.value.getItems() %}
+        {{ setter.getSafeVariableName('$', 'Item' ~ key ~ 'Builder') }} = {{ pcmb_value_to_string(item, dependencies) }};
+{% for property, value in pcmb_get_object_fields(item) %}
+        {{ setter.getSafeVariableName('$', 'Item' ~ key ~ 'Builder') }}->set('{{ property }}', {{ pcmb_value_to_string(value, dependencies, {'owner': setter.getSafeVariableName('$', 'Item' ~ key ~ 'Builder') ~ '->getObject()'}) }});
+{% endfor %}
+        {{ setter.getSafeVariableName('$', 'Builder') }}->addItem({{ setter.getSafeVariableName('$', 'Item' ~ key ~ 'Builder') }}->getObject());
+{% endfor %}
+        $builder->set('{{ setter.name }}', {{ setter.getSafeVariableName('$', 'Builder') }}->getObject());
+{% else %}
         $builder->set('{{ setter.name }}', {{ pcmb_value_to_string(setter.value, dependencies) }});
+{% endif %}
 {% endfor %}
 {% for property in object.getProperties %}
         $builder->setProperty('{{ property.getName() }}', '{{ property.getType() }}', {% if property.getType() == 'bool' %}{{ property.getData() ? 'true' : 'false' }}{% else %}'{{ property.getData() }}'{% endif %}, {{ property.getInherited() ? 'true' : 'false' }}, {{ property.getInheritable() ? 'true' : 'false' }});
