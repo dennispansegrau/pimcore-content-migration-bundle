@@ -15,7 +15,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             PIMCORE_IMAGE: docker.io/pimcore/pimcore:php8.3-latest
-            PIMCORE_PACKAGE: pimcore/skeleton
+            PIMCORE_PACKAGE: pimcore/demo
             COMPOSER_HOME: /tmp/composer
             COMPOSER_CACHE_DIR: /tmp/composer-cache
             PIMCORE_VERSION: "11.5.*"
