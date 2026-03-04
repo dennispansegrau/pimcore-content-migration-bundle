@@ -58,6 +58,7 @@ jobs:
                         pimcore/newsletter-bundle \
                         pimcore/ecommerce-framework-bundle \
                         pimcore/data-hub \
+                        pimcore/customer-management-framework-bundle \
                         --no-update \
                         --no-interaction
                     docker run \
