@@ -36,6 +36,10 @@ class LinkStringifier implements ValueStringifier
             return 'null';
         }
 
-        return $this->idToDependencyString($type, $id, $dependencyList, false);
+        $path = $data['path'] ?? null;
+        if (!is_string($path)) {
+            $path = null;
+        }
+        return $this->idToDependencyOrFallbackToPathString($type, $id, $dependencyList, $path);
     }
 }
