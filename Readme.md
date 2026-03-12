@@ -79,7 +79,6 @@ bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-child
 | ------------------- | ----------------------------------------------------------------------------------------------------- |
 | `--namespace`       | The namespace for the generated migration class (falls back to `pimcore_content_migration.default_namespace` if set) |
 | `--with-children`   | Include all child elements (e.g., sub-documents or child objects) in the migration file               |
-| `--no-dependencies` | Exclude related dependencies (e.g., linked assets or objects) from the migration                      |
 | `--inline-wysiwyg`  | Inline WYSIWYG field content directly into the migration instead of saving it in a separate HTML file |
 
 ## 💻 Example
