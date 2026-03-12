@@ -14,6 +14,10 @@ use PimcoreContentMigration\MigrationType;
 use PimcoreContentMigration\Writer\NamespaceResolver;
 use Twig\Environment;
 
+use function file_get_contents;
+use function sys_get_temp_dir;
+use function uniqid;
+
 final class MigrationGeneratorTest extends TestCase
 {
     private string $outputDirectory;
@@ -41,7 +45,7 @@ final class MigrationGeneratorTest extends TestCase
             public function getMigrationDirectories(): array
             {
                 return [
-                    'App\\Migrations' => $this->directory,
+                    'App\Migrations' => $this->directory,
                 ];
             }
         }));
@@ -53,7 +57,7 @@ final class MigrationGeneratorTest extends TestCase
         );
 
         $document = new Document(5, '/news/example');
-        $settings = new Settings(MigrationType::DOCUMENT, 5, 'App\\Migrations');
+        $settings = new Settings(MigrationType::DOCUMENT, 5, 'App\Migrations');
 
         $path = $generator->generateMigrationFile($document, 'method code', $settings);
 
@@ -78,7 +82,7 @@ final class MigrationGeneratorTest extends TestCase
                 public function getMigrationDirectories(): array
                 {
                     return [
-                        'App\\Migrations' => $this->directory,
+                        'App\Migrations' => $this->directory,
                     ];
                 }
             })),
@@ -86,7 +90,7 @@ final class MigrationGeneratorTest extends TestCase
         );
 
         $document = new Document(5, '/news/example');
-        $settings = new Settings(MigrationType::DOCUMENT, 5, 'App\\Migrations');
+        $settings = new Settings(MigrationType::DOCUMENT, 5, 'App\Migrations');
 
         $first = $generator->generateMigrationFile($document, 'method code', $settings);
         $second = $generator->generateMigrationFile($document, 'method code', $settings);

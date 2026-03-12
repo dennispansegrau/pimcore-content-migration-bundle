@@ -17,43 +17,43 @@ final class SettingsFactoryTest extends TestCase
     {
         $input = $this->createInput('document', '12', null, true, true);
 
-        $settings = (new SettingsFactory('App\\Migrations'))->createSettings($input);
+        $settings = (new SettingsFactory('App\Migrations'))->createSettings($input);
 
         self::assertSame(MigrationType::DOCUMENT, $settings->getType());
         self::assertSame(12, $settings->getId());
-        self::assertSame('App\\Migrations', $settings->getNamespace());
+        self::assertSame('App\Migrations', $settings->getNamespace());
         self::assertTrue($settings->withChildren());
         self::assertTrue($settings->inlineWysiwyg());
     }
 
     public function testItPrefersExplicitNamespace(): void
     {
-        $input = $this->createInput('asset', '7', 'Custom\\Namespace', false, false);
+        $input = $this->createInput('asset', '7', 'Custom\Namespace', false, false);
 
-        $settings = (new SettingsFactory('App\\Migrations'))->createSettings($input);
+        $settings = (new SettingsFactory('App\Migrations'))->createSettings($input);
 
         self::assertSame(MigrationType::ASSET, $settings->getType());
-        self::assertSame('Custom\\Namespace', $settings->getNamespace());
+        self::assertSame('Custom\Namespace', $settings->getNamespace());
     }
 
     public function testItRejectsNonStringTypeArgument(): void
     {
-        $input = $this->createInput(['document'], '1', 'App\\Migrations', false, false);
+        $input = $this->createInput(['document'], '1', 'App\Migrations', false, false);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument "type" must be a string');
 
-        (new SettingsFactory('App\\Migrations'))->createSettings($input);
+        (new SettingsFactory('App\Migrations'))->createSettings($input);
     }
 
     public function testItRejectsNonNumericIdArgument(): void
     {
-        $input = $this->createInput('document', 'abc', 'App\\Migrations', false, false);
+        $input = $this->createInput('document', 'abc', 'App\Migrations', false, false);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument "id" must be an integer');
 
-        (new SettingsFactory('App\\Migrations'))->createSettings($input);
+        (new SettingsFactory('App\Migrations'))->createSettings($input);
     }
 
     public function testItRejectsInvalidNamespaceOptionType(): void
@@ -63,7 +63,7 @@ final class SettingsFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Option "namespace" must be a string');
 
-        (new SettingsFactory('App\\Migrations'))->createSettings($input);
+        (new SettingsFactory('App\Migrations'))->createSettings($input);
     }
 
     public function testItRequiresNamespaceWhenNoDefaultExists(): void
@@ -98,4 +98,3 @@ final class SettingsFactoryTest extends TestCase
         return $input;
     }
 }
-

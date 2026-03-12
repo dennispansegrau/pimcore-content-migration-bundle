@@ -25,4 +25,3 @@ final class MigrationTypeTest extends TestCase
         MigrationType::fromString('foo');
     }
 }
-

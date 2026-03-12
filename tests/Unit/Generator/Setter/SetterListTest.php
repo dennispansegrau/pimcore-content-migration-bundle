@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 use PimcoreContentMigration\Generator\Setter\Setter;
 use PimcoreContentMigration\Generator\Setter\SetterList;
 
+use function iterator_to_array;
+
 final class SetterListTest extends TestCase
 {
     public function testItStoresAndIteratesSetters(): void
@@ -23,4 +25,3 @@ final class SetterListTest extends TestCase
         self::assertSame([$first, $second], iterator_to_array($list));
     }
 }
-

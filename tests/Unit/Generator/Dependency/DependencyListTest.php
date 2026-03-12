@@ -13,6 +13,8 @@ use PimcoreContentMigration\Generator\Dependency\Dependency;
 use PimcoreContentMigration\Generator\Dependency\DependencyList;
 use PimcoreContentMigration\Tests\Support\UnknownElement;
 
+use function iterator_to_array;
+
 final class DependencyListTest extends TestCase
 {
     public function testDependencyCapturesElementMetadata(): void

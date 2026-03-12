@@ -24,4 +24,3 @@ final class RelativePathTest extends TestCase
         self::assertSame($editable, $relativePath->getEditable());
     }
 }
-

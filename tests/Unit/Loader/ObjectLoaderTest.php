@@ -46,4 +46,3 @@ final class ObjectLoaderTest extends TestCase
         (new ObjectLoader())->loadObject(MigrationType::DOCUMENT, 99);
     }
 }
-

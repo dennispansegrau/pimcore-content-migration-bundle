@@ -9,6 +9,10 @@ use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Fieldcollection;
 use PimcoreContentMigration\Generator\Setter\Setter;
 use RuntimeException;
+use stdClass;
+
+use function fclose;
+use function fopen;
 
 final class SetterTest extends TestCase
 {
@@ -31,11 +35,11 @@ final class SetterTest extends TestCase
 
     public function testItDetectsComplexTypes(): void
     {
-        $object = new \stdClass();
+        $object = new stdClass();
         $resource = fopen('php://memory', 'rb');
 
         self::assertSame('array of int', (new Setter('field', [1, 2]))->getType());
-        self::assertSame(\stdClass::class, (new Setter('field', $object))->getType());
+        self::assertSame(stdClass::class, (new Setter('field', $object))->getType());
         self::assertSame('stream', (new Setter('field', $resource))->getType());
 
         fclose($resource);

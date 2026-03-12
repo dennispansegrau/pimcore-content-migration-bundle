@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pimcore\Model\Element;
 
-if (!interface_exists(ElementInterface::class, false)) {
+if (!\interface_exists(ElementInterface::class, false)) {
     interface ElementInterface
     {
         public function getId(): ?int;
@@ -37,7 +37,7 @@ if (!interface_exists(ElementInterface::class, false)) {
     }
 }
 
-if (!class_exists(AbstractElement::class, false)) {
+if (!\class_exists(AbstractElement::class, false)) {
     abstract class AbstractElement implements ElementInterface
     {
         private string $key = '';
@@ -127,7 +127,7 @@ namespace Pimcore\Model;
 
 use Pimcore\Model\Element\AbstractElement;
 
-if (!class_exists(Document::class, false)) {
+if (!\class_exists(Document::class, false)) {
     class Document extends AbstractElement
     {
         /** @var array<int, self> */
@@ -207,7 +207,7 @@ if (!class_exists(Document::class, false)) {
     }
 }
 
-if (!class_exists(Asset::class, false)) {
+if (!\class_exists(Asset::class, false)) {
     class Asset extends AbstractElement
     {
         /** @var array<int, self> */
@@ -287,7 +287,7 @@ if (!class_exists(Asset::class, false)) {
     }
 }
 
-if (!class_exists(DataObject::class, false)) {
+if (!\class_exists(DataObject::class, false)) {
     class DataObject extends AbstractElement
     {
         /** @var array<int, self> */
@@ -369,7 +369,7 @@ if (!class_exists(DataObject::class, false)) {
 
 namespace Pimcore\Model\DataObject;
 
-if (!class_exists(Concrete::class, false)) {
+if (!\class_exists(Concrete::class, false)) {
     class Concrete extends \Pimcore\Model\DataObject
     {
         /** @var object|null */
@@ -387,13 +387,13 @@ if (!class_exists(Concrete::class, false)) {
     }
 }
 
-if (!class_exists(Fieldcollection::class, false)) {
+if (!\class_exists(Fieldcollection::class, false)) {
     class Fieldcollection
     {
     }
 }
 
-if (!class_exists(ClassDefinition::class, false)) {
+if (!\class_exists(ClassDefinition::class, false)) {
     class ClassDefinition
     {
         /**
@@ -415,13 +415,13 @@ if (!class_exists(ClassDefinition::class, false)) {
 
 namespace Pimcore\Model\DataObject\ClassDefinition\Data;
 
-if (!class_exists(CalculatedValue::class, false)) {
+if (!\class_exists(CalculatedValue::class, false)) {
     class CalculatedValue
     {
     }
 }
 
-if (!class_exists(ReverseObjectRelation::class, false)) {
+if (!\class_exists(ReverseObjectRelation::class, false)) {
     class ReverseObjectRelation
     {
     }
@@ -429,7 +429,7 @@ if (!class_exists(ReverseObjectRelation::class, false)) {
 
 namespace Pimcore\Model\Document;
 
-if (!class_exists(Editable::class, false)) {
+if (!\class_exists(Editable::class, false)) {
     class Editable
     {
     }
@@ -437,7 +437,7 @@ if (!class_exists(Editable::class, false)) {
 
 namespace Pimcore\Model\Exception;
 
-if (!class_exists(NotFoundException::class, false)) {
+if (!\class_exists(NotFoundException::class, false)) {
     class NotFoundException extends \RuntimeException
     {
     }
@@ -445,7 +445,7 @@ if (!class_exists(NotFoundException::class, false)) {
 
 namespace Doctrine\Migrations;
 
-if (!class_exists(DependencyFactory::class, false)) {
+if (!\class_exists(DependencyFactory::class, false)) {
     class DependencyFactory
     {
         public function __construct(private object $configuration)
@@ -461,7 +461,7 @@ if (!class_exists(DependencyFactory::class, false)) {
 
 namespace Twig;
 
-if (!class_exists(Environment::class, false)) {
+if (!\class_exists(Environment::class, false)) {
     class Environment
     {
         /**
@@ -476,7 +476,7 @@ if (!class_exists(Environment::class, false)) {
          */
         public function render(string $template, array $context = []): string
         {
-            return $this->templates[$template] ?? $template . ':' . json_encode($context, JSON_THROW_ON_ERROR);
+            return $this->templates[$template] ?? $template . ':' . \json_encode($context, JSON_THROW_ON_ERROR);
         }
     }
 }

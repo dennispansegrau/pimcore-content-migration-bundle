@@ -34,4 +34,3 @@ final class CodeGeneratorTest extends TestCase
         $generator->generate('missing');
     }
 }
-

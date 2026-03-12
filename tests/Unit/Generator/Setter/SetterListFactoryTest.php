@@ -11,6 +11,9 @@ use Pimcore\Model\DataObject\ClassDefinition\Data\CalculatedValue;
 use Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation;
 use Pimcore\Model\DataObject\Concrete;
 use PimcoreContentMigration\Generator\Setter\SetterListFactory;
+use stdClass;
+
+use function iterator_to_array;
 
 final class SetterListFactoryTest extends TestCase
 {
@@ -36,10 +39,10 @@ final class SetterListFactoryTest extends TestCase
         };
 
         $object->setClass(new ClassDefinition([
-            'title' => new \stdClass(),
+            'title' => new stdClass(),
             'calculatedField' => new CalculatedValue(),
             'reverseRelation' => new ReverseObjectRelation(),
-            'price' => new \stdClass(),
+            'price' => new stdClass(),
         ]));
 
         $list = (new SetterListFactory())->getList($object);
@@ -52,4 +55,3 @@ final class SetterListFactoryTest extends TestCase
         self::assertSame(9.99, $items[1]->getValue());
     }
 }
-

@@ -14,8 +14,8 @@ final class NamespaceResolverTest extends TestCase
     public function testItResolvesFirstPathWhenNamespaceIsEmpty(): void
     {
         $resolver = $this->createResolver([
-            'App\\Migrations' => '/tmp/migrations',
-            'Other\\Migrations' => '/tmp/other',
+            'App\Migrations' => '/tmp/migrations',
+            'Other\Migrations' => '/tmp/other',
         ]);
 
         self::assertSame('/tmp/migrations', $resolver->resolve(null));
@@ -25,34 +25,34 @@ final class NamespaceResolverTest extends TestCase
     public function testItResolvesExplicitNamespace(): void
     {
         $resolver = $this->createResolver([
-            'App\\Migrations' => '/tmp/migrations',
+            'App\Migrations' => '/tmp/migrations',
         ]);
 
-        self::assertSame('/tmp/migrations', $resolver->resolve('App\\Migrations'));
+        self::assertSame('/tmp/migrations', $resolver->resolve('App\Migrations'));
     }
 
     public function testItRejectsUnknownNamespace(): void
     {
         $resolver = $this->createResolver([
-            'App\\Migrations' => '/tmp/migrations',
+            'App\Migrations' => '/tmp/migrations',
         ]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("Migration path 'Missing\\Namespace' does not exist");
 
-        $resolver->resolve('Missing\\Namespace');
+        $resolver->resolve('Missing\Namespace');
     }
 
     public function testItRejectsEmptyConfiguredPath(): void
     {
         $resolver = $this->createResolver([
-            'App\\Migrations' => '',
+            'App\Migrations' => '',
         ]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No namespace defined');
 
-        $resolver->resolve('App\\Migrations');
+        $resolver->resolve('App\Migrations');
     }
 
     /**
