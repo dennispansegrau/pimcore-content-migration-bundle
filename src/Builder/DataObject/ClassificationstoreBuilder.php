@@ -64,7 +64,7 @@ class ClassificationstoreBuilder
                 throw new LogicException('Invalid key name');
             }
 
-            $key = KeyConfig::getByName($keyData['name'], $this->getStoreId());
+            $key = KeyConfig::getByName($keyData['name'], $this->getStoreId(), true);
             if ($key === null) {
                 $key = new KeyConfig();
                 $key->setStoreId($this->getStoreId());
@@ -110,7 +110,7 @@ class ClassificationstoreBuilder
                 throw new LogicException('Invalid group name');
             }
 
-            $group = GroupConfig::getByName($groupData['name'], $this->getStoreId());
+            $group = GroupConfig::getByName($groupData['name'], $this->getStoreId(), true);
             if ($group === null) {
                 $group = new GroupConfig();
                 $group->setStoreId($this->getStoreId());
@@ -140,7 +140,7 @@ class ClassificationstoreBuilder
                 throw new LogicException('Invalid collection name');
             }
 
-            $collection = CollectionConfig::getByName($collectionData['name'], $this->getStoreId());
+            $collection = CollectionConfig::getByName($collectionData['name'], $this->getStoreId(), true);
             if ($collection === null) {
                 $collection = new CollectionConfig();
                 $collection->setStoreId($this->getStoreId());
