@@ -174,6 +174,9 @@ This bundle is commercial software.
 You may evaluate it free of charge for 28 days for internal testing and evaluation.
 Continued use after that period requires a paid commercial license.
 
+Licenses can now be purchased at [www.content-migration-bundle.com](https://www.content-migration-bundle.com/).
+
 See [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) for the current license terms.
 For German-speaking customers, see [EULA-DE.md](EULA-DE.md).
-For licensing information or support inquiries, contact the author.
+For licensing information, license purchases, or support inquiries, visit
+[www.content-migration-bundle.com](https://www.content-migration-bundle.com/).
