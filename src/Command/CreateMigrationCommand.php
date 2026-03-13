@@ -65,12 +65,6 @@ class CreateMigrationCommand extends AbstractCommand
                 'Include all child elements in the migration (e.g. sub-documents or child objects).',
             )
             ->addOption(
-                'no-dependencies',
-                null,
-                InputOption::VALUE_NONE,
-                'Do not include related dependencies (e.g. linked assets or objects) in the migration.',
-            )
-            ->addOption(
                 'inline-wysiwyg',
                 null,
                 InputOption::VALUE_NONE,

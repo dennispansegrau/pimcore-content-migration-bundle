@@ -25,7 +25,6 @@ final readonly class SettingsFactory implements SettingsFactoryInterface
         $id = $this->getInputId($input);
         $namespace = $input->getOption('namespace');
         $withChildren = (bool) $input->getOption('with-children');
-        $noDependencies = (bool) $input->getOption('no-dependencies');
         $inlineWysiwyg = (bool) $input->getOption('inline-wysiwyg');
 
         if (!is_string($namespace) && $namespace !== null) {
@@ -40,7 +39,7 @@ final readonly class SettingsFactory implements SettingsFactoryInterface
             throw new InvalidArgumentException('Please provide a namespace using the --namespace option or configure a default namespace for the bundle.');
         }
 
-        return new Settings($type, $id, $namespace, $inlineWysiwyg, !$noDependencies, $withChildren);
+        return new Settings($type, $id, $namespace, $inlineWysiwyg, true, $withChildren);
     }
 
     private function getInputType(InputInterface $input): MigrationType

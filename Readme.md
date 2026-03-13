@@ -1,4 +1,3 @@
-### ⚠️ This bundle is under active development and not production-ready.
 Compatibility: Pimcore 11 and above.
 
 # Pimcore Content Migrations Bundle
@@ -79,7 +78,6 @@ bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-child
 | ------------------- | ----------------------------------------------------------------------------------------------------- |
 | `--namespace`       | The namespace for the generated migration class (falls back to `pimcore_content_migration.default_namespace` if set) |
 | `--with-children`   | Include all child elements (e.g., sub-documents or child objects) in the migration file               |
-| `--no-dependencies` | Exclude related dependencies (e.g., linked assets or objects) from the migration                      |
 | `--inline-wysiwyg`  | Inline WYSIWYG field content directly into the migration instead of saving it in a separate HTML file |
 
 ## 💻 Example
@@ -171,5 +169,11 @@ objects and complex values into PHP code:
 
 ## 🧾 License
 
-This bundle is a commercial product.  
-For licensing information, subscription options, or support inquiries, please contact the author.
+This bundle is commercial software.
+
+You may evaluate it free of charge for 28 days for internal testing and evaluation.
+Continued use after that period requires a paid commercial license.
+
+See [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) for the current license terms.
+For German-speaking customers, see [EULA-DE.md](EULA-DE.md).
+For licensing information or support inquiries, contact the author.

@@ -10,6 +10,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "PimcoreContentMigration\\Tests\\Support\\": "tests/Support/",
             "PimcoreContentMigration\\Tests\\Unit\\": "tests/Unit/",
             "PimcoreContentMigration\\Tests\\Integration\\": "tests/Integration/"
         }
