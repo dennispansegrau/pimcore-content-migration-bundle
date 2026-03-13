@@ -66,7 +66,7 @@ When set, `content:migration:create` uses this namespace if none is provided.
 ## 🧩 CLI Command
 
 ```
-bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-children] [--no-dependencies] [--inline-wysiwyg]
+bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-children] [--inline-wysiwyg]
 ```
 
 | Name          | Description                                                                                                 |
