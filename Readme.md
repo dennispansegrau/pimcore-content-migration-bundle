@@ -66,7 +66,7 @@ When set, `content:migration:create` uses this namespace if none is provided.
 ## 🧩 CLI Command
 
 ```
-bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-children] [--no-dependencies] [--inline-wysiwyg]
+bin/console content:migration:create [TYPE] [ID] [--namespace=...] [--with-children] [--inline-wysiwyg]
 ```
 
 | Name          | Description                                                                                                 |
@@ -164,6 +164,7 @@ objects and complex values into PHP code:
 - Each migration is idempotent and can safely be executed multiple times.
 - This bundle does not modify Pimcore’s database schema — it only manages content structures.
 - You can organize different types of migrations (Documents, Assets, Objects) under separate namespaces if needed.
+- Please review and test all generated migrations before committing them or running them in production environments.
 
 ---
 
@@ -174,6 +175,9 @@ This bundle is commercial software.
 You may evaluate it free of charge for 28 days for internal testing and evaluation.
 Continued use after that period requires a paid commercial license.
 
+Licenses can now be purchased at [www.content-migration-bundle.com](https://www.content-migration-bundle.com/).
+
 See [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) for the current license terms.
 For German-speaking customers, see [EULA-DE.md](EULA-DE.md).
-For licensing information or support inquiries, contact the author.
+For licensing information, license purchases, or support inquiries, visit
+[www.content-migration-bundle.com](https://www.content-migration-bundle.com/).
