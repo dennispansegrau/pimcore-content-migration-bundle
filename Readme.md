@@ -164,6 +164,7 @@ objects and complex values into PHP code:
 - Each migration is idempotent and can safely be executed multiple times.
 - This bundle does not modify Pimcore’s database schema — it only manages content structures.
 - You can organize different types of migrations (Documents, Assets, Objects) under separate namespaces if needed.
+- Please review and test all generated migrations before committing them or running them in production environments.
 
 ---
 
