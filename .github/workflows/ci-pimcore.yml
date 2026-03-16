@@ -55,7 +55,8 @@ jobs:
                       --workdir=/var/www/html/sample-project \
                       --user=$(id -u):$(id -g) \
                       ${PIMCORE_IMAGE} \
-                        bash -lc 'composer remove pimcore/platform-version --no-update --no-interaction \
+                        bash -lc 'composer config audit.block-insecure false --no-interaction \
+                        && composer remove pimcore/platform-version --no-update --no-interaction \
                         && composer require pimcore/pimcore:"${PIMCORE_VERSION}" --no-update --no-interaction \
                         && composer update --no-scripts --no-interaction ${COMPOSER_AUDIT_FLAGS}'
 
