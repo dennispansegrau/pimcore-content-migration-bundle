@@ -7,12 +7,9 @@ use LogicException;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 
-/**
- * @template TItem of AbstractData
- */
 class FieldcollectionBuilder
 {
-    /** @var Fieldcollection<TItem>|null */
+    /** @var Fieldcollection<AbstractData>|null */
     private ?Fieldcollection $fieldCollection = null;
 
     final protected function __construct()
@@ -21,13 +18,10 @@ class FieldcollectionBuilder
 
     /**
      * @throws Exception
-     * @return static<TItem>
      */
     public static function create(): static
     {
-        /** @var static<TItem> $builder */
         $builder = new static();
-        /** @var Fieldcollection<TItem> $fieldCollection */
         $fieldCollection = new Fieldcollection();
         $builder->fieldCollection = $fieldCollection;
         return $builder;
@@ -40,7 +34,7 @@ class FieldcollectionBuilder
     }
 
     /**
-     * @return Fieldcollection<TItem>
+     * @return Fieldcollection<AbstractData>
      */
     public function getObject(): Fieldcollection
     {

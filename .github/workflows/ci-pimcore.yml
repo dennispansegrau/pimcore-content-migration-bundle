@@ -10,11 +10,15 @@ concurrency:
     group: ci-${{ github.ref }}
     cancel-in-progress: true
 
+permissions:
+    contents: read
+
 jobs:
     pimcore:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
+        timeout-minutes: 45
         env:
-            PIMCORE_IMAGE: docker.io/pimcore/pimcore:php8.3-latest
+            PIMCORE_IMAGE: docker.io/pimcore/pimcore:php8.3-v3.7
             PIMCORE_PACKAGE: pimcore/demo
             COMPOSER_HOME: /tmp/composer
             COMPOSER_CACHE_DIR: /tmp/composer-cache
@@ -23,7 +27,7 @@ jobs:
         name: Bundle Check
         steps:
             -   name: Checkout
-                uses: actions/checkout@v4
+                uses: actions/checkout@v6
 
             -   name: Pull Pimcore image
                 run: |
@@ -70,11 +74,15 @@ jobs:
                     docker compose down -v --remove-orphans
                     docker compose -f docker-compose.yaml up -d
 
-                    docker compose exec -T -- php bash -c '\
-                    curl -sfL https://github.com/powerman/dockerize/releases/download/v0.11.5/dockerize-`uname -s`-`uname -m` \
-                    | install /dev/stdin /usr/local/bin/dockerize'
-
-                    docker compose exec -T -- php dockerize -wait tcp://db:3306 -timeout 5m
+                    docker compose exec -T -- php bash -lc '
+                    for attempt in $(seq 1 60); do
+                        if (echo > /dev/tcp/db/3306) >/dev/null 2>&1; then
+                            exit 0
+                        fi
+                        sleep 5
+                    done
+                    echo "Database did not become ready in time" >&2
+                    exit 1'
 
             -   name: Install Pimcore
                 run: |
